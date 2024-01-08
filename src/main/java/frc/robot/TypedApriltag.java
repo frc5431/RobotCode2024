@@ -1,23 +1,44 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+
 public class TypedApriltag {
   public final int id;
 
   public TypedApriltag(int id) {
     this.id = id;
   }
-
-  public boolean isEnemyApriltag(TeamAffiliation robotTeam) {
-    return !isFriendlyApriltag(robotTeam);
+  
+  /**
+   * @param robotTeam
+   * @param windowName
+   * @return
+   */
+  public boolean isEnemyApriltag() {
+    return !isFriendlyApriltag();
   }
 
-  public boolean isFriendlyApriltag(TeamAffiliation robotTeam) {
+  /**
+   * @returns true if apriltag id is included in your alliance section
+   */
+  public boolean isFriendlyApriltag() {
     boolean isBlue = Constants.ApriltagConstants.blue.contains(id);
-    if (robotTeam == TeamAffiliation.BLUE) {
-      return isBlue;
-    } else {
-      return !isBlue;
+    var robotTeam = DriverStation.getAlliance();
+    if (robotTeam.isPresent()) {
+      if (robotTeam.get() == Alliance.Red) {
+          return !isBlue;
+      }
+      if (robotTeam.get() == Alliance.Blue) {
+          return isBlue;
+      }
+      else {
+        System.out.println("Error in getting alliance none returned, /frc/robot/TypedApriltag.java");
+          return false;
+      }
     }
+    System.out.println("Error in getting alliance robotTeam is not present, /frc/robot/TypedApriltag.java");
+      return false;
   }
 
   public boolean isSource() {
@@ -32,8 +53,5 @@ public class TypedApriltag {
     return Constants.ApriltagConstants.speaker.contains(id);
   }
 
-  enum TeamAffiliation {
-    RED,
-    BLUE
-  }
+
 }
