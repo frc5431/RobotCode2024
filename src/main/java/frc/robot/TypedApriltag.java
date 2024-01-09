@@ -33,11 +33,11 @@ public class TypedApriltag {
           return isBlue;
       }
       else {
-        System.out.println("Error in getting alliance none returned, /frc/robot/TypedApriltag.java");
+        System.out.println("Error in getting alliance, none returned, frc/robot/TypedApriltag.java");
           return false;
       }
     }
-    System.out.println("Error in getting alliance robotTeam is not present, /frc/robot/TypedApriltag.java");
+    System.out.println("Error in getting alliance, robotTeam is not present, frc/robot/TypedApriltag.java");
       return false;
   }
 
