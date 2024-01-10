@@ -12,7 +12,7 @@ public class Intake {
         intakeMotor.setInverted(false);
     }
 
-    public void intake (Spark motor) {
+    public void intake () {
         run(Constants.IntakeConstants.intakePower);
     }
     
