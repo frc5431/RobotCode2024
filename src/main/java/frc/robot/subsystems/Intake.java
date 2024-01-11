@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class Intake {
+    
     private Spark intakeSparky;
 
     public void run(double power){
@@ -19,5 +20,4 @@ public class Intake {
     public void outTake(){
         run(-1);
     }
-
 }
