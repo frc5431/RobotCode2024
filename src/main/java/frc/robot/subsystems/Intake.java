@@ -1,9 +1,12 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class Intake {
+    public Modes mode;
+
     public Spark intakeMotor;
 
     public Intake (Spark motor) {
@@ -22,5 +25,17 @@ public class Intake {
 
     public void run (double power) {
         intakeMotor.set(power);
+    }
+
+    public void setMode (Modes mode) {
+        this.mode = mode;
+        SmartDashboard.putString("Mode is: ", mode.toString());
+    }
+
+    public enum Modes {
+        INTAKE,
+        OUTTAKE,
+        STOPPED,
+        NEUTRAL
     }
 }
