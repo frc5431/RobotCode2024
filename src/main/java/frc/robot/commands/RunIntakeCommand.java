@@ -5,14 +5,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
 public class RunIntakeCommand extends Command {
-    enum IntakeEnum{
+    enum Modes{
         FORWARD,
         REVERSE,
         STOPPED,
         NEUTRAL
     }
 
-    IntakeEnum enummy;
+    Modes enummy;
     final boolean forward;
     final Intake intake;
 
@@ -27,11 +27,11 @@ public class RunIntakeCommand extends Command {
 
         if(forward){
             intake.inTake();
-            enummy = IntakeEnum.FORWARD;
+            enummy = Modes.FORWARD;
         }
         else {
             intake.outTake();
-            enummy = IntakeEnum.REVERSE;
+            enummy = Modes.REVERSE;
         }
         SmartDashboard.putString("State of Intake:",enummy.toString());
     }
@@ -39,7 +39,7 @@ public class RunIntakeCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         intake.run(0);
-        enummy = IntakeEnum.STOPPED;
+        enummy = Modes.STOPPED;
         SmartDashboard.putString("State of Intake:",enummy.toString());
     }
 }
