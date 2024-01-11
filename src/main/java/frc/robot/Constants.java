@@ -40,4 +40,9 @@ public final class Constants {
     // well this one's obvious
     public static List<Integer> stage = List.of(11,12,13,14,15,16);
   }
+
+  public static class IntakeConstants {
+    public static double intakePower = .5;
+    public static double outtakePower = -.5;
+  }
 }
