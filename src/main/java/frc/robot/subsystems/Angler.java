@@ -7,9 +7,11 @@ import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Angler {
+public class Angler extends SubsystemBase {
+
     public CANSparkFlex motor;
     public SparkPIDController controller;
     public SparkAbsoluteEncoder absoluteEncoder;
@@ -19,22 +21,22 @@ public class Angler {
         this.motor = motor;
         this.controller = motor.getPIDController();
         this.absoluteEncoder = motor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-        this.controller.setP(Constants.IntakeAnglerConstants.p);
-        this.controller.setI(Constants.IntakeAnglerConstants.i);
-        this.controller.setD(Constants.IntakeAnglerConstants.d);
+        this.controller.setP(Constants.AnglerConstants.p);
+        this.controller.setI(Constants.AnglerConstants.i);
+        this.controller.setD(Constants.AnglerConstants.d);
     }
 
     public void setRotation (Rotation2d angle) {
         setpoint = angle;
-        controller.setReference(MathUtil.clamp(angle.getRadians(), Constants.IntakeAnglerConstants.minAngle, Constants.IntakeAnglerConstants.maxAngle), ControlType.kPosition);
+        controller.setReference(MathUtil.clamp(angle.getRadians(), Constants.AnglerConstants.retractAngle.getRadians(), Constants.AnglerConstants.deployAngle.getRadians()), ControlType.kPosition);
     }
 
     public void deploy () {
-        setRotation(Constants.IntakeAnglerConstants.retractAngle);
+        setRotation(Constants.AnglerConstants.deployAngle);
     }
 
     public void retract () {
-        setRotation(Constants.IntakeAnglerConstants.detractAngle);
+        setRotation(Constants.AnglerConstants.retractAngle);
     }
 
     public boolean isFinished (double tolerance) {
