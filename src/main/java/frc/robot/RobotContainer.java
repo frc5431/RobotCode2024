@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunIntakeCommand;
+import frc.robot.commands.RunAnglerCommand.AnglerModes;
 import frc.robot.commands.RunIntakeCommand.DirectionEnum;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
@@ -26,8 +27,8 @@ public class RobotContainer {
   private void configureBindings() {
     m_operatorController.a().whileTrue(new RunIntakeCommand(DirectionEnum.INTAKE, systems.getIntake()));
     m_operatorController.y().whileTrue(new RunIntakeCommand(DirectionEnum.OUTTAKE, systems.getIntake()));
-    m_operatorController.b().whileTrue(new RunAnglerCommand(true, systems.getAngler()));
-    m_operatorController.x().whileTrue(new RunAnglerCommand(false, systems.getAngler()));
+    m_operatorController.b().whileTrue(new RunAnglerCommand(AnglerModes.DEPLOY, systems.getAngler()));
+    m_operatorController.x().whileTrue(new RunAnglerCommand(AnglerModes.RETRACT, systems.getAngler()));
   }
 
   public Command getAutonomousCommand() {
