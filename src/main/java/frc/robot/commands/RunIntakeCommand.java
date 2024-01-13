@@ -8,21 +8,21 @@ public class RunIntakeCommand extends Command {
     final boolean forward;
     final Intake intake;
 
-    @Override
-    public void initialize() {
-        if(forward){
-            intake.inTake();
-            intake.setMode(Intake.Modes.FORWARD);
-        }
-        else {
-            intake.outTake();
-            intake.setMode(Intake.Modes.REVERSE);
-        }
-    }
-
     public RunIntakeCommand(boolean forward, Intake intake){
         this.forward = forward;
         this.intake = intake;
+    }
+    
+    @Override
+    public void initialize() {
+        if(forward){
+            intake.intake();
+            intake.setMode(Intake.Modes.FORWARD);
+        }
+        else {
+            intake.outtake();
+            intake.setMode(Intake.Modes.REVERSE);
+        }
     }
 
     @Override

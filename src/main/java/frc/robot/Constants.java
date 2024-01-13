@@ -2,6 +2,7 @@ package frc.robot;
 
 import java.util.List;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -46,5 +47,12 @@ public final class Constants {
     public static double intakePower = .5;
     public static double outtakePower = -.5;
 
+  }
+  public static class AnglerConstants {
+    public static Rotation2d retractAngle = Rotation2d.fromDegrees(0);
+    public static Rotation2d deployAngle = Rotation2d.fromDegrees(105);
+    public static double p = .5;
+    public static double i = .1;
+    public static double d = .5;
   }
 }

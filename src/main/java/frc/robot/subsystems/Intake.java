@@ -2,21 +2,27 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Intake {
+public class Intake extends SubsystemBase {
     Modes enummy;
     private Spark intakeSparky;
 
-    public void run(double power){
+    public Intake(Spark intakeMotor) {
+        intakeSparky = intakeMotor;
+    }
+    
+
+    public void run(double power) {
         intakeSparky.set(power);
     }
 
-    public void inTake(){
+    public void intake() {
         run(Constants.IntakeConstants.intakePower);
     }
 
-    public void outTake(){
+    public void outtake() {
         run(Constants.IntakeConstants.outtakePower);
     }
 
