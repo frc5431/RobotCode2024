@@ -55,4 +55,10 @@ public final class Constants {
     public static double i = .1;
     public static double d = .5;
   }
+
+  public enum AnglerModes {
+    DEPLOY,
+    RETRACT,
+    CUSTOM
+}
 }
