@@ -8,7 +8,7 @@ import frc.robot.subsystems.Angler;
 public class RunAnglerCommand extends Command {
     final AnglerModes mode;
     final Angler angler;
-    final double rotation;
+    Rotation2d rotation;
 
     public enum AnglerModes {
         DEPLOY,
@@ -16,8 +16,14 @@ public class RunAnglerCommand extends Command {
         CUSTOM
     }
 
-    public RunAnglerCommand (AnglerModes mode, Angler angler, double rotation) {
+    public RunAnglerCommand (AnglerModes mode, Angler angler) {
         this.mode = mode;
+        this.angler = angler;
+        rotation = null;
+    }
+    
+    public RunAnglerCommand (Angler angler, Rotation2d rotation) {
+        this.mode = AnglerModes.CUSTOM;
         this.angler = angler;
         this.rotation = rotation;
     }
@@ -31,7 +37,7 @@ public class RunAnglerCommand extends Command {
             angler.deploy();
         }
         else {
-            angler.setRotation(Rotation2d.fromRadians(rotation));
+            angler.setRotation(rotation);
         }
     }
 
