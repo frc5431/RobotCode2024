@@ -9,13 +9,15 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.RunAnglerCommand.AnglerModes;
 
 public class Angler extends SubsystemBase {
-
+    
     public CANSparkFlex motor;
     public SparkPIDController controller;
     public SparkAbsoluteEncoder absoluteEncoder;
     public Rotation2d setpoint = new Rotation2d();
+    public AnglerModes mode;
     
     public Angler (CANSparkFlex motor) {
         this.motor = motor;
