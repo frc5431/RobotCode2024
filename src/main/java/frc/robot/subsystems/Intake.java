@@ -8,15 +8,20 @@ public class Intake {
     Modes enummy;
     private Spark intakeSparky;
 
-    public void run(double power){
+    public Intake(Spark intakeMotor) {
+        intakeSparky = intakeMotor;
+    }
+    
+
+    public void run(double power) {
         intakeSparky.set(power);
     }
 
-    public void inTake(){
+    public void intake() {
         run(Constants.IntakeConstants.intakePower);
     }
 
-    public void outTake(){
+    public void outtake() {
         run(Constants.IntakeConstants.outtakePower);
     }
 
