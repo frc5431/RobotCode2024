@@ -5,21 +5,26 @@ import frc.robot.subsystems.Intake;
 
 public class RunIntakeCommand extends Command {
     
-    final boolean forward;
+    public final DirectionEnum direction;
     final Intake intake;
 
-    public RunIntakeCommand(boolean forward, Intake intake){
-        this.forward = forward;
+    public enum DirectionEnum{
+        INTAKE,
+        OUTTAKE
+    }
+
+    public RunIntakeCommand(DirectionEnum direction, Intake intake){
+        this.direction = direction;
         this.intake = intake;
     }
     
     @Override
     public void initialize() {
-        if(forward){
+        if(direction == DirectionEnum.INTAKE){
             intake.intake();
             intake.setMode(Intake.Modes.FORWARD);
         }
-        else {
+        else if (direction == DirectionEnum.OUTTAKE) {
             intake.outtake();
             intake.setMode(Intake.Modes.REVERSE);
         }
@@ -28,5 +33,9 @@ public class RunIntakeCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         intake.run(0);
+    }
+
+    public DirectionEnum direction(String string) {
+        throw new UnsupportedOperationException("Unimplemented method 'direction'");
     }
 }
