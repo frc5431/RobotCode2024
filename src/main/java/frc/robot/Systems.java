@@ -8,6 +8,13 @@ import frc.robot.subsystems.Vision;
 import com.revrobotics.CANSparkFlex;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+<<<<<<< Updated upstream
+=======
+import frc.robot.subsystems.Angler;
+import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Vision; 
+>>>>>>> Stashed changes
 
 public class Systems{
 
@@ -20,6 +27,7 @@ public class Systems{
     private CANSparkFlex anglerFlex;
     
     public Systems() {
+<<<<<<< Updated upstream
 
         
 
@@ -29,6 +37,16 @@ public class Systems{
         intake = new Intake(intakeVortex);
         angler = new Angler(anglerFlex);
         
+=======
+        // vision = new Vision();
+        // intake = new Intake(new Spark(0));
+        // angler = new Angler(new CANSparkFlex(0, MotorType.kBrushless));
+        drivebase = new Drivebase();
+    }
+
+    public Drivebase getDrivebase() {
+        return drivebase;
+>>>>>>> Stashed changes
     }
 
     public Vision getVision() {
