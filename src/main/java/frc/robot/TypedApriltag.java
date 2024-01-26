@@ -4,12 +4,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class TypedApriltag {
+
   public final int id;
 
   public TypedApriltag(int id) {
     this.id = id;
   }
-  
+
   /**
    * @param robotTeam
    * @param windowName
@@ -27,18 +28,17 @@ public class TypedApriltag {
     var robotTeam = DriverStation.getAlliance();
     if (robotTeam.isPresent()) {
       if (robotTeam.get() == Alliance.Red) {
-          return !isBlue;
+        return !isBlue;
       }
       if (robotTeam.get() == Alliance.Blue) {
-          return isBlue;
-      }
-      else {
+        return isBlue;
+      } else {
         System.out.println("Error in getting alliance, none returned, frc/robot/TypedApriltag.java");
-          return false;
+        return false;
       }
     }
     System.out.println("Error in getting alliance, robotTeam is not present, frc/robot/TypedApriltag.java");
-      return false;
+    return false;
   }
 
   public boolean isSource() {
@@ -52,6 +52,4 @@ public class TypedApriltag {
   public boolean isSpeaker() {
     return Constants.ApriltagConstants.speaker.contains(id);
   }
-
-
 }

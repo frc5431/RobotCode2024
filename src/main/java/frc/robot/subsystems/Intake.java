@@ -2,53 +2,50 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
-
 import frc.robot.Constants;
 
 public class Intake extends Manipulator {
-    CANSparkBase motor;
 
-    public Intake(CANSparkBase motor) {
-        this.motor = motor;
-        this.setName("Intake");
-    }
+  CANSparkBase motor;
 
-    @Override
-    public double getForwardVelocityMultiplier() {
-        return Constants.IntakeConstants.outtakePower;
-    }
+  public Intake(CANSparkBase motor) {
+    this.motor = motor;
+    this.setName("Intake");
+  }
 
-    @Override
-    public double getReverseVelocityMultiplier() {
-        return Constants.IntakeConstants.intakePower;
-    }
+  @Override
+  public double getForwardVelocityMultiplier() {
+    return Constants.IntakeConstants.outtakePower;
+  }
 
-    @Override
-    public void runNeutral() {
-        motor.setIdleMode(IdleMode.kCoast);
-        motor.burnFlash();
-    }
+  @Override
+  public double getReverseVelocityMultiplier() {
+    return Constants.IntakeConstants.intakePower;
+  }
 
-        @Override
-    public void stopNeutral() {
-        motor.setIdleMode(IdleMode.kBrake);
-        motor.burnFlash();
-    }
+  @Override
+  public void runNeutral() {
+    motor.setIdleMode(IdleMode.kCoast);
+    motor.burnFlash();
+  }
 
-    @Override
-    public void runWithPower(double power) {
-        super.runWithPower(power);
-        motor.set(power);
-    }
+  @Override
+  public void stopNeutral() {
+    motor.setIdleMode(IdleMode.kBrake);
+    motor.burnFlash();
+  }
 
+  @Override
+  public void runWithPower(double power) {
+    super.runWithPower(power);
+    motor.set(power);
+  }
 
-    /**
-     * @return if the game piece is currently contained within the intake
-     */
-    @Override
-    public boolean checkGamePieceStatus() {
-        return motor.getOutputCurrent() > 35;
-    }
-
-    
+  /**
+   * @return if the game piece is currently contained within the intake
+   */
+  @Override
+  public boolean checkGamePieceStatus() {
+    return motor.getOutputCurrent() > 35;
+  }
 }

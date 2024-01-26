@@ -4,20 +4,17 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.Pair;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RunAnglerCommand;
-import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.commands.RunAnglerCommand.AnglerModes;
+import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Manipulator;
-
-import java.util.function.Supplier;
-
-
-import edu.wpi.first.math.Pair;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
+import java.util.function.Supplier;
 
 public class RobotContainer {
 
@@ -58,7 +55,8 @@ public class RobotContainer {
   private void configureBindings() {
     driver.setDeadzone(0.15);
 
-    drivebase.setDefaultCommand(new DefaultDriveCommand(
+    drivebase.setDefaultCommand(
+      new DefaultDriveCommand(
         systems,
         (Supplier<Pair<Double, Double>>) () -> {
           double inX = -driver.getLeftY(); // swap intended
@@ -67,12 +65,14 @@ public class RobotContainer {
           double theta = Math.atan2(inY, inX);
           return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND, theta);
         },
-        () -> modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
+        () -> modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+      )
+    );
 
     // Intake
     operator.a().whileTrue(new RunManipulatorCommand(systems.getIntake(), Manipulator.Modes.BACKWARDS));
     operator.y().whileTrue(new RunManipulatorCommand(systems.getIntake(), Manipulator.Modes.FORWARD));
-    
+
     // Intake Angler
     operator.b().whileTrue(new RunAnglerCommand(AnglerModes.DEPLOY, systems.getIntakeAngler()));
     operator.x().whileTrue(new RunAnglerCommand(AnglerModes.RETRACT, systems.getIntakeAngler()));
