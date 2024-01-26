@@ -5,7 +5,7 @@ import org.photonvision.PhotonPoseEstimator;
 
 public class Vision {
   public PhotonCamera apriltagCamera = new PhotonCamera("apriltag_camera");
-  public PhotonCamera noteCamera = new PhotonCamera("note_camera");
+  public PhotonCamera noteCamera = new PhotonCamera("apriltagn't_camera");
   
 
   public void updateEstimatedPose(PhotonPoseEstimator estimator) {
