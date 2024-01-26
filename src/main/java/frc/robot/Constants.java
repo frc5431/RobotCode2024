@@ -56,13 +56,17 @@ public final class Constants {
 
   }
 
-    public static class AnglerConstants {
+  public static class AnglerConstants {
     public static Rotation2d retractAngle = Rotation2d.fromDegrees(0);
     public static Rotation2d deployAngle = Rotation2d.fromDegrees(105);
     public static double p = .5;
     public static double i = .1;
-    public static double d = .5;
+    public static double d = .01;
+    public static Rotation2d parallelToGroundAngle = Rotation2d.fromDegrees(90);
+    public static double anglerLengthMeters = Units.inchesToMeters(16);
   }
+
+  public static double vortexStallTorque = 3.6;
 
 
   public static final int ID_PIGEON2 = 13;

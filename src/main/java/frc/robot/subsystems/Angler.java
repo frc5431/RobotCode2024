@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkFlex;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.SparkPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,19 +19,33 @@ public class Angler extends SubsystemBase {
     public SparkAbsoluteEncoder absoluteEncoder;
     public Rotation2d setpoint = new Rotation2d();
     public AnglerModes mode;
+    public double massKg;
     
-    public Angler (CANSparkFlex motor) {
+    public Angler (CANSparkFlex motor, double massKg) {
         this.motor = motor;
         this.controller = motor.getPIDController();
         this.absoluteEncoder = motor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         this.controller.setP(Constants.AnglerConstants.p);
         this.controller.setI(Constants.AnglerConstants.i);
         this.controller.setD(Constants.AnglerConstants.d);
+
+        this.massKg = massKg;
     }// 4esahtf v       bbbbbbbbbbbbbbbbbbbbbbbbbbb -p[[;lm    ]] 
+
+    public Rotation2d getAngleToGround() {
+        return setpoint.minus(Constants.AnglerConstants.parallelToGroundAngle);
+    }
 
     public void setRotation (Rotation2d angle) {
         setpoint = angle;
-        controller.setReference(MathUtil.clamp(angle.getRadians(), Constants.AnglerConstants.retractAngle.getRadians(), Constants.AnglerConstants.deployAngle.getRadians()), ControlType.kPosition);
+        var retractedAngle = Constants.AnglerConstants.retractAngle.getRadians();
+        var deployedAngle = Constants.AnglerConstants.deployAngle.getRadians();
+
+
+        double anglerCosMultiplierNoCOMM = massKg * 9.81;
+        double cosMult = anglerCosMultiplierNoCOMM * Constants.AnglerConstants.anglerLengthMeters;
+        double arbFF = cosMult * getAngleToGround().getCos() / Constants.vortexStallTorque;
+        controller.setReference(MathUtil.clamp(angle.getRadians(), retractedAngle, deployedAngle), ControlType.kPosition, 0, arbFF, ArbFFUnits.kPercentOut);
     }
 
     public void deploy () {
