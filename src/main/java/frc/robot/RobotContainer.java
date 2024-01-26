@@ -7,12 +7,13 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RunAnglerCommand;
-import frc.robot.commands.RunIntakeCommand;
+import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.commands.RunAnglerCommand.AnglerModes;
-import frc.robot.commands.RunIntakeCommand.DirectionEnum;
 import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.Manipulator;
 
 import java.util.function.Supplier;
+
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -68,8 +69,11 @@ public class RobotContainer {
         },
         () -> modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
 
-    operator.a().whileTrue(new RunIntakeCommand(DirectionEnum.INTAKE, systems.getIntake()));
-    operator.y().whileTrue(new RunIntakeCommand(DirectionEnum.OUTTAKE, systems.getIntake()));
+    // Intake
+    operator.a().whileTrue(new RunManipulatorCommand(systems.getIntake(), Manipulator.Modes.BACKWARDS));
+    operator.y().whileTrue(new RunManipulatorCommand(systems.getIntake(), Manipulator.Modes.FORWARD));
+    
+    // Intake Angler
     operator.b().whileTrue(new RunAnglerCommand(AnglerModes.DEPLOY, systems.getIntakeAngler()));
     operator.x().whileTrue(new RunAnglerCommand(AnglerModes.RETRACT, systems.getIntakeAngler()));
   }

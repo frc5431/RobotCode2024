@@ -23,7 +23,7 @@ public class Angler extends SubsystemBase {
     public double massKg;
     protected AnglerConstants constants;
     
-    public Angler (CANSparkFlex motor, AnglerConstants constants) {
+    public Angler (CANSparkFlex motor, AnglerConstants constants, String name) {
         this.motor = motor;
         this.controller = motor.getPIDController();
         this.absoluteEncoder = motor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
@@ -32,6 +32,7 @@ public class Angler extends SubsystemBase {
         this.controller.setD(constants.pid.d());
 
         this.constants = constants;
+        this.setName(name);
     }// 4esahtf v       bbbbbbbbbbbbbbbbbbbbbbbbbbb -p[[;lm    ]] 
 
     public Rotation2d getAngleToGround() {

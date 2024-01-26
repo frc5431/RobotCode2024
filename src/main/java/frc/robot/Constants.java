@@ -60,8 +60,7 @@ public final class Constants {
   }
 
   public static class ShooterConstants {
-    public static double topPower = 0.5;
-    public static double bottomPower = 0.5;
+    public static double normalPower = 0.5;
     public static int anglerId = 15; // temp
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */                Rotation2d.fromDegrees(0), // temp
