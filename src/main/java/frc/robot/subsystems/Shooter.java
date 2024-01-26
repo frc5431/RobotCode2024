@@ -29,7 +29,7 @@ public class Shooter extends Manipulator {
   // not sure why we'd ever reverse, but here it is i guess...
   @Override
   public double getReverseVelocityMultiplier() {
-    return getForwardVelocityMultiplier() / 4;
+    return -getForwardVelocityMultiplier() / 4;
   }
 
   @Override

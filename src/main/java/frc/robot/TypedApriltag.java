@@ -19,7 +19,6 @@ public class TypedApriltag {
   public boolean isEnemyApriltag() {
     return !isFriendlyApriltag();
   }
-
   /**
    * @returns true if apriltag id is included in your alliance section
    */
