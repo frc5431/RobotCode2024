@@ -39,7 +39,7 @@ public class Angler extends SubsystemBase {
         return setpoint.minus(constants.parallelToGroundAngle);
     }
 
-    public void setRotation (Rotation2d angle) {
+    public void setRotation(Rotation2d angle) {
         setpoint = angle;
         var retractedAngle = constants.minAngle.getRadians();
         var deployedAngle = constants.maxAngle.getRadians();
@@ -51,15 +51,15 @@ public class Angler extends SubsystemBase {
         controller.setReference(MathUtil.clamp(angle.getRadians(), retractedAngle, deployedAngle), ControlType.kPosition, 0, arbFF, ArbFFUnits.kPercentOut);
     }
 
-    public void deploy () {
+    public void deploy() {
         setRotation(constants.maxAngle);
     }
 
-    public void retract () {
+    public void retract() {
         setRotation(constants.minAngle);
     }
 
-    public boolean isFinished (double tolerance) {
+    public boolean isFinished(double tolerance) {
         return Math.abs(setpoint.getRadians() - absoluteEncoder.getPosition()) < tolerance;
     }
 }
