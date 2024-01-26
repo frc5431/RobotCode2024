@@ -80,8 +80,8 @@ public class RobotContainer {
 
     operator.a().whileTrue(new RunIntakeCommand(DirectionEnum.INTAKE, systems.getIntake()));
     operator.y().whileTrue(new RunIntakeCommand(DirectionEnum.OUTTAKE, systems.getIntake()));
-    operator.b().whileTrue(new RunAnglerCommand(AnglerModes.DEPLOY, systems.getAngler()));
-    operator.x().whileTrue(new RunAnglerCommand(AnglerModes.RETRACT, systems.getAngler()));
+    operator.b().whileTrue(new RunAnglerCommand(AnglerModes.DEPLOY, systems.getIntakeAngler()));
+    operator.x().whileTrue(new RunAnglerCommand(AnglerModes.RETRACT, systems.getIntakeAngler()));
   }
 
   public Command getAutonomousCommand() {

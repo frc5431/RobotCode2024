@@ -2,13 +2,6 @@ package frc.robot;
 
 import java.util.List;
 
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -54,11 +47,27 @@ public final class Constants {
   public static class IntakeConstants {
     public static double intakePower = .5;
     public static double outtakePower = -.5;
+    public static int anglerId = 14; // temp
+    public static int intakeId = 16; // temp
+    public static AnglerConstants anglerConstants = new AnglerConstants(
+      /* Min Angle */                Rotation2d.fromDegrees(0), // temp
+      /* Max Angle */                Rotation2d.fromDegrees(90), // temp
+      /* Length Meters */            Units.inchesToMeters(16),
+      /* Weight Kilos */             Units.lbsToKilograms(10), // temp
+      /* Parallel To Ground Angle */ Rotation2d.fromDegrees(0), // temp
+      /* PID */                      new MotionMagic(0.0,0.0,0.1, -1) // ff goes unused
+    );
+  }
+
+  public static class ShooterConstants {
+    public static double topPower = 0.5;
+    public static double bottomPower = 0.5;
+    public static int anglerId = 15; // temp
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */                Rotation2d.fromDegrees(0), // temp
       /* Max Angle */                Rotation2d.fromDegrees(90), // temp
       /* Length Meters */            Units.inchesToMeters(16), // temp
-      /* Weight Kilos */             Units.lbsToKilograms(10),
+      /* Weight Kilos */             Units.lbsToKilograms(10), // temp
       /* Parallel To Ground Angle */ Rotation2d.fromDegrees(0), // temp
       /* PID */                      new MotionMagic(0.0,0.0,0.1, -1) // ff goes unused
     );
