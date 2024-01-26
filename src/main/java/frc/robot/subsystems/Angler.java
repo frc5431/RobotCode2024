@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.AnglerConstants;
 import frc.robot.commands.RunAnglerCommand.AnglerModes;
 
 public class Angler extends SubsystemBase {
@@ -20,40 +21,41 @@ public class Angler extends SubsystemBase {
     public Rotation2d setpoint = new Rotation2d();
     public AnglerModes mode;
     public double massKg;
+    protected AnglerConstants constants;
     
-    public Angler (CANSparkFlex motor, double massKg) {
+    public Angler (CANSparkFlex motor, AnglerConstants constants) {
         this.motor = motor;
         this.controller = motor.getPIDController();
         this.absoluteEncoder = motor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-        this.controller.setP(Constants.AnglerConstants.p);
-        this.controller.setI(Constants.AnglerConstants.i);
-        this.controller.setD(Constants.AnglerConstants.d);
+        this.controller.setP(constants.pid.p());
+        this.controller.setI(constants.pid.i());
+        this.controller.setD(constants.pid.d());
 
-        this.massKg = massKg;
+        this.constants = constants;
     }// 4esahtf v       bbbbbbbbbbbbbbbbbbbbbbbbbbb -p[[;lm    ]] 
 
     public Rotation2d getAngleToGround() {
-        return setpoint.minus(Constants.AnglerConstants.parallelToGroundAngle);
+        return setpoint.minus(constants.parallelToGroundAngle);
     }
 
     public void setRotation (Rotation2d angle) {
         setpoint = angle;
-        var retractedAngle = Constants.AnglerConstants.retractAngle.getRadians();
-        var deployedAngle = Constants.AnglerConstants.deployAngle.getRadians();
+        var retractedAngle = constants.minAngle.getRadians();
+        var deployedAngle = constants.maxAngle.getRadians();
 
 
         double anglerCosMultiplierNoCOMM = massKg * 9.81;
-        double cosMult = anglerCosMultiplierNoCOMM * Constants.AnglerConstants.anglerLengthMeters;
+        double cosMult = anglerCosMultiplierNoCOMM * constants.lengthMeters;
         double arbFF = cosMult * getAngleToGround().getCos() / Constants.vortexStallTorque;
         controller.setReference(MathUtil.clamp(angle.getRadians(), retractedAngle, deployedAngle), ControlType.kPosition, 0, arbFF, ArbFFUnits.kPercentOut);
     }
 
     public void deploy () {
-        setRotation(Constants.AnglerConstants.deployAngle);
+        setRotation(constants.maxAngle);
     }
 
     public void retract () {
-        setRotation(Constants.AnglerConstants.retractAngle);
+        setRotation(constants.minAngle);
     }
 
     public boolean isFinished (double tolerance) {

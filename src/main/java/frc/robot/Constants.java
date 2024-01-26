@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import frc.team5431.titan.core.robot.MotionMagic;
 
 public final class Constants {
   
@@ -53,17 +54,32 @@ public final class Constants {
   public static class IntakeConstants {
     public static double intakePower = .5;
     public static double outtakePower = -.5;
-
+    public static AnglerConstants anglerConstants = new AnglerConstants(
+      /* Min Angle */                Rotation2d.fromDegrees(0), // temp
+      /* Max Angle */                Rotation2d.fromDegrees(90), // temp
+      /* Length Meters */            Units.inchesToMeters(16), // temp
+      /* Weight Kilos */             Units.lbsToKilograms(10),
+      /* Parallel To Ground Angle */ Rotation2d.fromDegrees(0), // temp
+      /* PID */                      new MotionMagic(0.0,0.0,0.1, -1) // ff goes unused
+    );
   }
 
   public static class AnglerConstants {
-    public static Rotation2d retractAngle = Rotation2d.fromDegrees(0);
-    public static Rotation2d deployAngle = Rotation2d.fromDegrees(105);
-    public static double p = .5;
-    public static double i = .1;
-    public static double d = .01;
-    public static Rotation2d parallelToGroundAngle = Rotation2d.fromDegrees(90);
-    public static double anglerLengthMeters = Units.inchesToMeters(16);
+    public final Rotation2d minAngle;
+    public final Rotation2d maxAngle;
+    public final double lengthMeters;
+    public final double weight;
+    public final Rotation2d parallelToGroundAngle;
+    public final MotionMagic pid;
+    
+    public AnglerConstants(Rotation2d minAngle, Rotation2d maxAngle, double lengthMeters, double weight, Rotation2d parallelToGroundAngle, MotionMagic pid) {
+      this.minAngle = minAngle;
+      this.maxAngle = maxAngle;
+      this.lengthMeters = lengthMeters;
+      this.weight = weight;
+      this.parallelToGroundAngle = parallelToGroundAngle;
+      this.pid = pid;
+    }
   }
 
   public static double vortexStallTorque = 3.6;
