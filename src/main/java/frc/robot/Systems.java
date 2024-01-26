@@ -19,13 +19,13 @@ public class Systems{
     
     public Systems() {
 
+        drivebase = new Drivebase();
+
         //vision = new Vision();
         intake = new Intake(new CANSparkFlex(Constants.IntakeConstants.intakeId, MotorType.kBrushless));
         // intakeAngler = new Angler(new CANSparkFlex(Constants.IntakeConstants.anglerId, MotorType.kBrushless), Constants.IntakeConstants.anglerConstants, "Intake Angler"); //ready to be uncommented once ids are correct.
         // shooterAngler = new Angler(new CANSparkFlex(Constants.ShooterConstants.anglerId, MotorType.kBrushless), ShooterConstants.anglerConstants, "Shooter Angler"); //ready to be uncommented once ids are correct.
 
-
-        drivebase = new Drivebase();
     }
 
     public Drivebase getDrivebase() {
