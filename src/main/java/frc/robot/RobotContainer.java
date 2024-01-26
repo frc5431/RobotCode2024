@@ -20,16 +20,10 @@ import frc.team5431.titan.core.joysticks.CommandXboxController;
 
 public class RobotContainer {
 
-
-  private final CommandXboxController driver =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  private final CommandXboxController operator =
-      new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+  private final CommandXboxController driver = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController operator = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
   private final Systems systems = new Systems();
-    public final Drivebase drivebase = systems.getDrivebase();
-
-
-  
+  public final Drivebase drivebase = systems.getDrivebase();
 
   public RobotContainer() {
     configureBindings();
@@ -37,15 +31,15 @@ public class RobotContainer {
 
   private static double deadband(double value, double deadband) {
     if (Math.abs(value) > deadband) {
-        if (value > 0.0) {
-            return (value - deadband) / (1.0 - deadband);
-        } else {
-            return (value + deadband) / (1.0 - deadband);
-        }
+      if (value > 0.0) {
+        return (value - deadband) / (1.0 - deadband);
+      } else {
+        return (value + deadband) / (1.0 - deadband);
+      }
     } else {
-        return 0.0;
+      return 0.0;
     }
-}
+  }
 
   private static double modifyAxis(double value) {
     // Deadband
@@ -58,25 +52,21 @@ public class RobotContainer {
     newValue = Math.copySign(newValue, value);
 
     return newValue;
-}
+  }
 
   private void configureBindings() {
     driver.setDeadzone(0.15);
 
-     drivebase.setDefaultCommand(new DefaultDriveCommand(
-            systems,
-            (Supplier<Pair<Double, Double>>) () -> {
-                double inX = -driver.getLeftY(); // swap intended
-                double inY = -driver.getLeftX();
-                double mag = Math.hypot(inX, inY);
-                double theta = Math.atan2(inY, inX);
-                return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND, theta);
-            },
-            () -> modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
-
-
-
-
+    drivebase.setDefaultCommand(new DefaultDriveCommand(
+        systems,
+        (Supplier<Pair<Double, Double>>) () -> {
+          double inX = -driver.getLeftY(); // swap intended
+          double inY = -driver.getLeftX();
+          double mag = Math.hypot(inX, inY);
+          double theta = Math.atan2(inY, inX);
+          return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND, theta);
+        },
+        () -> modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
 
     operator.a().whileTrue(new RunIntakeCommand(DirectionEnum.INTAKE, systems.getIntake()));
     operator.y().whileTrue(new RunIntakeCommand(DirectionEnum.OUTTAKE, systems.getIntake()));
