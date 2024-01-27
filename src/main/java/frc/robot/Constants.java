@@ -52,11 +52,11 @@ public final class Constants {
     public static int anglerId = 14; // temp
     public static int intakeId = 16; // temp
     public static AnglerConstants anglerConstants = new AnglerConstants(
-      /* Min Angle */Rotation2d.fromDegrees(0), // temp
-      /* Max Angle */Rotation2d.fromDegrees(90), // temp
+      /* Min Angle */Rotation2d.fromRadians(-45), // temp
+      /* Max Angle */Rotation2d.fromRadians(115), // temp
       /* Length Meters */Units.inchesToMeters(16),
-      /* Weight Kilos */Units.lbsToKilograms(10), // temp
-      /* Parallel To Ground Angle */Rotation2d.fromDegrees(0), // temp
+      /* Weight Kilos */Units.lbsToKilograms(4.01), // temp
+      /* Parallel To Ground Angle */Rotation2d.fromDegrees(0),
       /* PID */new MotionMagic(0.0, 0.0, 0.1, -1) // ff goes unused
     );
   }

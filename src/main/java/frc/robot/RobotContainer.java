@@ -5,6 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DefaultDriveCommand;
@@ -25,6 +28,9 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureBindings();
+
+    DataLogManager.start();
+    DriverStation.startDataLog(DataLogManager.getLog());
   }
 
   private static double deadband(double value, double deadband) {
