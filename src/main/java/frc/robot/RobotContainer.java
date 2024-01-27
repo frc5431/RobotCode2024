@@ -5,14 +5,13 @@
 package frc.robot;
 
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RunAnglerCommand;
-import frc.robot.commands.RunAnglerCommand.AnglerModes;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Manipulator;
@@ -62,29 +61,36 @@ public class RobotContainer {
     driver.setDeadzone(0.15);
 
     drivebase.setDefaultCommand(
-      new DefaultDriveCommand(
-        systems,
-        (Supplier<Pair<Double, Double>>) () -> {
-          double inX = -driver.getLeftY(); // swap intended
-          double inY = -driver.getLeftX();
-          double mag = Math.hypot(inX, inY);
-          double theta = Math.atan2(inY, inX);
-          return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND, theta);
-        },
-        () -> modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-      )
-    );
+        new DefaultDriveCommand(
+            systems,
+            (Supplier<Pair<Double, Double>>) () -> {
+              double inX = -driver.getLeftY(); // swap intended
+              double inY = -driver.getLeftX();
+              double mag = Math.hypot(inX, inY);
+              double theta = Math.atan2(inY, inX);
+              return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND, theta);
+            },
+            () -> modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
 
     // Intake
-    operator.a().whileTrue(new RunManipulatorCommand(systems.getIntake(), Manipulator.Modes.BACKWARDS));
-    operator.y().whileTrue(new RunManipulatorCommand(systems.getIntake(), Manipulator.Modes.FORWARD));
+    operator.b().whileTrue(new RunManipulatorCommand(systems.getIntake(),
+    Manipulator.Modes.BACKWARDS));
+    operator.x().whileTrue(new RunManipulatorCommand(systems.getIntake(),
+    Manipulator.Modes.FORWARD));
 
     // Intake Angler
-    operator.b().whileTrue(new RunAnglerCommand(AnglerModes.DEPLOY, systems.getIntakeAngler()));
-    operator.x().whileTrue(new RunAnglerCommand(AnglerModes.RETRACT, systems.getIntakeAngler()));
+    // operator.b().whileTrue(new RunAnglerCommand(AnglerModes.DEPLOY, systems.getIntakeAngler()));
+    // operator.x().whileTrue(new RunAnglerCommand(AnglerModes.RETRACT, systems.getIntakeAngler()));
+          
+    operator.y().onTrue(new RunAnglerCommand(() -> systems.getPivot().setpoint.minus(Rotation2d.fromDegrees(2)), systems.getPivot()));
+    operator.a().onTrue(new RunAnglerCommand(() -> systems.getPivot().setpoint.plus(Rotation2d.fromDegrees(2)), systems.getPivot()));
   }
 
   public Command getAutonomousCommand() {
     return null;
+  }
+
+  public void onTeleop() {
+    systems.getPivot().setpoint = Rotation2d.fromRadians(systems.getPivot().absoluteEncoder.getPosition());
   }
 }

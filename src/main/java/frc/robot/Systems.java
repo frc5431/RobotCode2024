@@ -1,10 +1,10 @@
 package frc.robot;
 
-import com.revrobotics.CANSparkBase;
-import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import frc.robot.Constants;
+
+import edu.wpi.first.math.system.plant.DCMotor;
 import frc.robot.Constants.AnglerConstants;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
@@ -16,31 +16,33 @@ public class Systems {
 
   private Vision vision;
   private Intake intake;
-  private Angler intakeAngler;
+  private Angler pivot;
   private Angler shooterAngler;
   private Drivebase drivebase;
 
   private AnglerConstants intakeAnglerConst;
 
-  private CANSparkBase intakeAngler550;
+  private CANSparkMax intakeMotor;
+  private CANSparkMax intakeAnglerMotor;
 
   public Systems() {
     intakeAnglerConst = Constants.IntakeConstants.anglerConstants;
-    intakeAngler550 = new CANSparkMax(Constants.IntakeConstants.anglerId, MotorType.kBrushless);
+    intakeMotor = new CANSparkMax(Constants.IntakeConstants.intakeId, MotorType.kBrushless);
+    intakeAnglerMotor = new CANSparkMax(Constants.IntakeConstants.anglerId, MotorType.kBrushless);
 
     drivebase = new Drivebase();
 
-    // vision = new Vision();
-    intake = new Intake(new CANSparkFlex(Constants.IntakeConstants.intakeId, MotorType.kBrushless));
-    intakeAngler = new Angler(intakeAngler550, intakeAnglerConst , "intake angler");
-    // CANSparkFlex(Constants.IntakeConstants.anglerId, MotorType.kBrushless),
-    // Constants.IntakeConstants.anglerConstants, "Intake Angler"); //ready to be
-    // uncommented once ids are correct.
-    // shooterAngler = new Angler(new
-    // CANSparkFlex(Constants.ShooterConstants.anglerId, MotorType.kBrushless),
-    // ShooterConstants.anglerConstants, "Shooter Angler"); //ready to be
-    // uncommented once ids are correct.
+    if(Robot.isSimulation()) {
+      REVPhysicsSim.getInstance().addSparkMax(intakeMotor, DCMotor.getNeo550(1));
+      REVPhysicsSim.getInstance().addSparkMax(intakeAnglerMotor, DCMotor.getNeo550(1));
+    }
 
+
+    // vision = new Vision();
+    
+
+    intake = new Intake(intakeMotor);
+    pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
   }
 
   public Drivebase getDrivebase() {
@@ -55,8 +57,8 @@ public class Systems {
     return intake;
   }
 
-  public Angler getIntakeAngler() {
-    return intakeAngler;
+  public Angler getPivot() {
+    return pivot;
   }
 
   public Angler getShooterAngler() {

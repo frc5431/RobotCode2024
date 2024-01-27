@@ -1,15 +1,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Angler;
+import java.util.function.Supplier;
 
 public class RunAnglerCommand extends Command {
 
   final AnglerModes mode;
   final Angler angler;
-  Rotation2d rotation;
+  Supplier<Rotation2d> rotation;
 
   public enum AnglerModes {
     DEPLOY,
@@ -23,7 +23,7 @@ public class RunAnglerCommand extends Command {
     rotation = null;
   }
 
-  public RunAnglerCommand(Angler angler, Rotation2d rotation) {
+  public RunAnglerCommand(Supplier<Rotation2d> rotation, Angler angler) {
     this.mode = AnglerModes.CUSTOM;
     this.angler = angler;
     this.rotation = rotation;
@@ -36,12 +36,12 @@ public class RunAnglerCommand extends Command {
     } else if (AnglerModes.DEPLOY == mode) {
       angler.deploy();
     } else {
-      angler.setRotation(rotation);
+      angler.setRotation(this.rotation.get());
     }
   }
 
   @Override
   public boolean isFinished() {
-    return angler.isFinished(Units.degreesToRadians(5));
+    return true;
   }
 }

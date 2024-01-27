@@ -11,6 +11,8 @@ import java.util.List;
 public final class Constants {
 
   public static double vortexStallTorque = 3.6;
+  public static double neoStallTorque = 3;
+  public static double neo550StallTorque = 0.97;
 
   public static class OperatorConstants {
 
@@ -47,17 +49,18 @@ public final class Constants {
 
   public static class IntakeConstants {
 
-    public static double intakePower = .5;
-    public static double outtakePower = -.5;
-    public static int anglerId = 14; // temp
-    public static int intakeId = 16; // temp
+    public static double intakePower = 1;
+    public static double outtakePower = -1;
+    public static int anglerId = 14;
+    public static int intakeId = 16;
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */Rotation2d.fromRadians(-45), // temp
       /* Max Angle */Rotation2d.fromRadians(115), // temp
       /* Length Meters */Units.inchesToMeters(16),
-      /* Weight Kilos */Units.lbsToKilograms(4.01), // temp
+      /* Weight Kilos */Units.lbsToKilograms(6.01), // temp
       /* Parallel To Ground Angle */Rotation2d.fromDegrees(0),
-      /* PID */new MotionMagic(0.0, 0.0, 0.1, -1) // ff goes unused
+      /* PID */new MotionMagic(1.0, 0.0, 0.1, -1), // ff goes unused
+      /* Stall Torque (Nm) */ neoStallTorque
     );
   }
 
@@ -71,7 +74,8 @@ public final class Constants {
       /* Length Meters */Units.inchesToMeters(16), // temp
       /* Weight Kilos */Units.lbsToKilograms(10), // temp
       /* Parallel To Ground Angle */Rotation2d.fromDegrees(0), // temp
-      /* PID */new MotionMagic(0.0, 0.0, 0.1, -1) // ff goes unused
+      /* PID */new MotionMagic(0.0, 0.0, 0.1, -1), // ff goes unused
+      /* Stall Torque (Nm) */ vortexStallTorque
     );
   }
 
@@ -83,6 +87,7 @@ public final class Constants {
     public final double weight;
     public final Rotation2d parallelToGroundAngle;
     public final MotionMagic pid;
+    public final double stalltorque;
 
     public AnglerConstants(
       Rotation2d minAngle,
@@ -90,7 +95,8 @@ public final class Constants {
       double lengthMeters,
       double weight,
       Rotation2d parallelToGroundAngle,
-      MotionMagic pid
+      MotionMagic pid,
+      double stallTorque
     ) {
       this.minAngle = minAngle;
       this.maxAngle = maxAngle;
@@ -98,6 +104,7 @@ public final class Constants {
       this.weight = weight;
       this.parallelToGroundAngle = parallelToGroundAngle;
       this.pid = pid;
+      this.stalltorque = stallTorque;
     }
   }
 

@@ -46,19 +46,6 @@ public class Angler extends SubsystemBase {
 
   public void setRotation(Rotation2d angle) {
     setpoint = angle;
-    var retractedAngle = constants.minAngle.getRadians();
-    var deployedAngle = constants.maxAngle.getRadians();
-
-    double anglerCosMultiplierNoCOMM = massKg * 9.81;
-    double cosMult = anglerCosMultiplierNoCOMM * constants.lengthMeters;
-    double arbFF = (cosMult * getAngleToGround().getCos()) / Constants.vortexStallTorque;
-    controller.setReference(
-      MathUtil.clamp(angle.getRadians(), retractedAngle, deployedAngle),
-      ControlType.kPosition,
-      0,
-      arbFF,
-      ArbFFUnits.kPercentOut
-    );
   }
 
   public void deploy() {
@@ -77,5 +64,20 @@ public class Angler extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber(getName() + " setpoint deg", setpoint.getDegrees());
     SmartDashboard.putNumber(getName() + " encoder deg", Units.radiansToDegrees(absoluteEncoder.getPosition()));
+    SmartDashboard.putNumber(getName() + " output", motor.getAppliedOutput());
+
+    var retractedAngle = constants.minAngle.getRadians();
+    var deployedAngle = constants.maxAngle.getRadians();
+
+    double anglerCosMultiplierNoCOMM = massKg * 9.81;
+    double cosMult = anglerCosMultiplierNoCOMM * constants.lengthMeters;
+    double arbFF = (cosMult * getAngleToGround().getCos()) / constants.stalltorque;
+    controller.setReference(
+      MathUtil.clamp(setpoint.getRadians(), retractedAngle, deployedAngle),
+      ControlType.kPosition,
+      0,
+      arbFF,
+      ArbFFUnits.kPercentOut
+    );
   }
 }
