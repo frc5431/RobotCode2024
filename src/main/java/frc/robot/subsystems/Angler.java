@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.AnglerConstants;
 import frc.robot.commands.RunAnglerCommand.AnglerModes;
 
@@ -76,7 +75,7 @@ public class Angler extends SubsystemBase {
       MathUtil.clamp(setpoint.getRadians(), retractedAngle, deployedAngle),
       ControlType.kPosition,
       0,
-      arbFF,
+      constants.enableFF ? arbFF : 0,
       ArbFFUnits.kPercentOut
     );
   }

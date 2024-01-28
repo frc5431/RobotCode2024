@@ -57,10 +57,11 @@ public final class Constants {
       /* Min Angle */Rotation2d.fromRadians(-45), // temp
       /* Max Angle */Rotation2d.fromRadians(115), // temp
       /* Length Meters */Units.inchesToMeters(16),
-      /* Weight Kilos */Units.lbsToKilograms(6.01), // temp
+      /* Weight Kilos */Units.lbsToKilograms(4.01), // temp
       /* Parallel To Ground Angle */Rotation2d.fromDegrees(0),
-      /* PID */new MotionMagic(1.0, 0.0, 0.1, -1), // ff goes unused
-      /* Stall Torque (Nm) */ neoStallTorque
+      /* PID */new MotionMagic(0.5, 0.0, 0.1, -1), // ff goes unused
+      /* Stall Torque (Nm) */ neoStallTorque,
+      /* Enable FF */ false
     );
   }
 
@@ -75,7 +76,8 @@ public final class Constants {
       /* Weight Kilos */Units.lbsToKilograms(10), // temp
       /* Parallel To Ground Angle */Rotation2d.fromDegrees(0), // temp
       /* PID */new MotionMagic(0.0, 0.0, 0.1, -1), // ff goes unused
-      /* Stall Torque (Nm) */ vortexStallTorque
+      /* Stall Torque (Nm) */ vortexStallTorque,
+      /* Enable FF */ true
     );
   }
 
@@ -88,6 +90,7 @@ public final class Constants {
     public final Rotation2d parallelToGroundAngle;
     public final MotionMagic pid;
     public final double stalltorque;
+    public final boolean enableFF;
 
     public AnglerConstants(
       Rotation2d minAngle,
@@ -96,7 +99,8 @@ public final class Constants {
       double weight,
       Rotation2d parallelToGroundAngle,
       MotionMagic pid,
-      double stallTorque
+      double stallTorque,
+      boolean enableFF
     ) {
       this.minAngle = minAngle;
       this.maxAngle = maxAngle;
@@ -105,6 +109,7 @@ public final class Constants {
       this.parallelToGroundAngle = parallelToGroundAngle;
       this.pid = pid;
       this.stalltorque = stallTorque;
+      this.enableFF = enableFF;
     }
   }
 
