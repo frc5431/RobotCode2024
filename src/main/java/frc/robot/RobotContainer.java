@@ -4,19 +4,22 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ApriltagConstants.zone;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Vision;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
-import java.util.function.Supplier;
 
 public class RobotContainer {
 
@@ -24,6 +27,7 @@ public class RobotContainer {
   private final CommandXboxController operator = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
   private final Systems systems = new Systems();
   public final Drivebase drivebase = systems.getDrivebase();
+  public final Vision vision = systems.getVision();
 
   public RobotContainer() {
     configureBindings();
@@ -70,7 +74,20 @@ public class RobotContainer {
               double theta = Math.atan2(inY, inX);
               return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND, theta);
             },
-            () -> modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
+            () -> -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
+
+    //this is the jankiest thing i have ever written but,
+    driver.rightBumper().whileTrue(
+        new DefaultDriveCommand(
+            systems,
+            (Supplier<Pair<Double, Double>>) () -> {
+              double inX = -driver.getLeftY(); // swap intended
+              double inY = -driver.getLeftX();
+              double mag = Math.hypot(inX, inY);
+              double theta = Math.atan2(inY, inX);
+              return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND, theta);
+            },
+            () -> -vision.getTargetYaw(zone.SPEAKER, modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND)));
 
     // Intake
     operator.b().whileTrue(new RunManipulatorCommand(systems.getIntake(),

@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Constants.ApriltagConstants.zone;
 
 public class TypedApriltag {
 
@@ -41,6 +42,19 @@ public class TypedApriltag {
     return false;
   }
 
+  public zone zoneMatch() {
+    if (isSpeaker()) {
+      return zone.SPEAKER;
+    } else if (isAmp()) {
+      return zone.AMP;
+    } else if (isStage()) {
+      return zone.STAGE;
+    } else if (isSource()) {
+      return zone.SOURCE;
+    }
+    return null;
+  }
+
   public boolean isSource() {
     return Constants.ApriltagConstants.source.contains(id);
   }
@@ -51,5 +65,9 @@ public class TypedApriltag {
 
   public boolean isSpeaker() {
     return Constants.ApriltagConstants.speaker.contains(id);
+  }
+
+  public boolean isStage() {
+    return Constants.ApriltagConstants.stage.contains(id);
   }
 }

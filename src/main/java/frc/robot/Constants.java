@@ -1,12 +1,13 @@
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import frc.team5431.titan.core.robot.MotionMagic;
-import java.util.List;
 
 public final class Constants {
 
@@ -31,6 +32,13 @@ public final class Constants {
   }
 
   public static class ApriltagConstants {
+
+    public enum zone {
+      SOURCE,
+      AMP,
+      SPEAKER,
+      STAGE
+    }
 
     // Team
     public static List<Integer> blue = List.of(6, 7, 8, 9, 10, 14, 15, 16);
