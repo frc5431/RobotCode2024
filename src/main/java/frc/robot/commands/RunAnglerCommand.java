@@ -31,6 +31,10 @@ public class RunAnglerCommand extends Command {
 
   @Override
   public void initialize() {
+    
+  }
+
+  public void execute() {
     if (AnglerModes.RETRACT == mode) {
       angler.retract();
     } else if (AnglerModes.DEPLOY == mode) {
@@ -42,6 +46,6 @@ public class RunAnglerCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

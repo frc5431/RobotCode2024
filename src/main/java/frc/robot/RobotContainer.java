@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.ApriltagConstants.zone;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DefaultDriveCommand;
@@ -77,30 +78,32 @@ public class RobotContainer {
             () -> -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
 
     //this is the jankiest thing i have ever written but,
-    driver.rightBumper().whileTrue(
-        new DefaultDriveCommand(
-            systems,
-            (Supplier<Pair<Double, Double>>) () -> {
-              double inX = -driver.getLeftY(); // swap intended
-              double inY = -driver.getLeftX();
-              double mag = Math.hypot(inX, inY);
-              double theta = Math.atan2(inY, inX);
-              return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND, theta);
-            },
-            () -> -vision.getTargetYaw(zone.SPEAKER, modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND)));
+    // driver.rightBumper().whileTrue(
+    //     new DefaultDriveCommand(
+    //         systems,
+    //         (Supplier<Pair<Double, Double>>) () -> {
+    //           double inX = -driver.getLeftY(); // swap intended
+    //           double inY = -driver.getLeftX();
+    //           double mag = Math.hypot(inX, inY);
+    //           double theta = Math.atan2(inY, inX);
+    //           return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND, theta);
+    //         },
+    //         () -> -vision.getTargetYaw(zone.SPEAKER, modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND)));
 
     // Intake
-    operator.b().whileTrue(new RunManipulatorCommand(systems.getIntake(),
-    Manipulator.Modes.BACKWARDS));
-    operator.x().whileTrue(new RunManipulatorCommand(systems.getIntake(),
-    Manipulator.Modes.FORWARD));
+    // operator.b().whileTrue(new RunManipulatorCommand(systems.getIntake(),
+    // Manipulator.Modes.BACKWARDS));
+    // operator.x().whileTrue(new RunManipulatorCommand(systems.getIntake(),
+    // Manipulator.Modes.FORWARD));
+
+    driver.y().onTrue(new InstantCommand(() -> drivebase.pigeon2.setYaw(0)));
 
     // Intake Angler
     // operator.b().whileTrue(new RunAnglerCommand(AnglerModes.DEPLOY, systems.getIntakeAngler()));
     // operator.x().whileTrue(new RunAnglerCommand(AnglerModes.RETRACT, systems.getIntakeAngler()));
           
-    operator.y().onTrue(new RunAnglerCommand(() -> systems.getPivot().setpoint.minus(Rotation2d.fromDegrees(2)), systems.getPivot()));
-    operator.a().onTrue(new RunAnglerCommand(() -> systems.getPivot().setpoint.plus(Rotation2d.fromDegrees(2)), systems.getPivot()));
+    operator.y().whileTrue(new RunAnglerCommand(() -> systems.getPivot().setpoint.minus(Rotation2d.fromDegrees(30)), systems.getPivot()));
+    operator.a().whileTrue(new RunAnglerCommand(() -> systems.getPivot().setpoint.plus(Rotation2d.fromDegrees(30)), systems.getPivot()));
   }
 
   public Command getAutonomousCommand() {

@@ -67,7 +67,7 @@ public final class Constants {
       /* Length Meters */Units.inchesToMeters(16),
       /* Weight Kilos */Units.lbsToKilograms(4.01), // temp
       /* Parallel To Ground Angle */Rotation2d.fromDegrees(0),
-      /* PID */new MotionMagic(0.5, 0.0, 0.1, -1), // ff goes unused
+      /* PID */new MotionMagic(0.3, 0.0, 0.1, -1), // ff goes unused
       /* Stall Torque (Nm) */ neoStallTorque,
       /* Enable FF */ false
     );
@@ -85,7 +85,7 @@ public final class Constants {
       /* Parallel To Ground Angle */Rotation2d.fromDegrees(0), // temp
       /* PID */new MotionMagic(0.0, 0.0, 0.1, -1), // ff goes unused
       /* Stall Torque (Nm) */ vortexStallTorque,
-      /* Enable FF */ true
+      /* Enable FF */ false
     );
   }
 
@@ -135,37 +135,37 @@ public final class Constants {
      * Should be measured from center to center.
      */
     // TODO: update this
-    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.546;
+    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.5842;
     /**
      * The front-to-back distance between the drivetrain wheels.
      *
      * Should be measured from center to center.
      */
     // TODO: update this
-    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.648;
+    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.5334;
 
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 7;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 8;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 12;
     // TODO: update this
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -0.434082;
+public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.428223).getRadians();
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 1;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 2;
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 9;
     // TODO: update this
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -0.413086;
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.413818).plus(Rotation2d.fromDegrees(180)).getRadians();
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 5;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 6;
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 11;
     // TODO: update this
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -0.070068;
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.071533).getRadians();
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 3;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 4;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 10;
     // TODO: update this
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -1.077881;
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.059326).plus(Rotation2d.fromDegrees(180)).getRadians();;
   }
 }

@@ -121,7 +121,7 @@ public class Drivebase extends SubsystemBase {
     moduleConfig.setSteerCurrentLimit(30.0);
 
     // tbest tibe ccp
-    moduleConfig.setSteerPID(0.05, 0.0, 0.01);
+    moduleConfig.setSteerPID(0.07, 0.0, 0.01);
 
     m_frontLeftModule =
       new MkSwerveModuleBuilder(moduleConfig)
