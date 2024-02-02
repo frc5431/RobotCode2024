@@ -31,11 +31,20 @@ public class Angler extends SubsystemBase {
     this.controller.setI(constants.pid.i());
     this.controller.setD(constants.pid.d());
 
-    absoluteEncoder.setPositionConversionFactor(2*Math.PI);
+    controller.setFeedbackDevice(absoluteEncoder);
 
+    SmartDashboard.putNumber("abs encoder ", absoluteEncoder.getPosition());
+
+    motor.disableVoltageCompensation();
+    motor.setSmartCurrentLimit(60, 35); // 40
+
+    // absoluteEncoder.setPositionConversionFactor(2*Math.PI);
+    motor.burnFlash();
+    
     this.constants = constants;
-
     this.setpoint = Rotation2d.fromRadians(absoluteEncoder.getPosition());
+    // SmartDashboard.putNumber("setpoint ", setpoint.getRadians());
+
     this.setName(name);
   } // 4esahtf v bbbbbbbbbbbbbbbbbbbbbbbbbbb -p[[;lm ]]
 
@@ -62,18 +71,19 @@ public class Angler extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber(getName() + " setpoint deg", setpoint.getDegrees());
+    SmartDashboard.putNumber(getName() + " setpoint radians", setpoint.getRadians());
     SmartDashboard.putNumber(getName() + " encoder deg", Units.radiansToDegrees(absoluteEncoder.getPosition()));
     SmartDashboard.putNumber(getName() + " output", motor.getAppliedOutput());
 
-    var retractedAngle = constants.minAngle.getRadians();
-    var deployedAngle = constants.maxAngle.getRadians();
+    // var retractedAngle = constants.minAngle;
+    // var deployedAngle = constants.maxAngle;
 
     double anglerCosMultiplierNoCOMM = massKg * 9.81;
     double cosMult = anglerCosMultiplierNoCOMM * constants.lengthMeters;
     double arbFF = (cosMult * getAngleToGround().getCos()) / constants.stalltorque;
     controller.setReference(
-      MathUtil.clamp(setpoint.getRadians(), retractedAngle, deployedAngle),
-      ControlType.kPosition,
+      setpoint.getRadians(), //MathUtil.clamp(setpoint.getRadians(), retractedAngle, deployedAngle),
+      CANSparkBase.ControlType.kPosition,
       0,
       constants.enableFF ? arbFF : 0,
       ArbFFUnits.kPercentOut

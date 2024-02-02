@@ -10,6 +10,7 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.ApriltagConstants.zone;
@@ -17,8 +18,11 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
+import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
 
@@ -27,14 +31,18 @@ public class RobotContainer {
   private final CommandXboxController driver = new CommandXboxController(OperatorConstants.kDriverControllerPort);
   private final CommandXboxController operator = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
   private final Systems systems = new Systems();
-  public final Drivebase drivebase = systems.getDrivebase();
-  public final Vision vision = systems.getVision();
+  private final Drivebase drivebase = systems.getDrivebase();
+  private final Vision vision = systems.getVision();
+  private final Angler pivot = systems.getPivot();
+  private final Intake intake = systems.getIntake();
+  private final Shooter shooter = systems.getShooter();
 
   public RobotContainer() {
     configureBindings();
 
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
+    
   }
 
   private static double deadband(double value, double deadband) {
@@ -63,6 +71,8 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    shooter.setRatio(Constants.ShooterConstants.shooterRatio);
+
     driver.setDeadzone(0.15);
 
     drivebase.setDefaultCommand(
@@ -76,34 +86,25 @@ public class RobotContainer {
               return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND, theta);
             },
             () -> -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
-
-    //this is the jankiest thing i have ever written but,
-    // driver.rightBumper().whileTrue(
-    //     new DefaultDriveCommand(
-    //         systems,
-    //         (Supplier<Pair<Double, Double>>) () -> {
-    //           double inX = -driver.getLeftY(); // swap intended
-    //           double inY = -driver.getLeftX();
-    //           double mag = Math.hypot(inX, inY);
-    //           double theta = Math.atan2(inY, inX);
-    //           return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND, theta);
-    //         },
-    //         () -> -vision.getTargetYaw(zone.SPEAKER, modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND)));
-
-    // Intake
-    // operator.b().whileTrue(new RunManipulatorCommand(systems.getIntake(),
-    // Manipulator.Modes.BACKWARDS));
-    // operator.x().whileTrue(new RunManipulatorCommand(systems.getIntake(),
-    // Manipulator.Modes.FORWARD));
-
+    
     driver.y().onTrue(new InstantCommand(() -> drivebase.pigeon2.setYaw(0)));
 
+    SmartDashboard.putNumber("turn axis", -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+
+    // Shooter
+    operator.rightTrigger().whileTrue(new RunManipulatorCommand(shooter,
+    0.5));
+
+    operator.leftTrigger().whileTrue(new RunManipulatorCommand(shooter,
+    -0.5));
+
+    // Intake
+    operator.b().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.BACKWARDS));
+    operator.x().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.FORWARD));
+ 
     // Intake Angler
-    // operator.b().whileTrue(new RunAnglerCommand(AnglerModes.DEPLOY, systems.getIntakeAngler()));
-    // operator.x().whileTrue(new RunAnglerCommand(AnglerModes.RETRACT, systems.getIntakeAngler()));
-          
-    operator.y().whileTrue(new RunAnglerCommand(() -> systems.getPivot().setpoint.minus(Rotation2d.fromDegrees(30)), systems.getPivot()));
-    operator.a().whileTrue(new RunAnglerCommand(() -> systems.getPivot().setpoint.plus(Rotation2d.fromDegrees(30)), systems.getPivot()));
+    operator.y().whileTrue(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(5)), pivot));
+    operator.a().whileTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(5)), pivot));
   }
 
   public Command getAutonomousCommand() {
@@ -111,6 +112,6 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
-    systems.getPivot().setpoint = Rotation2d.fromRadians(systems.getPivot().absoluteEncoder.getPosition());
+    pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
   }
 }

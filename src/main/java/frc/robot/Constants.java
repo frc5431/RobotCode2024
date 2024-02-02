@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.Shooter.ShooterRatio;
 import frc.team5431.titan.core.robot.MotionMagic;
 
 public final class Constants {
@@ -57,23 +58,28 @@ public final class Constants {
 
   public static class IntakeConstants {
 
-    public static double intakePower = 1;
-    public static double outtakePower = -1;
+    public static double intakePower = 0.5;
+    public static double outtakePower = -0.5;
     public static int anglerId = 14;
     public static int intakeId = 16;
     public static AnglerConstants anglerConstants = new AnglerConstants(
-      /* Min Angle */Rotation2d.fromRadians(-45), // temp
-      /* Max Angle */Rotation2d.fromRadians(115), // temp
+      /* Min Angle */Rotation2d.fromDegrees(-45), // temp
+      /* Max Angle */Rotation2d.fromDegrees(115), // temp
       /* Length Meters */Units.inchesToMeters(16),
       /* Weight Kilos */Units.lbsToKilograms(4.01), // temp
       /* Parallel To Ground Angle */Rotation2d.fromDegrees(0),
-      /* PID */new MotionMagic(0.3, 0.0, 0.1, -1), // ff goes unused
+      /* PID */new MotionMagic(0.1, 0.0, 0.005, -1), // ff goes unused
       /* Stall Torque (Nm) */ neoStallTorque,
-      /* Enable FF */ false
+      /* Enable FF */ true
     );
   }
 
   public static class ShooterConstants {
+
+    public static int topId = 18;
+    public static int botId = 17;
+
+    public static ShooterRatio shooterRatio = new ShooterRatio(0.6, 0.5);
 
     public static double normalPower = 0.5;
     public static int anglerId = 15; // temp
@@ -148,7 +154,7 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 8;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 12;
     // TODO: update this
-public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.428223).getRadians();
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.428223).plus(Rotation2d.fromDegrees(180)).getRadians();
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 1;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 2;
@@ -160,7 +166,7 @@ public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRota
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 6;
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 11;
     // TODO: update this
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.071533).getRadians();
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.071533).plus(Rotation2d.fromDegrees(-180)).getRadians();
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 3;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 4;

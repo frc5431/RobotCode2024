@@ -71,3 +71,4 @@ public class TypedApriltag {
     return Constants.ApriltagConstants.stage.contains(id);
   }
 }
+//lune est "cool <-(cool in french for those who dont speak french)"

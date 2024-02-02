@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -9,8 +10,9 @@ import frc.robot.Constants.AnglerConstants;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
-
+// import frc.robot.subsystems.Shooter.ShooterRatio;
 
 public class Systems {
 
@@ -19,17 +21,26 @@ public class Systems {
   private Angler pivot;
   private Angler shooterAngler;
   private Drivebase drivebase;
+  private Shooter shooter;
 
   private AnglerConstants intakeAnglerConst;
+
+  private CANSparkFlex shooterUpper; 
+  private CANSparkFlex shooterLower; 
 
   private CANSparkMax intakeMotor;
   private CANSparkMax intakeAnglerMotor;
 
+  private MotorType brushless =  MotorType.kBrushless;
+
   public Systems() {
     intakeAnglerConst = Constants.IntakeConstants.anglerConstants;
-    intakeMotor = new CANSparkMax(Constants.IntakeConstants.intakeId, MotorType.kBrushless);
-    intakeAnglerMotor = new CANSparkMax(Constants.IntakeConstants.anglerId, MotorType.kBrushless);
+    intakeMotor = new CANSparkMax(Constants.IntakeConstants.intakeId, brushless);
+    intakeAnglerMotor = new CANSparkMax(Constants.IntakeConstants.anglerId, brushless);
 
+    shooterLower = new CANSparkFlex(Constants.ShooterConstants.botId, brushless);
+    shooterUpper = new CANSparkFlex(Constants.ShooterConstants.topId, brushless);
+    shooter = new Shooter(shooterUpper, shooterLower);
     drivebase = new Drivebase();
 
     if(Robot.isSimulation()) {
@@ -37,9 +48,9 @@ public class Systems {
       REVPhysicsSim.getInstance().addSparkMax(intakeAnglerMotor, DCMotor.getNeo550(1));
     }
 
-
     // vision = new Vision();
-    
+    intakeMotor.setSmartCurrentLimit(40);
+    intakeMotor.burnFlash();
 
     intake = new Intake(intakeMotor);
     pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
@@ -51,6 +62,10 @@ public class Systems {
 
   public Vision getVision() {
     return vision;
+  }
+
+  public Shooter getShooter() {
+    return shooter;
   }
 
   public Intake getIntake() {
