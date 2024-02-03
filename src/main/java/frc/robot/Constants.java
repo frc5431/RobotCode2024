@@ -15,16 +15,10 @@ public final class Constants {
   public static double vortexStallTorque = 3.6;
   public static double neoStallTorque = 3;
   public static double neo550StallTorque = 0.97;
-
-  public static class OperatorConstants {
-
-    public static final int kDriverControllerPort = 0;
-    public static final int kOperatorControllerPort = 1;
-  }
-
   public static class idsorsmth {
 
     public static final int idorsmth = 0;
+    public static final boolean isTauseefCool = false;
   }
 
   public static class RobotConstants {
@@ -58,19 +52,20 @@ public final class Constants {
 
   public static class IntakeConstants {
 
-    public static double intakePower = 0.5;
-    public static double outtakePower = -0.5;
+    public static double intakePower = 0.75;
+    public static double outtakePower = -0.75;
     public static int anglerId = 14;
     public static int intakeId = 16;
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */Rotation2d.fromDegrees(-45), // temp
       /* Max Angle */Rotation2d.fromDegrees(115), // temp
       /* Length Meters */Units.inchesToMeters(16),
-      /* Weight Kilos */Units.lbsToKilograms(4.01), // temp
-      /* Parallel To Ground Angle */Rotation2d.fromDegrees(0),
-      /* PID */new MotionMagic(0.1, 0.0, 0.005, -1), // ff goes unused
+      /* Weight Kilos */Units.lbsToKilograms(7), // temp
+      /* Parallel To Ground Angle */Rotation2d.fromRadians(0),
+      /* PID */new MotionMagic(0.3, 0.0, 0.08, -1), // ff goes unused
       /* Stall Torque (Nm) */ neoStallTorque,
-      /* Enable FF */ true
+      /* Enable FF */ true,
+      /* Gear Ratio */0.5
     );
   }
 
@@ -91,7 +86,8 @@ public final class Constants {
       /* Parallel To Ground Angle */Rotation2d.fromDegrees(0), // temp
       /* PID */new MotionMagic(0.0, 0.0, 0.1, -1), // ff goes unused
       /* Stall Torque (Nm) */ vortexStallTorque,
-      /* Enable FF */ false
+      /* Enable FF */ false,
+      /* Gear Ratio */ 1
     );
   }
 
@@ -105,6 +101,7 @@ public final class Constants {
     public final MotionMagic pid;
     public final double stalltorque;
     public final boolean enableFF;
+    public final double gearRatio;
 
     public AnglerConstants(
       Rotation2d minAngle,
@@ -114,7 +111,8 @@ public final class Constants {
       Rotation2d parallelToGroundAngle,
       MotionMagic pid,
       double stallTorque,
-      boolean enableFF
+      boolean enableFF,
+      double gearRatio
     ) {
       this.minAngle = minAngle;
       this.maxAngle = maxAngle;
@@ -124,6 +122,7 @@ public final class Constants {
       this.pid = pid;
       this.stalltorque = stallTorque;
       this.enableFF = enableFF;
+      this.gearRatio = gearRatio;
     }
   }
 
@@ -140,38 +139,36 @@ public final class Constants {
      *
      * Should be measured from center to center.
      */
-    // TODO: update this
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.5842;
     /**
      * The front-to-back distance between the drivetrain wheels.
      *
      * Should be measured from center to center.
      */
-    // TODO: update this
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.5334;
 
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 7;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 8;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 12;
-    // TODO: update this
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.428223).plus(Rotation2d.fromDegrees(180)).getRadians();
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -((2 * Math.PI) * 0.428223);
+    //-Rotation2d.fromRotations(0.428223).plus(Rotation2d.fromDegrees(180)).getRadians();
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 1;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 2;
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 9;
-    // TODO: update this
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.413818).plus(Rotation2d.fromDegrees(180)).getRadians();
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -((2 * Math.PI) * 0.413818);
+    //-Rotation2d.fromRotations(0.413818).plus(Rotation2d.fromDegrees(180)).getRadians();
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 5;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 6;
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 11;
-    // TODO: update this
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.071533).plus(Rotation2d.fromDegrees(-180)).getRadians();
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -((2*Math.PI) * 0.071533);
+    //-Rotation2d.fromRotations(0.071533).plus(Rotation2d.fromDegrees(-180)).getRadians();
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 3;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 4;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 10;
-    // TODO: update this
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.059326).plus(Rotation2d.fromDegrees(180)).getRadians();;
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -((2*Math.PI) * 0.059326);
+    //-Rotation2d.fromRotations(0.059326).plus(Rotation2d.fromDegrees(180)).getRadians();;
   }
 }

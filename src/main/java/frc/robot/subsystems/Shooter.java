@@ -1,24 +1,29 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkBase;
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkBase.IdleMode;
 import frc.robot.Constants;
 import java.util.Optional;
 
 public class Shooter extends Manipulator {
 
-  public CANSparkBase upper;
-  public CANSparkBase lower;
+  public CANSparkFlex upper;
+  public CANSparkFlex lower;
 
   protected boolean containedGamePiece;
   private long lastFiredTimestamp = -1;
   protected ShooterRatio ratio;
 
-  public Shooter(CANSparkBase upper, CANSparkBase lower) {
+  public Shooter(CANSparkFlex upper, CANSparkFlex lower) {
     this.setName("Shooter");
-
     this.upper = upper;
     this.lower = lower;
+
+    upper.setInverted(true);
+    lower.setInverted(true);
+    this.upper.burnFlash();
+    this.lower.burnFlash();
+
   }
 
   @Override
@@ -102,5 +107,9 @@ public class Shooter extends Manipulator {
     this.ratio = ratio;
   }
 
+  /**
+   * @param upperPercent a percentage in [0,1]
+   * @param upperPercent a percentage in [0,1]
+   */
   public record ShooterRatio(double upperPercent, double lowerPercent) {}
 }

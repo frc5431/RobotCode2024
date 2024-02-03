@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.AnglerConstants;
 import frc.robot.commands.RunAnglerCommand.AnglerModes;
 
@@ -30,20 +31,17 @@ public class Angler extends SubsystemBase {
     this.controller.setP(constants.pid.p());
     this.controller.setI(constants.pid.i());
     this.controller.setD(constants.pid.d());
-
-    controller.setFeedbackDevice(absoluteEncoder);
-
-    SmartDashboard.putNumber("abs encoder ", absoluteEncoder.getPosition());
-
-    motor.disableVoltageCompensation();
-    motor.setSmartCurrentLimit(60, 35); // 40
-
-    // absoluteEncoder.setPositionConversionFactor(2*Math.PI);
-    motor.burnFlash();
+    //absoluteEncoder.setPositionConversionFactor(2 * Math.PI * constants.gearRatio);
     
+    controller.setFeedbackDevice(absoluteEncoder);
+    SmartDashboard.putNumber("abs encoder ", absoluteEncoder.getPosition());
+    motor.disableVoltageCompensation();
+    
+    motor.setSmartCurrentLimit(60, 35);
+
+    motor.burnFlash();
     this.constants = constants;
     this.setpoint = Rotation2d.fromRadians(absoluteEncoder.getPosition());
-    // SmartDashboard.putNumber("setpoint ", setpoint.getRadians());
 
     this.setName(name);
   } // 4esahtf v bbbbbbbbbbbbbbbbbbbbbbbbbbb -p[[;lm ]]
@@ -72,7 +70,7 @@ public class Angler extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber(getName() + " setpoint deg", setpoint.getDegrees());
     SmartDashboard.putNumber(getName() + " setpoint radians", setpoint.getRadians());
-    SmartDashboard.putNumber(getName() + " encoder deg", Units.radiansToDegrees(absoluteEncoder.getPosition()));
+    SmartDashboard.putNumber(getName() + " encoder deg", Units.rotationsToDegrees(absoluteEncoder.getPosition() / absoluteEncoder.getPositionConversionFactor()));
     SmartDashboard.putNumber(getName() + " output", motor.getAppliedOutput());
 
     // var retractedAngle = constants.minAngle;
@@ -81,8 +79,10 @@ public class Angler extends SubsystemBase {
     double anglerCosMultiplierNoCOMM = massKg * 9.81;
     double cosMult = anglerCosMultiplierNoCOMM * constants.lengthMeters;
     double arbFF = (cosMult * getAngleToGround().getCos()) / constants.stalltorque;
+    SmartDashboard.putNumber(getName() + " arbFF", arbFF);
+    SmartDashboard.putNumber(getName().substring(0, 1) + "2g", getAngleToGround().getDegrees());
     controller.setReference(
-      setpoint.getRadians(), //MathUtil.clamp(setpoint.getRadians(), retractedAngle, deployedAngle),
+      setpoint.getRotations() * absoluteEncoder.getPositionConversionFactor(), //MathUtil.clamp(setpoint.getRadians(), retractedAngle, deployedAngle),
       CANSparkBase.ControlType.kPosition,
       0,
       constants.enableFF ? arbFF : 0,

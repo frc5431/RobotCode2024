@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Constants.ApriltagConstants.zone;
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
@@ -28,8 +26,8 @@ import frc.team5431.titan.core.joysticks.CommandXboxController;
 
 public class RobotContainer {
 
-  private final CommandXboxController driver = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  private final CommandXboxController operator = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+  private final CommandXboxController driver = new CommandXboxController(0);
+  public static final CommandXboxController operator = new CommandXboxController(1);
   private final Systems systems = new Systems();
   private final Drivebase drivebase = systems.getDrivebase();
   private final Vision vision = systems.getVision();
@@ -42,7 +40,6 @@ public class RobotContainer {
 
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
-    
   }
 
   private static double deadband(double value, double deadband) {
@@ -92,19 +89,18 @@ public class RobotContainer {
     SmartDashboard.putNumber("turn axis", -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
     // Shooter
-    operator.rightTrigger().whileTrue(new RunManipulatorCommand(shooter,
-    0.5));
-
-    operator.leftTrigger().whileTrue(new RunManipulatorCommand(shooter,
-    -0.5));
+    operator.leftTrigger().whileTrue(new RunManipulatorCommand(shooter, -1));
+    operator.rightTrigger().whileTrue(new RunManipulatorCommand(shooter, 1));
 
     // Intake
     operator.b().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.BACKWARDS));
     operator.x().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.FORWARD));
  
     // Intake Angler
-    operator.y().whileTrue(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(5)), pivot));
-    operator.a().whileTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(5)), pivot));
+    operator.y().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(5)), pivot));
+    operator.a().onFalse(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(5)), pivot));
+    
+
   }
 
   public Command getAutonomousCommand() {
@@ -112,6 +108,6 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
-    pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
+    pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition() * 2);
   }
 }

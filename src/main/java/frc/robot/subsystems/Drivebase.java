@@ -111,7 +111,7 @@ public class Drivebase extends SubsystemBase {
     MountPoseConfigs config = new MountPoseConfigs();
     config.MountPosePitch = 0;
     config.MountPoseRoll = 0;
-    config.MountPoseYaw = 180;
+    config.MountPoseYaw = 0;
     pigeon2.getConfigurator().apply(config);
     // pigeon2.configMountPose(AxisDirection.NegativeX, AxisDirection.PositiveZ);
     // m_pigeon2.zeroGyroBiasNow(200);

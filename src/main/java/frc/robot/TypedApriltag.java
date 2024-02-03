@@ -42,6 +42,9 @@ public class TypedApriltag {
     return false;
   }
 
+  /**
+   * @return returns zone of the detected apriltag
+   */
   public zone zoneMatch() {
     if (isSpeaker()) {
       return zone.SPEAKER;
