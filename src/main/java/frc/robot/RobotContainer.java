@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
+import frc.robot.commands.RunTandemIntakePivot;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
@@ -92,11 +93,11 @@ public class RobotContainer {
     SmartDashboard.putNumber("turn axis", -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
     // Shooter
-    operator.leftTrigger().whileTrue(new RunManipulatorCommand(shooter, -1));
+    operator.b().whileTrue(new RunManipulatorCommand(shooter, -1));
     operator.rightTrigger().whileTrue(new RunManipulatorCommand(shooter, 1));
 
     // Intake
-    operator.b().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.BACKWARDS));
+    operator.leftTrigger().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.BACKWARDS));
     operator.x().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.FORWARD));
  
     // Intake Angler
@@ -105,6 +106,8 @@ public class RobotContainer {
     
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
     operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot));
+    //may be cool, dont use until beam break
+    operator.povUp().onTrue(new RunTandemIntakePivot(intake, pivot));
 
   }
 

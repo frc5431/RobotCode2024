@@ -31,11 +31,9 @@ public class Angler extends SubsystemBase {
     this.controller.setP(constants.pid.p());
     this.controller.setI(constants.pid.i());
     this.controller.setD(constants.pid.d());
-    //absoluteEncoder.setPositionConversionFactor(2 * Math.PI * constants.gearRatio);
     
     controller.setFeedbackDevice(absoluteEncoder);
     SmartDashboard.putNumber("abs encoder ", absoluteEncoder.getPosition());
-    //motor.enableVoltageCompensation(12);
     
     motor.setSmartCurrentLimit(60, 35);
     controller.setOutputRange(-0.3, 0.3);
