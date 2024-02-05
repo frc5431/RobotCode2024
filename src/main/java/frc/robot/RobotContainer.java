@@ -77,6 +77,9 @@ public class RobotContainer {
             systems,
             (Supplier<Pair<Double, Double>>) () -> {
               double inX = -driver.getLeftY(); // swap intended
+              if(driver.povUp().getAsBoolean()) {
+                inX = 0.3;
+              }
               double inY = -driver.getLeftX();
               double mag = Math.hypot(inX, inY);
               double theta = Math.atan2(inY, inX);
@@ -100,6 +103,8 @@ public class RobotContainer {
     operator.y().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(5)), pivot));
     operator.a().onFalse(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(5)), pivot));
     
+    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
+    operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot));
 
   }
 
@@ -108,6 +113,6 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
-    pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition() * 2);
+    pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
   }
 }

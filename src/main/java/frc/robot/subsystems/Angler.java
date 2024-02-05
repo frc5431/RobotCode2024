@@ -35,10 +35,16 @@ public class Angler extends SubsystemBase {
     
     controller.setFeedbackDevice(absoluteEncoder);
     SmartDashboard.putNumber("abs encoder ", absoluteEncoder.getPosition());
-    motor.disableVoltageCompensation();
+    //motor.enableVoltageCompensation(12);
     
     motor.setSmartCurrentLimit(60, 35);
-
+    controller.setOutputRange(-0.3, 0.3);
+    controller.setPositionPIDWrappingEnabled(true);
+    controller.setPositionPIDWrappingMinInput(0);
+    controller.setPositionPIDWrappingMaxInput(2 * Math.PI);
+    absoluteEncoder.setPositionConversionFactor(2 * Math.PI);
+    absoluteEncoder.setVelocityConversionFactor(2 * Math.PI);
+    
     motor.burnFlash();
     this.constants = constants;
     this.setpoint = Rotation2d.fromRadians(absoluteEncoder.getPosition());

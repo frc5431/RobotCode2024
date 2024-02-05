@@ -12,7 +12,6 @@ import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
-// import frc.robot.subsystems.Shooter.ShooterRatio;
 
 public class Systems {
 
@@ -37,6 +36,7 @@ public class Systems {
     intakeAnglerConst = Constants.IntakeConstants.anglerConstants;
     intakeMotor = new CANSparkMax(Constants.IntakeConstants.intakeId, brushless);
     intakeAnglerMotor = new CANSparkMax(Constants.IntakeConstants.anglerId, brushless);
+
 
     shooterLower = new CANSparkFlex(Constants.ShooterConstants.botId, brushless);
     shooterUpper = new CANSparkFlex(Constants.ShooterConstants.topId, brushless);

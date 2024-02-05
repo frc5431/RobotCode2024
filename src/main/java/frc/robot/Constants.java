@@ -13,7 +13,7 @@ import frc.team5431.titan.core.robot.MotionMagic;
 public final class Constants {
 
   public static double vortexStallTorque = 3.6;
-  public static double neoStallTorque = 3;
+  public static double neoStallTorque = 2.6;
   public static double neo550StallTorque = 0.97;
   public static class idsorsmth {
 
@@ -57,15 +57,15 @@ public final class Constants {
     public static int anglerId = 14;
     public static int intakeId = 16;
     public static AnglerConstants anglerConstants = new AnglerConstants(
-      /* Min Angle */Rotation2d.fromDegrees(-45), // temp
-      /* Max Angle */Rotation2d.fromDegrees(115), // temp
-      /* Length Meters */Units.inchesToMeters(16),
+      /* Min Angle */Rotation2d.fromDegrees(-9.67), // temp
+      /* Max Angle */Rotation2d.fromDegrees(145.33), // temp
+      /* Length Meters */Units.inchesToMeters(12),
       /* Weight Kilos */Units.lbsToKilograms(7), // temp
       /* Parallel To Ground Angle */Rotation2d.fromRadians(0),
-      /* PID */new MotionMagic(0.3, 0.0, 0.08, -1), // ff goes unused
-      /* Stall Torque (Nm) */ neoStallTorque,
+      /* PID */new MotionMagic(0.3, 0.0, 0.01, -1), // ff goes unused
+      /* Stall Torque (Nm) */ neoStallTorque * (50),
       /* Enable FF */ true,
-      /* Gear Ratio */0.5
+      /* Gear Ratio */1
     );
   }
 
@@ -74,9 +74,9 @@ public final class Constants {
     public static int topId = 18;
     public static int botId = 17;
 
-    public static ShooterRatio shooterRatio = new ShooterRatio(0.6, 0.5);
+    public static ShooterRatio shooterRatio = new ShooterRatio(1, 0.8);
 
-    public static double normalPower = 0.5;
+    public static double normalPower = 0.8;
     public static int anglerId = 15; // temp
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */Rotation2d.fromDegrees(0), // temp
@@ -150,25 +150,25 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 7;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 8;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 12;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -((2 * Math.PI) * 0.428223);
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.427979 + 0.5).getRadians();
     //-Rotation2d.fromRotations(0.428223).plus(Rotation2d.fromDegrees(180)).getRadians();
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 1;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 2;
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 9;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -((2 * Math.PI) * 0.413818);
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.414551).getRadians();
     //-Rotation2d.fromRotations(0.413818).plus(Rotation2d.fromDegrees(180)).getRadians();
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 5;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 6;
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 11;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -((2*Math.PI) * 0.071533);
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.072998 + 0.5).getRadians();
     //-Rotation2d.fromRotations(0.071533).plus(Rotation2d.fromDegrees(-180)).getRadians();
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 3;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 4;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 10;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -((2*Math.PI) * 0.059326);
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.060791).getRadians();
     //-Rotation2d.fromRotations(0.059326).plus(Rotation2d.fromDegrees(180)).getRadians();;
   }
 }
