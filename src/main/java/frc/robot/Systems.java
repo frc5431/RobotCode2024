@@ -7,9 +7,11 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import frc.robot.Constants.AnglerConstants;
+import frc.robot.Constants.TunerConstatns;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.PheonixDrivebase;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 
@@ -31,6 +33,7 @@ public class Systems {
   private CANSparkMax intakeAnglerMotor;
 
   private MotorType brushless =  MotorType.kBrushless;
+  public PheonixDrivebase drivebase2;
 
   public Systems() {
     intakeAnglerConst = Constants.IntakeConstants.anglerConstants;
@@ -41,7 +44,7 @@ public class Systems {
     shooterLower = new CANSparkFlex(Constants.ShooterConstants.botId, brushless);
     shooterUpper = new CANSparkFlex(Constants.ShooterConstants.topId, brushless);
     shooter = new Shooter(shooterUpper, shooterLower);
-    drivebase = new Drivebase();
+    drivebase2 = new PheonixDrivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
 
     if(Robot.isSimulation()) {
       REVPhysicsSim.getInstance().addSparkMax(intakeMotor, DCMotor.getNeo550(1));
@@ -56,8 +59,8 @@ public class Systems {
     pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
   }
 
-  public Drivebase getDrivebase() {
-    return drivebase;
+  public PheonixDrivebase getDrivebase() {
+    return drivebase2;
   }
 
   public Vision getVision() {
