@@ -1,8 +1,12 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkFlex;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+
 import java.util.Optional;
 
 public class Shooter extends Manipulator {
@@ -14,6 +18,9 @@ public class Shooter extends Manipulator {
   private long lastFiredTimestamp = -1;
   protected ShooterRatio ratio;
 
+  public RelativeEncoder upperRelativeEncoder;
+  public RelativeEncoder lowerRelativeEncoder;
+
   public Shooter(CANSparkFlex upper, CANSparkFlex lower) {
     this.setName("Shooter");
     this.upper = upper;
@@ -23,7 +30,6 @@ public class Shooter extends Manipulator {
     lower.setInverted(true);
     this.upper.burnFlash();
     this.lower.burnFlash();
-
   }
 
   @Override
@@ -64,6 +70,9 @@ public class Shooter extends Manipulator {
     } else if (containedGamePiece) {
       lastFiredTimestamp = System.currentTimeMillis();
     }
+    
+    SmartDashboard.putNumber("shup RPM", upperRelativeEncoder.getVelocity());
+    SmartDashboard.putNumber("shlo RPM", lowerRelativeEncoder.getVelocity());
   }
 
   /**
