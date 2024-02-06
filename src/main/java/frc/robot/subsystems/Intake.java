@@ -44,6 +44,7 @@ public class Intake extends Manipulator {
   /**
    * @return if the game piece is currently contained within the intake
    */
+  //TODO account for beam break
   @Override
   public boolean checkGamePieceStatus() {
     return motor.getOutputCurrent() > 35;

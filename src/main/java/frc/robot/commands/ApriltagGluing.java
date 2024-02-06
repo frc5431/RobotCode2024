@@ -74,7 +74,7 @@ public class ApriltagGluing extends Command {
     rotController = new PIDController(0.12, 0.01, 0.012);
     rotController.setTolerance(1, 2);
     rotController.enableContinuousInput(0, 360);
-    double tagYaw = vision.getTargetYaw(desiredZone, m_rotationSupplier.getAsDouble());
+    double tagYaw = vision.getTargetYawZone(desiredZone, m_rotationSupplier.getAsDouble());
     double targYaw = (tagYaw == m_rotationSupplier.getAsDouble()) ? m_rotationSupplier.getAsDouble() : Math.atan2(tagYaw, m_rotationSupplier.getAsDouble());
     Logger.l("Going to rot " + targYaw);
     rotController.setSetpoint(targYaw);
