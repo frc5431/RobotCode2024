@@ -6,6 +6,9 @@ package frc.robot;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -13,7 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.Constants.TunerConstatns;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.commands.RunTandemIntakePivot;
@@ -21,6 +24,7 @@ import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.PheonixDrivebase;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
@@ -30,13 +34,18 @@ public class RobotContainer {
   private final CommandXboxController driver = new CommandXboxController(0);
   public static final CommandXboxController operator = new CommandXboxController(1);
   private final Systems systems = new Systems();
-  private final Drivebase drivebase = systems.getDrivebase();
+  private final PheonixDrivebase drivebase = systems.getDrivebase();
   private final Vision vision = systems.getVision();
   private final Angler pivot = systems.getPivot();
   private final Intake intake = systems.getIntake();
   private final Shooter shooter = systems.getShooter();
 
+  private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+      .withDeadband(TunerConstatns.kSpeedAt12VoltsMps * 0.1).withRotationalDeadband(TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.1) // Add a 10% deadband
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
   public RobotContainer() {
+    drivebase.seedFieldRelative();
     configureBindings();
 
     DataLogManager.start();
@@ -73,22 +82,28 @@ public class RobotContainer {
 
     driver.setDeadzone(0.15);
 
-    drivebase.setDefaultCommand(
-        new DefaultDriveCommand(
-            systems,
-            (Supplier<Pair<Double, Double>>) () -> {
-              double inX = -driver.getLeftY(); // swap intended
-              if(driver.povUp().getAsBoolean()) {
-                inX = 0.3;
-              }
-              double inY = -driver.getLeftX();
-              double mag = Math.hypot(inX, inY);
-              double theta = Math.atan2(inY, inX);
-              return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND, theta);
-            },
-            () -> -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
+    // drivebase.setDefaultCommand(
+    //     new DefaultDriveCommand(
+    //         systems,
+    //         (Supplier<Pair<Double, Double>>) () -> {
+    //           double inX = -driver.getLeftY(); // swap intended
+    //           if(driver.povUp().getAsBoolean()) {
+    //             inX = 0.3;
+    //           }
+    //           double inY = -driver.getLeftX();
+    //           double mag = Math.hypot(inX, inY);
+    //           double theta = Math.atan2(inY, inX);
+    //           return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND, theta);
+    //         },
+    //         () -> -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
+    drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
+        drivebase.applyRequest(() -> drive.withVelocityX(-driver.getLeftY() * TunerConstatns.kSpeedAt12VoltsMps) // Drive forward with
+                                                                                           // negative Y (forward)
+            .withVelocityY(-driver.getLeftX() * TunerConstatns.kSpeedAt12VoltsMps) // Drive left with negative X (left)
+            .withRotationalRate(-driver.getRightX() * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND) // Drive counterclockwise with negative X (left)
+        ));
     
-    driver.y().onTrue(new InstantCommand(() -> drivebase.pigeon2.setYaw(0)));
+    driver.y().onTrue(new InstantCommand(() -> drivebase.getPigeon2().setYaw(0)));
 
     SmartDashboard.putNumber("turn axis", -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
