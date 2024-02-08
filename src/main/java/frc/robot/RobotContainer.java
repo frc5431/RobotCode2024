@@ -81,7 +81,7 @@ public class RobotContainer {
     shooter.setRatio(Constants.ShooterConstants.shooterRatio);
 
     driver.setDeadzone(0.15);
-
+/* 
     // drivebase.setDefaultCommand(
     //     new DefaultDriveCommand(
     //         systems,
@@ -95,12 +95,12 @@ public class RobotContainer {
     //           double theta = Math.atan2(inY, inX);
     //           return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND, theta);
     //         },
-    //         () -> -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
-    drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
+    //         () -> -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));*/
+    drivebase.setDefaultCommand( // Drivetrain will execute this command periodically 
         drivebase.applyRequest(() -> drive.withVelocityX(-driver.getLeftY() * TunerConstatns.kSpeedAt12VoltsMps) // Drive forward with
-                                                                                           // negative Y (forward)
+                                                                              // negative Y (forward)
             .withVelocityY(-driver.getLeftX() * TunerConstatns.kSpeedAt12VoltsMps) // Drive left with negative X (left)
-            .withRotationalRate(-driver.getRightX() * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND) // Drive counterclockwise with negative X (left)
+            .withRotationalRate(-modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND) // Drive counterclockwise with negative X (left)
         ));
     
     driver.y().onTrue(new InstantCommand(() -> drivebase.getPigeon2().setYaw(0)));

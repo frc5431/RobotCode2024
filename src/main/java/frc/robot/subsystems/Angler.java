@@ -36,7 +36,7 @@ public class Angler extends SubsystemBase {
     SmartDashboard.putNumber("abs encoder ", absoluteEncoder.getPosition());
     
     motor.setSmartCurrentLimit(60, 35);
-    controller.setOutputRange(-0.3, 0.3);
+    controller.setOutputRange(-0.8, 0.8);
     controller.setPositionPIDWrappingEnabled(true);
     controller.setPositionPIDWrappingMinInput(0);
     controller.setPositionPIDWrappingMaxInput(2 * Math.PI);
