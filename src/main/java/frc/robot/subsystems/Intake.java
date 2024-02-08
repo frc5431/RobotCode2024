@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class Intake extends Manipulator {
@@ -41,11 +43,17 @@ public class Intake extends Manipulator {
     motor.set(power);
   }
 
+  @Override
+  public void periodic() {
+      SmartDashboard.putNumber("Intake currentOut", motor.getOutputCurrent());
+      SmartDashboard.putBoolean("Has Gamepice", checkGamePieceStatus());
+  }
+
   /**
    * @return if the game piece is currently contained within the intake
    */
   @Override
   public boolean checkGamePieceStatus() {
-    return motor.getOutputCurrent() > 35;
+    return motor.getOutputCurrent() > 31;
   }
 }

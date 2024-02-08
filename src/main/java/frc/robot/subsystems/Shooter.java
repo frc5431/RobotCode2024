@@ -30,6 +30,9 @@ public class Shooter extends Manipulator {
     lower.setInverted(true);
     this.upper.burnFlash();
     this.lower.burnFlash();
+
+    upperRelativeEncoder = upper.getEncoder();
+    lowerRelativeEncoder = lower.getEncoder();
   }
 
   @Override

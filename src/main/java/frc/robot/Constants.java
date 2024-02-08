@@ -62,13 +62,13 @@ public final class Constants {
 
   public static class IntakeConstants {
 
-    public static double intakePower = 0.75;
-    public static double outtakePower = -0.75;
+    public static double intakePower = 1;
+    public static double outtakePower = -1;
     public static int anglerId = 14;
     public static int intakeId = 16;
     public static AnglerConstants anglerConstants = new AnglerConstants(
-      /* Min Angle */Rotation2d.fromDegrees(-9.67), // temp
-      /* Max Angle */Rotation2d.fromDegrees(145.33), // temp
+      /* Min Angle */Rotation2d.fromDegrees(-9.45),
+      /* Max Angle */Rotation2d.fromDegrees(153.11), // temp
       /* Length Meters */Units.inchesToMeters(12),
       /* Weight Kilos */Units.lbsToKilograms(7), // temp
       /* Parallel To Ground Angle */Rotation2d.fromRadians(0),
@@ -193,7 +193,7 @@ public final class Constants {
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGains = new Slot0Configs()
-        .withKP(3).withKI(0).withKD(0)
+        .withKP(1.5).withKI(0).withKD(0)
         .withKS(0).withKV(0).withKA(0);
 
 
@@ -218,15 +218,15 @@ public final class Constants {
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
-    private static final double kCoupleRatio = 2 * Math.PI;
+    private static final double kCoupleRatio = 3.5714285714285716;
 
-    private static final double kDriveGearRatio = 0;
-    private static final double kSteerGearRatio = 15.42857142857143;
-    private static final double kWheelRadiusInches = 0;
+    private static final double kDriveGearRatio = 6.746031746031747;
+    private static final double kSteerGearRatio = 12.8;
+    private static final double kWheelRadiusInches = 2;
 
     private static final boolean kSteerMotorReversed = false;
     private static final boolean kInvertLeftSide = false;
-    private static final boolean kInvertRightSide = true;
+    private static final boolean kInvertRightSide = false;
 
     private static final String kCANbusName = "Omnivore2024";
     private static final int kPigeonId = 13;
@@ -266,43 +266,49 @@ public final class Constants {
     private static final int kFrontLeftDriveMotorId = 7;
     private static final int kFrontLeftSteerMotorId = 8;
     private static final int kFrontLeftEncoderId = 12;
-    private static final double kFrontLeftEncoderOffset = -Rotation2d.fromRotations(0.427979 + 0.5).getRadians();
+    private static final double kFrontLeftEncoderOffset = -(0.430176);
 
-    private static final Translation2d kFrontLeftPosInches = new Translation2d(DrivebaseConstant.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DrivebaseConstant.DRIVETRAIN_WHEELBASE_METERS / 2.0);
+    private static final double kFrontLeftXPosInches = 10.25;
+    private static final double kFrontLeftYPosInches = 11.75;
 
     // Front Right
     private static final int kFrontRightDriveMotorId = 1;
     private static final int kFrontRightSteerMotorId = 2;
     private static final int kFrontRightEncoderId = 9;
-    private static final double kFrontRightEncoderOffset = -Rotation2d.fromRotations(0.414551).getRadians();
+    private static final double kFrontRightEncoderOffset = -(0.410889 + 0.5);
 
-    private static final Translation2d kFrontRightPosInches = new Translation2d(DrivebaseConstant.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DrivebaseConstant.DRIVETRAIN_WHEELBASE_METERS / 2.0);
+    private static final double kFrontRightXPosInches = 10.25;
+    private static final double kFrontRightYPosInches = -11.75;
 
     // Back Left
     private static final int kBackLeftDriveMotorId = 5;
     private static final int kBackLeftSteerMotorId = 6;
     private static final int kBackLeftEncoderId = 11;
-    private static final double kBackLeftEncoderOffset = -Rotation2d.fromRotations(0.072998 + 0.5).getRadians();
+    private static final double kBackLeftEncoderOffset = -(0.069336);
 
-    private static final Translation2d kBackLeftPosInches = new Translation2d(-DrivebaseConstant.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DrivebaseConstant.DRIVETRAIN_WHEELBASE_METERS / 2.0);
+    private static final double kBackLeftXPosInches = -10.25;
+    private static final double kBackLeftYPosInches = 11.75;
 
     // Back Right
     private static final int kBackRightDriveMotorId = 3;
     private static final int kBackRightSteerMotorId = 4;
     private static final int kBackRightEncoderId = 10;
-    private static final double kBackRightEncoderOffset = -Rotation2d.fromRotations(0.060791).getRadians();
+    private static final double kBackRightEncoderOffset = -(0.062256 + 0.5);
 
-    private static final Translation2d kBackRightPosInches = new Translation2d(-DrivebaseConstant.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DrivebaseConstant.DRIVETRAIN_WHEELBASE_METERS / 2.0);
-
+    private static final double kBackRightXPosInches = -10.25;
+    private static final double kBackRightYPosInches = -11.75;
 
     public static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
-            kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, kFrontLeftEncoderOffset, Units.inchesToMeters(kFrontLeftPosInches.getX()), Units.inchesToMeters(kFrontLeftPosInches.getY()), kInvertLeftSide);
+            kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, kFrontLeftEncoderOffset, Units.inchesToMeters(kFrontLeftXPosInches), Units.inchesToMeters(kFrontLeftYPosInches), kInvertLeftSide);
     public static final SwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
-            kFrontRightSteerMotorId, kFrontRightDriveMotorId, kFrontRightEncoderId, kFrontRightEncoderOffset, Units.inchesToMeters(kFrontRightPosInches.getX()), Units.inchesToMeters(kFrontRightPosInches.getY()), kInvertRightSide);
+            kFrontRightSteerMotorId, kFrontRightDriveMotorId, kFrontRightEncoderId, kFrontRightEncoderOffset, Units.inchesToMeters(kFrontRightXPosInches), Units.inchesToMeters(kFrontRightYPosInches), kInvertRightSide);
     public static final SwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
-            kBackLeftSteerMotorId, kBackLeftDriveMotorId, kBackLeftEncoderId, kBackLeftEncoderOffset, Units.inchesToMeters(kBackLeftPosInches.getX()), Units.inchesToMeters(kBackLeftPosInches.getY()), kInvertLeftSide);
+            kBackLeftSteerMotorId, kBackLeftDriveMotorId, kBackLeftEncoderId, kBackLeftEncoderOffset, Units.inchesToMeters(kBackLeftXPosInches), Units.inchesToMeters(kBackLeftYPosInches), kInvertLeftSide);
     public static final SwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(
-            kBackRightSteerMotorId, kBackRightDriveMotorId, kBackRightEncoderId, kBackRightEncoderOffset, Units.inchesToMeters(kBackRightPosInches.getX()), Units.inchesToMeters(kBackRightPosInches.getY()), kInvertRightSide);
+            kBackRightSteerMotorId, kBackRightDriveMotorId, kBackRightEncoderId, kBackRightEncoderOffset, Units.inchesToMeters(kBackRightXPosInches), Units.inchesToMeters(kBackRightYPosInches), kInvertRightSide);
+
+
+
 
   }
 }
