@@ -36,6 +36,11 @@ public class PheonixDrivebase extends SwerveDrivetrain implements Subsystem  {
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
+    public void zeroGyro(){
+        getPigeon2().reset();
+    
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Gyro", getPigeon2().getAngle());

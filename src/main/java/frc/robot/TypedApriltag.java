@@ -34,11 +34,11 @@ public class TypedApriltag {
       if (robotTeam.get() == Alliance.Blue) {
         return isBlue;
       } else {
-        System.out.println("Error in getting alliance, none returned, frc/robot/TypedApriltag.java");
+        // System.out.println("Error in getting alliance, none returned, frc/robot/TypedApriltag.java");
         return false;
       }
     }
-    System.out.println("Error in getting alliance, robotTeam is not present, frc/robot/TypedApriltag.java");
+    // System.out.println("Error in getting alliance, robotTeam is not present, frc/robot/TypedApriltag.java");
     return false;
   }
 
@@ -74,4 +74,4 @@ public class TypedApriltag {
     return Constants.ApriltagConstants.stage.contains(id);
   }
 }
-//lune est "cool <-(cool in french for those who dont speak french)"
+//lune est "cool" <-(cool in french for those who dont speak french)

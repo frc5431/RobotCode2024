@@ -115,6 +115,9 @@ public class Shooter extends Manipulator {
     lower.set(power * ratio.lowerPercent());
   }
 
+  public void runWithRPM(double topRPM, double botRPM){
+  }
+
   public void setRatio(ShooterRatio ratio) {
     this.ratio = ratio;
   }

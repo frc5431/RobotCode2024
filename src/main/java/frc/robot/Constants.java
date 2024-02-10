@@ -13,10 +13,8 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.PheonixDrivebase;
 import frc.robot.subsystems.Shooter.ShooterRatio;
 import frc.team5431.titan.core.robot.MotionMagic;
 
@@ -32,7 +30,6 @@ public final class Constants {
   }
 
   public static class RobotConstants {
-
     public static Transform3d cameraOffsetPosition = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
   }
 
@@ -65,12 +62,14 @@ public final class Constants {
     public static double intakePower = 1;
     public static double outtakePower = -1;
     public static int anglerId = 14;
-    public static int intakeId = 16;
+    public static int leftIntakeId = 16;
+    public static int rightIntakeId = 19;
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */Rotation2d.fromDegrees(-9.45),
       /* Max Angle */Rotation2d.fromDegrees(153.11), // temp
+      /* Amp Angle */Rotation2d.fromDegrees(105.70),
       /* Length Meters */Units.inchesToMeters(12),
-      /* Weight Kilos */Units.lbsToKilograms(7), // temp
+      /* Weight Kilos */Units.lbsToKilograms(7.5), // temp
       /* Parallel To Ground Angle */Rotation2d.fromRadians(0),
       /* PID */new MotionMagic(0.3, 0.0, 0.01, -1), // ff goes unused
       /* Stall Torque (Nm) */ neoStallTorque * (50),
@@ -91,6 +90,7 @@ public final class Constants {
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */Rotation2d.fromDegrees(0), // temp
       /* Max Angle */Rotation2d.fromDegrees(90), // temp
+      /* Goal Angle */Rotation2d.fromDegrees(0),
       /* Length Meters */Units.inchesToMeters(16), // temp
       /* Weight Kilos */Units.lbsToKilograms(10), // temp
       /* Parallel To Ground Angle */Rotation2d.fromDegrees(0), // temp
@@ -105,6 +105,7 @@ public final class Constants {
 
     public final Rotation2d minAngle;
     public final Rotation2d maxAngle;
+    public final Rotation2d goalAngle;
     public final double lengthMeters;
     public final double weight;
     public final Rotation2d parallelToGroundAngle;
@@ -116,6 +117,7 @@ public final class Constants {
     public AnglerConstants(
       Rotation2d minAngle,
       Rotation2d maxAngle,
+      Rotation2d goalAngle,
       double lengthMeters,
       double weight,
       Rotation2d parallelToGroundAngle,
@@ -126,6 +128,7 @@ public final class Constants {
     ) {
       this.minAngle = minAngle;
       this.maxAngle = maxAngle;
+      this.goalAngle = goalAngle;
       this.lengthMeters = lengthMeters;
       this.weight = weight;
       this.parallelToGroundAngle = parallelToGroundAngle;

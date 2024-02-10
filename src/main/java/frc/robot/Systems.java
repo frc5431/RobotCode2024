@@ -29,7 +29,8 @@ public class Systems {
   private CANSparkFlex shooterUpper; 
   private CANSparkFlex shooterLower; 
 
-  private CANSparkMax intakeMotor;
+  private CANSparkMax leftIntakeMotor;
+  private CANSparkMax rightIntakeMotor;
   private CANSparkMax intakeAnglerMotor;
 
   private MotorType brushless =  MotorType.kBrushless;
@@ -37,7 +38,8 @@ public class Systems {
 
   public Systems() {
     intakeAnglerConst = Constants.IntakeConstants.anglerConstants;
-    intakeMotor = new CANSparkMax(Constants.IntakeConstants.intakeId, brushless);
+    leftIntakeMotor = new CANSparkMax(Constants.IntakeConstants.leftIntakeId, brushless);
+    rightIntakeMotor = new CANSparkMax(Constants.IntakeConstants.rightIntakeId, brushless);
     intakeAnglerMotor = new CANSparkMax(Constants.IntakeConstants.anglerId, brushless);
 
 
@@ -47,15 +49,17 @@ public class Systems {
     drivebase2 = new PheonixDrivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
 
     if(Robot.isSimulation()) {
-      REVPhysicsSim.getInstance().addSparkMax(intakeMotor, DCMotor.getNeo550(1));
+      REVPhysicsSim.getInstance().addSparkMax(leftIntakeMotor, DCMotor.getNeo550(1));
       REVPhysicsSim.getInstance().addSparkMax(intakeAnglerMotor, DCMotor.getNeo550(1));
     }
 
     // vision = new Vision();
-    intakeMotor.setSmartCurrentLimit(40);
-    intakeMotor.burnFlash();
+    leftIntakeMotor.setSmartCurrentLimit(40);
+    rightIntakeMotor.setSmartCurrentLimit(40);
+    rightIntakeMotor.burnFlash();
+    leftIntakeMotor.burnFlash();
 
-    intake = new Intake(intakeMotor);
+    intake = new Intake(leftIntakeMotor, rightIntakeMotor);
     pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
   }
 

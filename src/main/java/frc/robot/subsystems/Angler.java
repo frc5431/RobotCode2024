@@ -1,16 +1,13 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase;
-import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.AnglerConstants;
 import frc.robot.commands.RunAnglerCommand.AnglerModes;
 
@@ -66,6 +63,10 @@ public class Angler extends SubsystemBase {
 
   public void retract() {
     setRotation(constants.minAngle);
+  }
+
+  public void ampRotation(){
+    setRotation(constants.goalAngle);
   }
 
   public boolean isFinished(double tolerance) {

@@ -18,7 +18,6 @@ public class Vision {
     estimator.update(result);
   }
 
-  
   /**
    * Gives the yaw of apriltag for locking onto an apriltag
    * 
