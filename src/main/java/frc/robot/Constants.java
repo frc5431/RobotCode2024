@@ -64,10 +64,11 @@ public final class Constants {
     public static int anglerId = 14;
     public static int leftIntakeId = 16;
     public static int rightIntakeId = 19;
+    public static Rotation2d ampAngle = Rotation2d.fromDegrees(105.70);
+
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */Rotation2d.fromDegrees(-9.45),
       /* Max Angle */Rotation2d.fromDegrees(153.11), // temp
-      /* Amp Angle */Rotation2d.fromDegrees(105.70),
       /* Length Meters */Units.inchesToMeters(12),
       /* Weight Kilos */Units.lbsToKilograms(7.5), // temp
       /* Parallel To Ground Angle */Rotation2d.fromRadians(0),
@@ -84,13 +85,13 @@ public final class Constants {
     public static int botId = 17;
 
     public static ShooterRatio shooterRatio = new ShooterRatio(1, 0.8);
+    public static ShooterRatio simpleShooterRatio = new ShooterRatio(.7, .7);
 
     public static double normalPower = 0.8;
     public static int anglerId = 15; // temp
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */Rotation2d.fromDegrees(0), // temp
       /* Max Angle */Rotation2d.fromDegrees(90), // temp
-      /* Goal Angle */Rotation2d.fromDegrees(0),
       /* Length Meters */Units.inchesToMeters(16), // temp
       /* Weight Kilos */Units.lbsToKilograms(10), // temp
       /* Parallel To Ground Angle */Rotation2d.fromDegrees(0), // temp
@@ -105,7 +106,6 @@ public final class Constants {
 
     public final Rotation2d minAngle;
     public final Rotation2d maxAngle;
-    public final Rotation2d goalAngle;
     public final double lengthMeters;
     public final double weight;
     public final Rotation2d parallelToGroundAngle;
@@ -117,7 +117,6 @@ public final class Constants {
     public AnglerConstants(
       Rotation2d minAngle,
       Rotation2d maxAngle,
-      Rotation2d goalAngle,
       double lengthMeters,
       double weight,
       Rotation2d parallelToGroundAngle,
@@ -128,7 +127,6 @@ public final class Constants {
     ) {
       this.minAngle = minAngle;
       this.maxAngle = maxAngle;
-      this.goalAngle = goalAngle;
       this.lengthMeters = lengthMeters;
       this.weight = weight;
       this.parallelToGroundAngle = parallelToGroundAngle;

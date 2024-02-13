@@ -65,9 +65,6 @@ public class Angler extends SubsystemBase {
     setRotation(constants.minAngle);
   }
 
-  public void ampRotation(){
-    setRotation(constants.goalAngle);
-  }
 
   public boolean isFinished(double tolerance) {
     return Math.abs(setpoint.getRadians() - absoluteEncoder.getPosition()) < tolerance;
