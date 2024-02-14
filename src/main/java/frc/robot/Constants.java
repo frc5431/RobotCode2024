@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
@@ -76,6 +76,17 @@ public final class Constants {
       /* Enable FF */ true,
       /* Gear Ratio */1
     );
+  }
+
+  public static class ElevatorConstants {
+
+    public Rotation2d maxHeight = Rotation2d.fromDegrees(423432);
+    public Rotation2d minHeight = Rotation2d.fromDegrees(0);
+    public MotionMagic pid;
+    public boolean enableFF;
+    public double lengthMeters;
+    public Rotation2d parallelToGroundAngle;
+    public double stalltorque;
   }
 
   public static class ShooterConstants {
