@@ -10,6 +10,7 @@ import frc.robot.Constants.AnglerConstants;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.PheonixDrivebase;
 import frc.robot.subsystems.Shooter;
@@ -23,11 +24,14 @@ public class Systems {
   private Angler shooterAngler;
   private Drivebase drivebase;
   private Shooter shooter;
-
+  private Elevator elevator;
   private AnglerConstants intakeAnglerConst;
 
   private CANSparkFlex shooterUpper; 
   private CANSparkFlex shooterLower; 
+
+  private CANSparkFlex elevatorLeft; 
+  private CANSparkFlex elevatorRight; 
 
   private CANSparkMax leftIntakeMotor;
   private CANSparkMax rightIntakeMotor;
@@ -61,6 +65,8 @@ public class Systems {
 
     intake = new Intake(leftIntakeMotor, rightIntakeMotor);
     pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
+
+    // elevator = new Elevator(elevatorLeft, elevatorRight);
   }
 
   public PheonixDrivebase getDrivebase() {
@@ -85,5 +91,9 @@ public class Systems {
 
   public Angler getShooterAngler() {
     return shooterAngler;
+  }
+
+  public Elevator getElevator() {
+    return elevator;
   }
 }

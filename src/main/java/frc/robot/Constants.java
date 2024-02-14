@@ -139,6 +139,16 @@ public final class Constants {
     }
   }
 
+  public static class ElevatorConstants {
+    public static final double maxHeight = 4; // Temp 
+    public static final double minHeight = 0;
+
+    public static final MotionMagic pid = new MotionMagic(.05, 0, .05, 0); // temp
+
+    public static final double roboWeight = 120; // Temp
+    public static final boolean enableFF = true;
+  }
+
   public static class DrivebaseConstant {
 
     public static final int ID_PIGEON2 = 13;

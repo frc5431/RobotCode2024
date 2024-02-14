@@ -8,17 +8,17 @@ import frc.robot.Constants;
 
 public class Intake extends Manipulator {
 
-  CANSparkBase motor;
-  CANSparkBase kingBob; // as in the rubber duck not the stupid filet minion
+  CANSparkBase duckPrime; // the second duck!
+  CANSparkBase kingBob;  // as in the rubber duck not the stupid filet minion
 
-  public Intake(CANSparkBase motor, CANSparkBase kingBob) {
-    this.motor = motor;
+  public Intake(CANSparkBase duckPrime, CANSparkBase kingBob) {
+    this.duckPrime = duckPrime;
     this.kingBob = kingBob;
-    //kingBob.follow(motor);
+    //kingBob.follow(duckPrime);
     kingBob.setInverted(false);
     kingBob.burnFlash();
-     motor.setInverted(false);
-    motor.burnFlash();
+     duckPrime.setInverted(false);
+    duckPrime.burnFlash();
 
     this.setName("Intake");
   }
@@ -35,17 +35,17 @@ public class Intake extends Manipulator {
 
   @Override
   public void runNeutral() {
-    motor.setIdleMode(IdleMode.kCoast);
+    duckPrime.setIdleMode(IdleMode.kCoast);
     kingBob.setIdleMode(IdleMode.kCoast);
-    motor.burnFlash();
+    duckPrime.burnFlash();
     kingBob.burnFlash();
   }
 
   @Override
   public void stopNeutral() {
-    motor.setIdleMode(IdleMode.kBrake);
+    duckPrime.setIdleMode(IdleMode.kBrake);
     kingBob.setIdleMode(IdleMode.kCoast);
-    motor.burnFlash();
+    duckPrime.burnFlash();
     kingBob.burnFlash();
   }
 
@@ -53,12 +53,12 @@ public class Intake extends Manipulator {
   public void runWithPower(double power) {
     super.runWithPower(power);
     kingBob.set(power);
-    motor.set(power);
+    duckPrime.set(power);
   }
 
   @Override
   public void periodic() {
-      SmartDashboard.putNumber("Intake currentOut", motor.getOutputCurrent());
+      SmartDashboard.putNumber("Intake currentOut", duckPrime.getOutputCurrent());
       SmartDashboard.putBoolean("Has Gamepice", checkGamePieceStatus());
   }
 
@@ -69,9 +69,9 @@ public class Intake extends Manipulator {
    */
   @Override
   public boolean checkGamePieceStatus() {
-    if(motor.getOutputCurrent() > 30) {
+    if(duckPrime.getOutputCurrent() > 30) {
       hadGamePiece = true;
-    }else if(motor.get() < 0) {
+    }else if(duckPrime.get() < 0) {
       hadGamePiece = false;
     }
     

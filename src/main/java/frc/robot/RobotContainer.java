@@ -18,6 +18,7 @@ import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.PheonixDrivebase;
@@ -35,7 +36,8 @@ public class RobotContainer {
   private final Angler pivot = systems.getPivot();
   private final Intake intake = systems.getIntake();
   private final Shooter shooter = systems.getShooter();
-
+  private final Elevator elevator = systems.getElevator();
+  
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       //.withDeadband(TunerConstatns.kSpeedAt12VoltsMps * 0.2).withRotationalDeadband(TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
