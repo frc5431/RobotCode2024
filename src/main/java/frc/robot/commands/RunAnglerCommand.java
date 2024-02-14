@@ -14,7 +14,6 @@ public class RunAnglerCommand extends Command {
   public enum AnglerModes {
     DEPLOY,
     RETRACT,
-    AMP,
     CUSTOM
   }
 
@@ -40,8 +39,6 @@ public class RunAnglerCommand extends Command {
       angler.retract();
     } else if (AnglerModes.DEPLOY == mode) {
       angler.deploy();
-    } else if (AnglerModes.AMP == mode) {
-      angler.ampRotation();
     } else {
       angler.setRotation(this.rotation.get());
     }

@@ -72,7 +72,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    shooter.setRatio(Constants.ShooterConstants.shooterRatio);
+    shooter.setRatio(Constants.ShooterConstants.simpleShooterRatio);
 
     driver.setDeadzone(0.15);
 /* 
@@ -101,29 +101,6 @@ public class RobotContainer {
 
     SmartDashboard.putNumber("turn axis", -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
-    //STUPID STUFF FOR PHILLIP, DELETE
-    // Shooter
-    driver.b().whileTrue(new RunManipulatorCommand(shooter, -1));
-    driver.rightTrigger().whileTrue(new RunManipulatorCommand(shooter, 1));
-
-    // Intake
-    driver.leftTrigger().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.FORWARD));
-    driver.x().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.REVERSE));
- 
-    // Intake Angler
-    driver.povLeft().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
-    driver.povRight().onFalse(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(10)), pivot));
-    driver.povUp().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.AMP, pivot));
-    
-    driver.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
-    driver.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot));
-
-
-
-
-
-
-
     // Shooter
     operator.b().whileTrue(new RunManipulatorCommand(shooter, -1));
     operator.rightTrigger().whileTrue(new RunManipulatorCommand(shooter, 1));
@@ -135,8 +112,7 @@ public class RobotContainer {
     // Intake Angler
     operator.y().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
     operator.a().onFalse(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(10)), pivot));
-    operator.povUp().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.AMP, pivot));
-    
+    operator.povUp().onTrue(new RunAnglerCommand(() -> pivot.setpoint.rotateBy(Constants.IntakeConstants.ampAngle), pivot));
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
     operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot));
 
