@@ -18,10 +18,8 @@ import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.PheonixDrivebase;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
 
@@ -33,8 +31,8 @@ public class RobotContainer {
   private final PheonixDrivebase drivebase = systems.getDrivebase();
   private final Vision vision = systems.getVision();
   private final Angler pivot = systems.getPivot();
-  private final Intake intake = systems.getIntake();
-  private final Shooter shooter = systems.getShooter();
+  private final Manipulator intake = systems.getIntake();
+  private final Manipulator shooter = systems.getShooter();
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       //.withDeadband(TunerConstatns.kSpeedAt12VoltsMps * 0.2).withRotationalDeadband(TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.1) // Add a 10% deadband
@@ -110,7 +108,7 @@ public class RobotContainer {
 
     // Intake
     driver.leftTrigger().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.FORWARD));
-    driver.x().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.BACKWARDS));
+    driver.x().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.REVERSE));
  
     // Intake Angler
     driver.povLeft().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
@@ -132,7 +130,7 @@ public class RobotContainer {
 
     // Intake
     operator.leftTrigger().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.FORWARD));
-    operator.x().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.BACKWARDS));
+    operator.x().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.REVERSE));
  
     // Intake Angler
     operator.y().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));

@@ -15,7 +15,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.Shooter.ShooterRatio;
+import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Manipulator.MotorRatio;
 import frc.team5431.titan.core.robot.MotionMagic;
 
 public final class Constants {
@@ -76,6 +77,13 @@ public final class Constants {
       /* Enable FF */ true,
       /* Gear Ratio */1
     );
+
+    public static ManipulatorConstants manipulatorConstants = new ManipulatorConstants(
+      /* Is Inverted */false,
+      /* Default Ratio */ new MotorRatio(1, 1),
+      /* Forward Speed */ intakePower,
+      /* Reverse Speed */ outtakePower * (3./4.)
+    );
   }
 
   public static class ShooterConstants {
@@ -83,7 +91,7 @@ public final class Constants {
     public static int topId = 18;
     public static int botId = 17;
 
-    public static ShooterRatio shooterRatio = new ShooterRatio(1, 0.8);
+    public static MotorRatio shooterRatio = new MotorRatio(1, 0.8);
 
     public static double normalPower = 0.8;
     public static int anglerId = 15; // temp
@@ -98,6 +106,13 @@ public final class Constants {
       /* Stall Torque (Nm) */ vortexStallTorque,
       /* Enable FF */ false,
       /* Gear Ratio */ 1
+    );
+
+    public static ManipulatorConstants manipulatorConstants = new ManipulatorConstants(
+      /* Is Inverted */false,
+      /* Default Ratio */ shooterRatio,
+      /* Forward Speed */ normalPower,
+      /* Reverse Speed */ normalPower / 4
     );
   }
 
@@ -136,6 +151,20 @@ public final class Constants {
       this.stalltorque = stallTorque;
       this.enableFF = enableFF;
       this.gearRatio = gearRatio;
+    }
+  }
+
+  public static class ManipulatorConstants {
+    public final boolean isInverted;
+    public final Manipulator.MotorRatio defaultRatio;
+    public final double forwardSpeed;
+    public final double reverseSpeed;
+
+    public ManipulatorConstants(boolean isInverted, Manipulator.MotorRatio defaultRatio, double forwardSpeed, double reverseSpeed) {
+      this.isInverted = isInverted;
+      this.defaultRatio = defaultRatio;
+      this.forwardSpeed = forwardSpeed;
+      this.reverseSpeed = reverseSpeed;
     }
   }
 

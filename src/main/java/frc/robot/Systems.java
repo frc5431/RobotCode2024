@@ -7,22 +7,21 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import frc.robot.Constants.AnglerConstants;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.subsystems.Angler;
-import frc.robot.subsystems.Drivebase;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.PheonixDrivebase;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Vision;
 
 public class Systems {
 
   private Vision vision;
-  private Intake intake;
+  private Manipulator intake;
   private Angler pivot;
   private Angler shooterAngler;
-  private Drivebase drivebase;
-  private Shooter shooter;
+  private Manipulator shooter;
 
   private AnglerConstants intakeAnglerConst;
 
@@ -45,7 +44,7 @@ public class Systems {
 
     shooterLower = new CANSparkFlex(Constants.ShooterConstants.botId, brushless);
     shooterUpper = new CANSparkFlex(Constants.ShooterConstants.topId, brushless);
-    shooter = new Shooter(shooterUpper, shooterLower);
+    shooter = new Manipulator(shooterUpper, shooterLower, ShooterConstants.manipulatorConstants);
     drivebase2 = new PheonixDrivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
 
     if(Robot.isSimulation()) {
@@ -59,7 +58,7 @@ public class Systems {
     rightIntakeMotor.burnFlash();
     leftIntakeMotor.burnFlash();
 
-    intake = new Intake(leftIntakeMotor, rightIntakeMotor);
+    intake = new Manipulator(leftIntakeMotor, rightIntakeMotor, IntakeConstants.manipulatorConstants);
     pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
   }
 
@@ -71,11 +70,11 @@ public class Systems {
     return vision;
   }
 
-  public Shooter getShooter() {
+  public Manipulator getShooter() {
     return shooter;
   }
 
-  public Intake getIntake() {
+  public Manipulator getIntake() {
     return intake;
   }
 

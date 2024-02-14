@@ -1,19 +1,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Manipulator;
 import java.util.function.Supplier;
 
 public class SetShooterRatioCommand extends Command {
 
-  Shooter shooter;
-  Supplier<Shooter.ShooterRatio> ratioSupplier;
+  Manipulator shooter;
+  Supplier<Manipulator.MotorRatio> ratioSupplier;
 
-  public SetShooterRatioCommand(Shooter shooter, Shooter.ShooterRatio ratio) {
+  public SetShooterRatioCommand(Manipulator shooter, Manipulator.MotorRatio ratio) {
     this(shooter, () -> ratio);
   }
 
-  public SetShooterRatioCommand(Shooter shooter, Supplier<Shooter.ShooterRatio> ratioSupplier) {
+  public SetShooterRatioCommand(Manipulator shooter, Supplier<Manipulator.MotorRatio> ratioSupplier) {
     this.shooter = shooter;
     this.ratioSupplier = ratioSupplier;
   }

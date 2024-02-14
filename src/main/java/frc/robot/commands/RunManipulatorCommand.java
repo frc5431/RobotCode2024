@@ -12,33 +12,22 @@ public class RunManipulatorCommand extends Command {
   private boolean usePower;
   private double power;
   private Manipulator.Modes mode;
-  private boolean endStopped;
 
-  public RunManipulatorCommand(Manipulator manipulator, Manipulator.Modes mode, boolean endStopped) {
-    this(manipulator, endStopped);
+  public RunManipulatorCommand(Manipulator manipulator, Manipulator.Modes mode) {
+    this(manipulator);
     this.usePower = false;
     this.mode = mode;
   }
 
-  public RunManipulatorCommand(Manipulator manipulator, double power, boolean endStopped) {
-    this(manipulator, endStopped);
+  public RunManipulatorCommand(Manipulator manipulator, double power) {
+    this(manipulator);
     this.usePower = true;
     this.power = power;
   }
 
-  public RunManipulatorCommand(Manipulator manipulator, double power) {
-    this(manipulator, power, true);
-  }
-
-  public RunManipulatorCommand(Manipulator manipulator, Manipulator.Modes mode) {
-    this(manipulator, mode, true);
-  }
-
-  private RunManipulatorCommand(Manipulator manipulator, boolean endStopped) {
+  private RunManipulatorCommand(Manipulator manipulator) {
     this.manipulator = manipulator;
     addRequirements(manipulator);
-
-    this.endStopped = endStopped;
   }
 
   @Override
@@ -52,10 +41,6 @@ public class RunManipulatorCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    if (endStopped) {
-      manipulator.run(Manipulator.Modes.STOPPED);
-    } else {
-      manipulator.run(Manipulator.Modes.NEUTRAL);
-    }
+    manipulator.run(Manipulator.Modes.STOPPED);
   }
 }
