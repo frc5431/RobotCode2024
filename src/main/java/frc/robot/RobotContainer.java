@@ -7,7 +7,9 @@ package frc.robot;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,6 +24,7 @@ import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.PheonixDrivebase;
 import frc.robot.subsystems.Vision;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
+import frc.team5431.titan.core.misc.Calc;
 
 public class RobotContainer {
 
@@ -71,6 +74,30 @@ public class RobotContainer {
     return newValue;
   }
 
+  public void periodic() {
+    circleIssue(driver.getLeftX(), driver.getLeftY());
+  }
+  
+  private static Pair<Double, Double> circleIssue(double x, double y) {
+    double posx = Math.abs(x);
+    double posy = Math.abs(y);
+
+    double theta = Math.atan2(posy, posx);
+    SmartDashboard.putNumber("theta", Units.radiansToDegrees(theta));
+
+
+    double max_x = Math.cos(theta);
+    double max_y = Math.sin(theta);
+
+    SmartDashboard.putNumber("max_x", max_x);
+    SmartDashboard.putNumber("max_y", max_y);
+    
+    return new Pair<Double,Double>(
+      Math.copySign(Calc.map(posx, 0, max_x, 0, 1), x),
+      Math.copySign(Calc.map(posy, 0, max_y, 0, 1), y)
+    );
+  }
+
   private void configureBindings() {
     shooter.setRatio(Constants.ShooterConstants.simpleShooterRatio);
 
@@ -91,9 +118,9 @@ public class RobotContainer {
     //         },
     //         () -> -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));*/
     drivebase.setDefaultCommand( // Drivetrain will execute this command periodically 
-        drivebase.applyRequest(() -> drive.withVelocityX(-modifyAxis(driver.getLeftY()) * TunerConstatns.kSpeedAt12VoltsMps) // Drive forward with
+        drivebase.applyRequest(() -> drive.withVelocityX(-modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps) // Drive forward with
                                                                               // negative Y (forward)
-            .withVelocityY(-modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps) // Drive left with negative X (left)
+            .withVelocityY(-modifyAxis(driver.getLeftY()) * TunerConstatns.kSpeedAt12VoltsMps) // Drive left with negative X (left)
             .withRotationalRate(-modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND) // Drive counterclockwise with negative X (left)
         ));
     
@@ -101,20 +128,35 @@ public class RobotContainer {
 
     SmartDashboard.putNumber("turn axis", -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
+  // // Shooter
+  // operator.b().whileTrue(new RunManipulatorCommand(shooter, -1));
+  // operator.rightTrigger().whileTrue(new RunManipulatorCommand(shooter, 1));
+
+  // // Intake
+  // operator.leftTrigger().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.FORWARD));
+  // operator.x().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.BACKWARDS));
+
+  // // Intake Angler
+  // operator.y().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
+  // operator.a().onFalse(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(10)), pivot));
+  // operator.povUp().onTrue(new RunAnglerCommand(() -> pivot.setpoint.rotateBy(Constants.IntakeConstants.ampAngle), pivot));
+  // operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
+  // operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot));
     // Shooter
-    operator.b().whileTrue(new RunManipulatorCommand(shooter, -1));
-    operator.rightTrigger().whileTrue(new RunManipulatorCommand(shooter, 1));
+    operator.rightTrigger().whileTrue(new RunManipulatorCommand(shooter, -1));
+    operator.b().whileTrue(new RunManipulatorCommand(shooter, 1));
 
     // Intake
     operator.leftTrigger().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.FORWARD));
     operator.x().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.REVERSE));
- 
+
     // Intake Angler
     operator.y().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
     operator.a().onFalse(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(10)), pivot));
     operator.povUp().onTrue(new RunAnglerCommand(() -> pivot.setpoint.rotateBy(Constants.IntakeConstants.ampAngle), pivot));
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
-    operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot));
+    operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
+    driver.leftTrigger().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
 
   }
 
