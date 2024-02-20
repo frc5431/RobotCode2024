@@ -68,9 +68,9 @@ public class Manipulator extends SubsystemBase {
     } else if (containedGamePiece) {
       lastFiredTimestamp = System.currentTimeMillis();
     }
-    
     SmartDashboard.putNumber("shup RPM", upperRelativeEncoder.getVelocity());
     SmartDashboard.putNumber("shlo RPM", lowerRelativeEncoder.getVelocity());
+
   }
 
   /**

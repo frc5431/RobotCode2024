@@ -7,8 +7,10 @@ package frc.robot;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -37,12 +39,23 @@ public class RobotContainer {
   private final Manipulator intake = systems.getIntake();
   private final Manipulator shooter = systems.getShooter();
 
-  private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      //.withDeadband(TunerConstatns.kSpeedAt12VoltsMps * 0.2).withRotationalDeadband(TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.1) // Add a 10% deadband
+  private SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+  private SwerveRequest.RobotCentric driveRC = new SwerveRequest.RobotCentric()
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+  private boolean isFieldRelative;
+
+  public void setFieldRelativeControl() {
+    isFieldRelative = true;
+  }
+
+  public void setRobotRelativeControl() {
+    isFieldRelative = false;
+  }
 
   public RobotContainer() {
     drivebase.seedFieldRelative();
+    setFieldRelativeControl();
     configureBindings();
 
     DataLogManager.start();
@@ -75,73 +88,89 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    circleIssue(driver.getLeftX(), driver.getLeftY());
+    var fix = FGSquircularMap(driver.getLeftX() * 0.89, driver.getLeftY() * 0.89);
+
+    SmartDashboard.putNumber("cx", fix.getX());
+    SmartDashboard.putNumber("cy", fix.getY());
+
+    SmartDashboard.putNumber("dx", driver.getLeftX());
+    SmartDashboard.putNumber("dy", driver.getLeftY());
   }
-  
-  private static Pair<Double, Double> circleIssue(double x, double y) {
-    double posx = Math.abs(x);
-    double posy = Math.abs(y);
 
-    double theta = Math.atan2(posy, posx);
-    SmartDashboard.putNumber("theta", Units.radiansToDegrees(theta));
+  Translation2d ellipticalDiscToSquare(double u, double v) {
+    double u2 = u * u;
+    double v2 = v * v;
+    double twosqrt2 = 2.0 * Math.sqrt(2.0);
+    double subtermx = 2.0 + u2 - v2;
+    double subtermy = 2.0 - u2 + v2;
+    double termx1 = subtermx + u * twosqrt2;
+    double termx2 = subtermx - u * twosqrt2;
+    double termy1 = subtermy + v * twosqrt2;
+    double termy2 = subtermy - v * twosqrt2;
+    return new Translation2d(MathUtil.clamp(0.5 * Math.sqrt(termx1) - 0.5 * Math.sqrt(termx2), -1, 1), MathUtil.clamp(0.5 * Math.sqrt(termy1) - 0.5 * Math.sqrt(termy2), -1, 1)) ;
+  }
 
-
-    double max_x = Math.cos(theta);
-    double max_y = Math.sin(theta);
-
-    SmartDashboard.putNumber("max_x", max_x);
-    SmartDashboard.putNumber("max_y", max_y);
-    
-    return new Pair<Double,Double>(
-      Math.copySign(Calc.map(posx, 0, max_x, 0, 1), x),
-      Math.copySign(Calc.map(posy, 0, max_y, 0, 1), y)
+  Translation2d FGSquircularMap(double u, double v) {
+    double sgnuv = Math.signum(u * v);
+    double sqrt2 = Math.sqrt(2);
+    double root = Math.sqrt((u*u) + (v*v) - Math.sqrt(((u*u) + (v*v)) * ((u*u) + (v*v) - 4 * (u*u) * (v*v))));
+    return new Translation2d(
+      (sgnuv / (v * sqrt2)) * root,
+      (sgnuv / (u * sqrt2)) * root
     );
+  }
+
+  private static Translation2d circleIssue(double u, double v) {
+    return new Translation2d(
+        .5 * Math.sqrt(2 + (u * u) - (v * v) + 2 * u * Math.sqrt(2)) - .5 * Math.sqrt(2 + (u * u) - (v * v) - 2 * u * Math.sqrt(2)),
+        .5 * Math.sqrt(2 + (u * u) + (v * v) + 2 * v * Math.sqrt(2)) - .5 * Math.sqrt(2 + (u * u) + (v * v) - 2 * v * Math.sqrt(2))
+      );
   }
 
   private void configureBindings() {
     shooter.setRatio(Constants.ShooterConstants.simpleShooterRatio);
 
     driver.setDeadzone(0.15);
-/* 
-    // drivebase.setDefaultCommand(
-    //     new DefaultDriveCommand(
-    //         systems,
-    //         (Supplier<Pair<Double, Double>>) () -> {
-    //           double inX = -driver.getLeftY(); // swap intended
-    //           if(driver.povUp().getAsBoolean()) {
-    //             inX = 0.3;
-    //           }
-    //           double inY = -driver.getLeftX();
-    //           double mag = Math.hypot(inX, inY);
-    //           double theta = Math.atan2(inY, inX);
-    //           return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND, theta);
-    //         },
-    //         () -> -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));*/
-    drivebase.setDefaultCommand( // Drivetrain will execute this command periodically 
-        drivebase.applyRequest(() -> drive.withVelocityX(-modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps) // Drive forward with
-                                                                              // negative Y (forward)
-            .withVelocityY(-modifyAxis(driver.getLeftY()) * TunerConstatns.kSpeedAt12VoltsMps) // Drive left with negative X (left)
-            .withRotationalRate(-modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND) // Drive counterclockwise with negative X (left)
-        ));
-    
+    /*
+     * // drivebase.setDefaultCommand(
+     * // new DefaultDriveCommand(
+     * // systems,
+     * // (Supplier<Pair<Double, Double>>) () -> {
+     * // double inX = -driver.getLeftY(); // swap intended
+     * // if(driver.povUp().getAsBoolean()) {
+     * // inX = 0.3;
+     * // }
+     * // double inY = -driver.getLeftX();
+     * // double mag = Math.hypot(inX, inY);
+     * // double theta = Math.atan2(inY, inX);
+     * // return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
+     * theta);
+     * // },
+     * // () -> -modifyAxis(-driver.getRightX()) *
+     * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
+     */
+    drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
+        drivebase.applyRequest(() -> {
+          var axis = FGSquircularMap(driver.getLeftX() * 0.89, driver.getLeftY() * 0.89);
+          if(isFieldRelative) {
+            return driveFC.withVelocityX(modifyAxis(axis.getY()) * TunerConstatns.kSpeedAt12VoltsMps)
+              .withVelocityY(modifyAxis(axis.getX()) * TunerConstatns.kSpeedAt12VoltsMps)
+              .withRotationalRate(
+                  -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+          }else {
+            return driveRC.withVelocityX(-modifyAxis(axis.getY()) * TunerConstatns.kSpeedAt12VoltsMps)
+              .withVelocityY(-modifyAxis(axis.getX()) * TunerConstatns.kSpeedAt12VoltsMps)
+              .withRotationalRate(
+                  -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+          }
+          
+        }));
+
     driver.y().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
 
-    SmartDashboard.putNumber("turn axis", -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+    SmartDashboard.putNumber("turn axis",
+        -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
-  // // Shooter
-  // operator.b().whileTrue(new RunManipulatorCommand(shooter, -1));
-  // operator.rightTrigger().whileTrue(new RunManipulatorCommand(shooter, 1));
-
-  // // Intake
-  // operator.leftTrigger().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.FORWARD));
-  // operator.x().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.BACKWARDS));
-
-  // // Intake Angler
-  // operator.y().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
-  // operator.a().onFalse(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(10)), pivot));
-  // operator.povUp().onTrue(new RunAnglerCommand(() -> pivot.setpoint.rotateBy(Constants.IntakeConstants.ampAngle), pivot));
-  // operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
-  // operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot));
     // Shooter
     operator.rightTrigger().whileTrue(new RunManipulatorCommand(shooter, -1));
     operator.b().whileTrue(new RunManipulatorCommand(shooter, 1));
@@ -153,11 +182,18 @@ public class RobotContainer {
     // Intake Angler
     operator.y().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
     operator.a().onFalse(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(10)), pivot));
-    operator.povUp().onTrue(new RunAnglerCommand(() -> pivot.setpoint.rotateBy(Constants.IntakeConstants.ampAngle), pivot));
-    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
-    operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
+    operator.povUp().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));
+    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot));
+    operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot));
     driver.leftTrigger().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
 
+    driver.povDown().onTrue(new InstantCommand(() -> {
+      if (isFieldRelative) {
+        setRobotRelativeControl();
+      } else {
+        setFieldRelativeControl();
+      }
+    }));
   }
 
   public Command getAutonomousCommand() {

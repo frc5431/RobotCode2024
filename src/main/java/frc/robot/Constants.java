@@ -10,6 +10,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackTy
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -210,6 +211,13 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 10;
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.060791).getRadians();
     //-Rotation2d.fromRotations(0.059326).plus(Rotation2d.fromDegrees(180)).getRadians();;
+  }
+
+  public static class VisionConstants {
+    public static final Transform3d ShooterCameraPose = new Transform3d(
+      new Translation3d(Units.inchesToMeters(10),Units.inchesToMeters(3.5),Units.inchesToMeters(10)),
+      new Rotation3d(0, 45, 180)
+    );
   }
 
   public static class TunerConstatns {
