@@ -61,9 +61,8 @@ public class PheonixDrivebase extends SwerveDrivetrain implements Subsystem  {
         new TimedThreadExecutor(() -> {
             vision.updateEstimatedPose(m_odometry);
             field.setRobotPose(m_odometry.getEstimatedPosition());
-            SmartDashboard.putData("Field", field)
+            SmartDashboard.putData("Field", field);
         }, 200l, TimeUnit.MILLISECONDS).run();
-        
     }
 
     private void startSimThread() {
