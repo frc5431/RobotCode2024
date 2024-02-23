@@ -8,10 +8,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,23 +18,20 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
+import frc.robot.controllers.DriverController;
+import frc.robot.controllers.DriverSkyflyController;
+import frc.robot.controllers.DriverXboxController;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.PheonixDrivebase;
-import frc.robot.subsystems.Vision;
-import frc.team5431.titan.core.joysticks.CommandSkyFlyController;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
-import frc.team5431.titan.core.misc.Calc;
 
 public class RobotContainer {
-
-  // private final CommandSkyFlyController driver = new CommandSkyFlyController(0);
-  private final CommandXboxController driver = new CommandXboxController(0);
+  private final DriverController driver;
   public static final CommandXboxController operator = new CommandXboxController(1);
   private final Systems systems = new Systems();
   private final PheonixDrivebase drivebase = systems.getDrivebase();
-  private final Vision vision = systems.getVision();
   private final Angler pivot = systems.getPivot();
   private final Manipulator intake = systems.getIntake();
   private final Manipulator shooter = systems.getShooter();
@@ -62,6 +57,12 @@ public class RobotContainer {
 
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
+
+    if(Constants.useXboxController) {
+      driver = new DriverXboxController();
+    }else {
+      driver = new DriverSkyflyController();
+    }
   }
 
   private static double deadband(double value, double deadband) {
@@ -145,13 +146,6 @@ public class RobotContainer {
     );
   }
 
-  private static Translation2d circleIssue(double u, double v) {
-    return new Translation2d(
-        .5 * Math.sqrt(2 + (u * u) - (v * v) + 2 * u * Math.sqrt(2)) - .5 * Math.sqrt(2 + (u * u) - (v * v) - 2 * u * Math.sqrt(2)),
-        .5 * Math.sqrt(2 + (u * u) + (v * v) + 2 * v * Math.sqrt(2)) - .5 * Math.sqrt(2 + (u * u) + (v * v) - 2 * v * Math.sqrt(2))
-      );
-  }
-
   private void configureBindings() {
     shooter.setRatio(Constants.ShooterConstants.simpleShooterRatio);
 
@@ -191,8 +185,10 @@ public class RobotContainer {
           
         }));
 
-    driver.y().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
-    // driver.rightSwitch().onFalse(new InstantCommand(() -> drivebase.zeroGyro()));
+    driver.resetGyro().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
+    if(driver instanceof DriverSkyflyController) {
+      driver.resetGyro().onFalse(new InstantCommand(() -> drivebase.zeroGyro()));
+    }
 
     SmartDashboard.putNumber("turn axis",
         -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
@@ -211,15 +207,15 @@ public class RobotContainer {
     operator.povUp().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot));
     operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot));
-    // driver.backLeft().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
+    driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
 
-    driver.povDown().onTrue(new InstantCommand(() -> {
-      if (isFieldRelative) {
-        setRobotRelativeControl();
-      } else {
-        setFieldRelativeControl();
-      }
-    }));
+    // driver.povDown().onTrue(new InstantCommand(() -> {
+    //   if (isFieldRelative) {
+    //     setRobotRelativeControl();
+    //   } else {
+    //     setFieldRelativeControl();
+    //   }
+    // }));
   }
 
   public Command getAutonomousCommand() {

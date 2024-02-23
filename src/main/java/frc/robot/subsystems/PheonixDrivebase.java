@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.TimedThreadExecutor;
 
 public class PheonixDrivebase extends SwerveDrivetrain implements Subsystem  {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
@@ -56,9 +58,11 @@ public class PheonixDrivebase extends SwerveDrivetrain implements Subsystem  {
     public void periodic() {
         SmartDashboard.putNumber("Gyro", getPigeon2().getAngle());
         // // m_odometry.update(getPigeon2().getRotation2d(), m_modulePositions);
-        // vision.updateEstimatedPose(m_odometry);
-        // field.setRobotPose(m_odometry.getEstimatedPosition());
-        // SmartDashboard.putData("Field", field);
+        new TimedThreadExecutor(() -> {
+            vision.updateEstimatedPose(m_odometry);
+            field.setRobotPose(m_odometry.getEstimatedPosition());
+            SmartDashboard.putData("Field", field)
+        }, 200l, TimeUnit.MILLISECONDS).run();
         
     }
 
