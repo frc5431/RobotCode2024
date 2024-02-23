@@ -43,11 +43,11 @@ public class Vision extends SubsystemBase {
       Optional<EstimatedRobotPose> est = cam.poseEstimator.update();
       if(est.isPresent()) {
         var estimate = est.get();
-        // System.out.println("Present");
+        System.out.println("Present");
         try {
         estimator.addVisionMeasurement(estimate.estimatedPose.toPose2d(), estimate.timestampSeconds);
         }catch(Exception ignored) {
-
+          System.out.println("Errored!");
         }
       }
     }
