@@ -15,10 +15,10 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ApriltagConstants.zone;
-import frc.robot.stupid.TitanSwerveDrivePoseEstimator;
 import frc.robot.PlacedCamera;
 import frc.robot.TypedApriltag;
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +34,7 @@ public class Vision extends SubsystemBase {
     poseEstimator = new PhotonPoseEstimator(AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(), PoseStrategy.LOWEST_AMBIGUITY, new Transform3d());
   }
 
-  public void updateEstimatedPose(TitanSwerveDrivePoseEstimator estimator) {
+  public void updateEstimatedPose(SwerveDrivePoseEstimator estimator) {
     Pose2d prevEstimatedRobotPose = estimator.getEstimatedPosition();
     
     for(int i = 0; i < cameras.size(); i++) {
@@ -43,9 +43,12 @@ public class Vision extends SubsystemBase {
       Optional<EstimatedRobotPose> est = cam.poseEstimator.update();
       if(est.isPresent()) {
         var estimate = est.get();
-        System.out.println("Present");
-        
+        // System.out.println("Present");
+        try {
         estimator.addVisionMeasurement(estimate.estimatedPose.toPose2d(), estimate.timestampSeconds);
+        }catch(Exception ignored) {
+
+        }
       }
     }
   }

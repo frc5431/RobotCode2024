@@ -25,11 +25,13 @@ import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.PheonixDrivebase;
 import frc.robot.subsystems.Vision;
+import frc.team5431.titan.core.joysticks.CommandSkyFlyController;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
 import frc.team5431.titan.core.misc.Calc;
 
 public class RobotContainer {
 
+  // private final CommandSkyFlyController driver = new CommandSkyFlyController(0);
   private final CommandXboxController driver = new CommandXboxController(0);
   public static final CommandXboxController operator = new CommandXboxController(1);
   private final Systems systems = new Systems();
@@ -88,7 +90,7 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    var fix = FGSquircularMap(driver.getLeftX() * 0.89, driver.getLeftY() * 0.89);
+    var fix = FGSquircularMap(driver.getLeftX() * .89, driver.getLeftY() * .89);
 
     SmartDashboard.putNumber("cx", fix.getX());
     SmartDashboard.putNumber("cy", fix.getY());
@@ -107,16 +109,39 @@ public class RobotContainer {
     double termx2 = subtermx - u * twosqrt2;
     double termy1 = subtermy + v * twosqrt2;
     double termy2 = subtermy - v * twosqrt2;
-    return new Translation2d(MathUtil.clamp(0.5 * Math.sqrt(termx1) - 0.5 * Math.sqrt(termx2), -1, 1), MathUtil.clamp(0.5 * Math.sqrt(termy1) - 0.5 * Math.sqrt(termy2), -1, 1)) ;
+
+    double x = MathUtil.clamp(0.5 * Math.sqrt(termx1) - 0.5 * Math.sqrt(termx2), -1, 1);
+    double y = MathUtil.clamp(0.5 * Math.sqrt(termy1) - 0.5 * Math.sqrt(termy2), -1, 1);
+
+    if(Math.abs(x) > 0.9 && Math.abs(y) < 0.2) {
+      x = Math.copySign(1, x);
+    }
+
+    if(Math.abs(y) > 0.9 && Math.abs(x) < 0.2) {
+      y = Math.copySign(1, y);
+    }
+    return new Translation2d(x, y) ;
   }
 
   Translation2d FGSquircularMap(double u, double v) {
     double sgnuv = Math.signum(u * v);
     double sqrt2 = Math.sqrt(2);
     double root = Math.sqrt((u*u) + (v*v) - Math.sqrt(((u*u) + (v*v)) * ((u*u) + (v*v) - 4 * (u*u) * (v*v))));
+
+    double x = (sgnuv / (v * sqrt2)) * ( root);
+    double y = (sgnuv / (u * sqrt2)) * ( root);
+
+    if(Math.abs(x) > 0.85 && Math.abs(y) < 0.2) {
+      x = Math.copySign(1, x);
+    }
+
+    if(Math.abs(y) > 0.85 && Math.abs(x) < 0.2) {
+      y = Math.copySign(1, y);
+    }
+
     return new Translation2d(
-      (sgnuv / (v * sqrt2)) * root,
-      (sgnuv / (u * sqrt2)) * root
+      x,
+      y
     );
   }
 
@@ -130,7 +155,7 @@ public class RobotContainer {
   private void configureBindings() {
     shooter.setRatio(Constants.ShooterConstants.simpleShooterRatio);
 
-    driver.setDeadzone(0.15);
+    // driver.setDeadzone(0.15);
     /*
      * // drivebase.setDefaultCommand(
      * // new DefaultDriveCommand(
@@ -151,15 +176,15 @@ public class RobotContainer {
      */
     drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
         drivebase.applyRequest(() -> {
-          var axis = FGSquircularMap(driver.getLeftX() * 0.89, driver.getLeftY() * 0.89);
+          // var axis = FGSquircularMap(driver.getLeftX() * .89, driver.getLeftY() * 0.89);
           if(isFieldRelative) {
-            return driveFC.withVelocityX(modifyAxis(axis.getY()) * TunerConstatns.kSpeedAt12VoltsMps)
-              .withVelocityY(modifyAxis(axis.getX()) * TunerConstatns.kSpeedAt12VoltsMps)
+            return driveFC.withVelocityX(modifyAxis(driver.getLeftY()) * TunerConstatns.kSpeedAt12VoltsMps * (1 - 0.03))
+              .withVelocityY(-modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps * (1 - 0.03))
               .withRotationalRate(
                   -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
           }else {
-            return driveRC.withVelocityX(-modifyAxis(axis.getY()) * TunerConstatns.kSpeedAt12VoltsMps)
-              .withVelocityY(-modifyAxis(axis.getX()) * TunerConstatns.kSpeedAt12VoltsMps)
+            return driveRC.withVelocityX(-modifyAxis(driver.getLeftY()) * TunerConstatns.kSpeedAt12VoltsMps * (1 - 0.03))
+              .withVelocityY(-modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps * (1 - 0.03))
               .withRotationalRate(
                   -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
           }
@@ -167,6 +192,7 @@ public class RobotContainer {
         }));
 
     driver.y().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
+    // driver.rightSwitch().onFalse(new InstantCommand(() -> drivebase.zeroGyro()));
 
     SmartDashboard.putNumber("turn axis",
         -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
@@ -185,7 +211,7 @@ public class RobotContainer {
     operator.povUp().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot));
     operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot));
-    driver.leftTrigger().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
+    // driver.backLeft().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
 
     driver.povDown().onTrue(new InstantCommand(() -> {
       if (isFieldRelative) {
