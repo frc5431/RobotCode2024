@@ -216,7 +216,7 @@ public final class Constants {
   public static class VisionConstants {
     public static final Transform3d ShooterCameraPose = new Transform3d(
       new Translation3d(Units.inchesToMeters(10),Units.inchesToMeters(3.5),Units.inchesToMeters(10)),
-      new Rotation3d(0, 45, 90+45)
+      new Rotation3d(0, 32.5, 0)
     );
   }
 

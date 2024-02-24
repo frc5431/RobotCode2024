@@ -1,13 +1,10 @@
 package frc.robot;
 
-import org.photonvision.PhotonCamera;
-
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import frc.robot.Constants.AnglerConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -43,14 +40,14 @@ public class Systems {
     leftIntakeMotor = new CANSparkMax(Constants.IntakeConstants.leftIntakeId, brushless);
     rightIntakeMotor = new CANSparkMax(Constants.IntakeConstants.rightIntakeId, brushless);
     intakeAnglerMotor = new CANSparkMax(Constants.IntakeConstants.anglerId, brushless);
-    vision = new Vision(new PlacedCamera("shooter_camera", Constants.VisionConstants.ShooterCameraPose));
+    drivebase2 = new PheonixDrivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
+    vision = new Vision(this, new PlacedCamera("shooter_camera", Constants.VisionConstants.ShooterCameraPose));
 
 
     shooterLower = new CANSparkFlex(Constants.ShooterConstants.botId, brushless);
     shooterUpper = new CANSparkFlex(Constants.ShooterConstants.topId, brushless);
     shooter = new Manipulator(shooterUpper, shooterLower, ShooterConstants.manipulatorConstants);
-    drivebase2 = new PheonixDrivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
-    drivebase2.setVision(vision);
+
     if(Robot.isSimulation()) {
       REVPhysicsSim.getInstance().addSparkMax(leftIntakeMotor, DCMotor.getNeo550(1));
       REVPhysicsSim.getInstance().addSparkMax(intakeAnglerMotor, DCMotor.getNeo550(1));

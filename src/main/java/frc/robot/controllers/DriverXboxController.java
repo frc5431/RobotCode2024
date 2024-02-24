@@ -7,7 +7,7 @@ public class DriverXboxController implements DriverController {
     private final CommandXboxController controller;
 
     public DriverXboxController() {
-        controller = new CommandXboxController(1);
+        controller = new CommandXboxController(0);
     }
 
 

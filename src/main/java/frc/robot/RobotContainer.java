@@ -51,6 +51,11 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
+    if(Constants.useXboxController) {
+      driver = new DriverXboxController();
+    }else {
+      driver = new DriverSkyflyController();
+    }
     drivebase.seedFieldRelative();
     setFieldRelativeControl();
     configureBindings();
@@ -58,11 +63,7 @@ public class RobotContainer {
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
 
-    if(Constants.useXboxController) {
-      driver = new DriverXboxController();
-    }else {
-      driver = new DriverSkyflyController();
-    }
+
   }
 
   private static double deadband(double value, double deadband) {
@@ -91,11 +92,6 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    var fix = FGSquircularMap(driver.getLeftX() * .89, driver.getLeftY() * .89);
-
-    SmartDashboard.putNumber("cx", fix.getX());
-    SmartDashboard.putNumber("cy", fix.getY());
-
     SmartDashboard.putNumber("dx", driver.getLeftX());
     SmartDashboard.putNumber("dy", driver.getLeftY());
   }
@@ -171,18 +167,10 @@ public class RobotContainer {
     drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
         drivebase.applyRequest(() -> {
           // var axis = FGSquircularMap(driver.getLeftX() * .89, driver.getLeftY() * 0.89);
-          if(isFieldRelative) {
-            return driveFC.withVelocityX(modifyAxis(driver.getLeftY()) * TunerConstatns.kSpeedAt12VoltsMps * (1 - 0.03))
-              .withVelocityY(-modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps * (1 - 0.03))
-              .withRotationalRate(
-                  -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
-          }else {
-            return driveRC.withVelocityX(-modifyAxis(driver.getLeftY()) * TunerConstatns.kSpeedAt12VoltsMps * (1 - 0.03))
-              .withVelocityY(-modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps * (1 - 0.03))
-              .withRotationalRate(
-                  -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
-          }
-          
+          return driveFC.withVelocityX(modifyAxis(driver.getLeftY()) * TunerConstatns.kSpeedAt12VoltsMps)
+            .withVelocityY(modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps)
+            .withRotationalRate(
+                -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
         }));
 
     driver.resetGyro().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));

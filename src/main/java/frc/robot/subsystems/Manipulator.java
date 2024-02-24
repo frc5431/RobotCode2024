@@ -1,13 +1,11 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase;
-import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.ManipulatorConstants;
 
 import java.util.Optional;
