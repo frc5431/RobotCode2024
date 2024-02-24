@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkBase;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ManipulatorConstants;
@@ -66,9 +67,13 @@ public class Manipulator extends SubsystemBase {
     } else if (containedGamePiece) {
       lastFiredTimestamp = System.currentTimeMillis();
     }
-    SmartDashboard.putNumber("shup RPM", upperRelativeEncoder.getVelocity());
-    SmartDashboard.putNumber("shlo RPM", lowerRelativeEncoder.getVelocity());
+    //SmartDashboard.putNumber("shup RPM", upperRelativeEncoder.getVelocity());
+    //SmartDashboard.putNumber("shlo RPM", lowerRelativeEncoder.getVelocity());
 
+  }
+
+  public double[] getRPM(){
+    return new double[] {upperRelativeEncoder.getVelocity(), lowerRelativeEncoder.getVelocity()};
   }
 
   /**
@@ -112,6 +117,8 @@ public class Manipulator extends SubsystemBase {
       runWithPower(0);
     }
   }
+
+
 
   public void runWithPower(double power) {
     upper.set(power * ratio.upperPercent());

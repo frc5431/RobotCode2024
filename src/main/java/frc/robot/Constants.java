@@ -2,6 +2,8 @@ package frc.robot;
 
 import java.util.List;
 
+import com.ctre.phoenix6.configs.MountPoseConfigs;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -21,7 +23,7 @@ import frc.robot.subsystems.Manipulator.MotorRatio;
 import frc.team5431.titan.core.robot.MotionMagic;
 
 public final class Constants {
-  public static final boolean useXboxController = false; 
+  public static final boolean useXboxController = true; 
   public static double vortexStallTorque = 3.6;
   public static double neoStallTorque = 2.6;
   public static double neo550StallTorque = 0.97;
@@ -220,6 +222,8 @@ public final class Constants {
     );
   }
 
+  public static MountPoseConfigs config = new MountPoseConfigs();
+  
   public static class TunerConstatns {
         // Both sets of gains need to be tuned to your individual robot.
 
@@ -269,7 +273,7 @@ public final class Constants {
     private static final String kCANbusName = "Omnivore2024";
     private static final int kPigeonId = 13;
 
-
+    
     // These are only used for simulation
     private static final double kSteerInertia = 0.00001;
     private static final double kDriveInertia = 0.001;

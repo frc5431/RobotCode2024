@@ -6,12 +6,14 @@ package frc.robot;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -35,6 +37,7 @@ public class RobotContainer {
   private final Angler pivot = systems.getPivot();
   private final Manipulator intake = systems.getIntake();
   private final Manipulator shooter = systems.getShooter();
+  private final AutonMagic autonMagic = new AutonMagic(systems);
 
   private SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -62,7 +65,6 @@ public class RobotContainer {
 
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
-
 
   }
 
@@ -92,6 +94,9 @@ public class RobotContainer {
   }
 
   public void periodic() {
+    SmartDashboard.putNumberArray("Shooter Speeds", shooter.getRPM());
+    SmartDashboard.putNumberArray("Intake Speeds", intake.getRPM());
+
     SmartDashboard.putNumber("dx", driver.getLeftX());
     SmartDashboard.putNumber("dy", driver.getLeftY());
   }
@@ -206,8 +211,9 @@ public class RobotContainer {
     // }));
   }
 
+
   public Command getAutonomousCommand() {
-    return null;
+    return autonMagic.procureAuton();
   }
 
   public void onTeleop() {
