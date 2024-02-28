@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.3390624559026896,
-        "y": 5.580485235044544
+        "x": 2.459728376246876,
+        "y": 5.445538993788401
       },
       "prevControl": {
-        "x": 2.0884486213416875,
-        "y": 5.134949529158318
+        "x": 2.209114541685874,
+        "y": 5.0000032879021745
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,31 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.7,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "GrabNote"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "SpeakerScore"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -39,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 13.134022306396023,
     "rotateFast": false
   },
   "reversed": false,

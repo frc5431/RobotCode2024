@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.8,
+      "y": 7.28
+    },
+    "rotation": 90.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ampPreload"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "cycleShoot3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "cyclePreload"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "setPositionSafe"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
