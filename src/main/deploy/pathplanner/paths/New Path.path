@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.459728376246876,
-        "y": 4.318134068366902
+        "x": 6.395293778239007,
+        "y": 4.039674252184744
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0698846335964274,
-        "y": 5.134949529158318
+        "x": 6.381640466981768,
+        "y": 4.040304549741636
       },
       "isLocked": false,
-      "linkedName": "Note 1"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.459728376246876,
-        "y": 5.445538993788401
+        "x": 7.499851049081944,
+        "y": 4.039674252184744
       },
       "prevControl": {
-        "x": 2.209114541685874,
-        "y": 5.0000032879021745
+        "x": 7.5091330429545735,
+        "y": 4.030392258312115
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Note 2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,21 +33,15 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.7,
+      "waypointRelativePos": 0,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "GrabNote"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "SpeakerScore"
+                "name": "AmpScore"
               }
             }
           ]
@@ -57,20 +51,17 @@
   ],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 1.75,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 13.134022306396023,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": {
-    "rotation": -25.01689347809994,
-    "velocity": 0
-  },
-  "useDefaultConstraints": true
+  "previewStartingState": null,
+  "useDefaultConstraints": false
 }

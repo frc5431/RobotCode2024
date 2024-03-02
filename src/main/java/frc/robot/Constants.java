@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.AprilTagCamera.Resolution;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Manipulator.MotorRatio;
 import frc.team5431.titan.core.robot.MotionMagic;
@@ -31,10 +32,6 @@ public final class Constants {
 
     public static final int idorsmth = 0;
     public static final boolean isTauseefCool = false;
-  }
-
-  public static class RobotConstants {
-    public static Transform3d cameraOffsetPosition = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
   }
 
   public static class ApriltagConstants {
@@ -216,10 +213,20 @@ public final class Constants {
   }
 
   public static class VisionConstants {
-    public static final Transform3d ShooterCameraPose = new Transform3d(
-      new Translation3d(Units.inchesToMeters(10),Units.inchesToMeters(3.5),Units.inchesToMeters(10)),
-      new Rotation3d(0, 32.5, 0)
-    );
+    public static final Transform3d SHOOTER_CAMERA_POSE = new Transform3d(
+      new Translation3d(Units.inchesToMeters(-13.5), Units.inchesToMeters(5),Units.inchesToMeters(13.75)),
+      new Rotation3d(0, Units.degreesToRadians(-32.5), Units.degreesToRadians(180))
+    ); //32.5
+    public static final Resolution SHOOTER_CAMERA_RESOLUTION = Resolution.RES_640_480;
+    public static final Rotation2d SHOOTER_CAMERA_FOV = Rotation2d.fromDegrees(76.2);
+
+    public static final Transform3d DRIVER_CAMERA_POSE = new Transform3d(
+      new Translation3d(Units.inchesToMeters(13.5), Units.inchesToMeters(0),Units.inchesToMeters(4)),
+      new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(0))
+    ); //32.5
+    public static final Resolution DRIVER_CAMERA_RESOLUTION = Resolution.RES_1280_720;
+    public static final Rotation2d DRIVER_CAMERA_FOV = Rotation2d.fromDegrees(70);
+
   }
 
   public static MountPoseConfigs config = new MountPoseConfigs();

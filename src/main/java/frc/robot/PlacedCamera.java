@@ -17,6 +17,7 @@ public class PlacedCamera extends PhotonCamera {
         super(instance, cameraName);
         this.location = location;
         poseEstimator = new PhotonPoseEstimator(AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(), PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, this, location);
+        poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     }
 
     public PlacedCamera(String cameraName, Transform3d location) {

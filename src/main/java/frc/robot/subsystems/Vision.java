@@ -3,15 +3,18 @@ package frc.robot.subsystems;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ApriltagConstants.zone;
 import frc.robot.PlacedCamera;
 import frc.robot.Systems;
@@ -31,7 +34,7 @@ public class Vision extends SubsystemBase {
   public Field2d field;
   public TimedThreadExecutor tte = new TimedThreadExecutor(() -> {
     var poseEstimator = drivebase.getOdometry();
-    this.updateEstimatedPose(poseEstimator);
+    this.updateEstimatedPose(drivebase);
     field.setRobotPose(poseEstimator.getEstimatedPosition());
     SmartDashboard.putData("Field", field);
   }, 100, TimeUnit.MILLISECONDS);
@@ -39,27 +42,23 @@ public class Vision extends SubsystemBase {
   public Vision(Systems systems, PlacedCamera... cameras) {
     this.cameras = Arrays.stream(cameras).toList();
     poseEstimator = new PhotonPoseEstimator(AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(),
-        PoseStrategy.LOWEST_AMBIGUITY, new Transform3d());
+        PoseStrategy.CLOSEST_TO_LAST_POSE, Constants.VisionConstants.SHOOTER_CAMERA_POSE);
     this.drivebase = systems.getDrivebase();
     field = new Field2d();
   }
 
-  public void updateEstimatedPose(SwerveDrivePoseEstimator estimator) {
-    Pose2d prevEstimatedRobotPose = estimator.getEstimatedPosition();
+  public void updateEstimatedPose(PheonixDrivebase db) {
+    Pose2d prevEstimatedRobotPose = db.getOdometry().getEstimatedPosition();
 
     for (int i = 0; i < cameras.size(); i++) {
-      var cam = cameras.get(i);
-      cam.poseEstimator.setReferencePose(prevEstimatedRobotPose);
-      Optional<EstimatedRobotPose> est = cam.poseEstimator.update();
-      if (est.isPresent()) {
-        var estimate = est.get();
-        // System.out.println("Present");
-        try {
-          estimator.addVisionMeasurement(estimate.estimatedPose.toPose2d(), estimate.timestampSeconds);
-        } catch (Exception ignored) {
-          // System.out.println("Errored!");
-        }
-      }
+      PlacedCamera camera = cameras.get(i);
+      PhotonPipelineResult pipelineResult = camera.getLatestResult();
+      if (!pipelineResult.hasTargets()) return;
+      camera.poseEstimator.update(pipelineResult).ifPresent(estimatedRobotPose -> {
+        Pose3d estimatedPose = estimatedRobotPose.estimatedPose;
+        db.addVisionMeasurement(estimatedPose.toPose2d(), pipelineResult.getTimestampSeconds());
+      });
+
     }
   }
 
@@ -89,11 +88,14 @@ public class Vision extends SubsystemBase {
   @Override
   public void periodic() {
     try {
-      // tte.run();
+      var poseEstimator = drivebase.getOdometry();
+      this.updateEstimatedPose(drivebase);
+      field.setRobotPose(poseEstimator.getEstimatedPosition());
+      SmartDashboard.putData("Field", field);
     }catch(OutOfMemoryError ignored) {
      // System.out.println("out of memory issue with thread");
     }catch(Exception err) {
-      err.printStackTrace();
+      // err.printStackTrace();
     }
   }
 

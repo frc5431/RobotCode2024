@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
+import frc.robot.commands.auton.AmpScore;
 import frc.robot.controllers.DriverController;
 import frc.robot.controllers.DriverSkyflyController;
 import frc.robot.controllers.DriverXboxController;
@@ -37,7 +39,7 @@ public class RobotContainer {
   private final Angler pivot = systems.getPivot();
   private final Manipulator intake = systems.getIntake();
   private final Manipulator shooter = systems.getShooter();
-  private final AutonMagic autonMagic = new AutonMagic(systems);
+  private final AutonMagic autonMagic;
 
   private SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -54,15 +56,20 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
+    NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
+
+    autonMagic = new AutonMagic(systems);
+
+
     if(Constants.useXboxController) {
       driver = new DriverXboxController();
     }else {
       driver = new DriverSkyflyController();
     }
+
     drivebase.seedFieldRelative();
     setFieldRelativeControl();
     configureBindings();
-
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
 
@@ -96,6 +103,7 @@ public class RobotContainer {
   public void periodic() {
     SmartDashboard.putNumberArray("Shooter Speeds", shooter.getRPM());
     SmartDashboard.putNumberArray("Intake Speeds", intake.getRPM());
+    SmartDashboard.putBoolean("is red?",  DriverStation.getAlliance().get() == DriverStation.Alliance.Red);
 
     SmartDashboard.putNumber("dx", driver.getLeftX());
     SmartDashboard.putNumber("dy", driver.getLeftY());
@@ -199,7 +207,7 @@ public class RobotContainer {
     operator.a().onFalse(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(10)), pivot));
     operator.povUp().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot));
-    operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot));
+    operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
     driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
 
     // driver.povDown().onTrue(new InstantCommand(() -> {

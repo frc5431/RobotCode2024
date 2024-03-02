@@ -32,4 +32,8 @@ public class TimedThreadExecutor {
             executor.shutdownNow();
         }
     }
+
+    public void runImmediate() {
+        task.run();
+    }
 }

@@ -1,6 +1,10 @@
 package frc.robot.subsystems;
 
+import java.lang.reflect.Field;
+import java.util.ConcurrentModificationException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
@@ -11,6 +15,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.TitanDrivebase;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -18,6 +23,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
@@ -40,9 +46,7 @@ public class PheonixDrivebase extends SwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        config.MountPoseYaw = 90;
-        getPigeon2().getConfigurator().apply(config);
-    
+        //getPigeon2().getConfigurator().apply(config);
 
         AutoBuilder.configureHolonomic(
                 this::getPose, // Robot pose supplier
@@ -52,9 +56,9 @@ public class PheonixDrivebase extends SwerveDrivetrain implements Subsystem {
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
                         new PIDConstants(10.0, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(10.0, 0.0, 0.0), // Rotation PID constants
-                        3.0, // Max module speed m/s
+                        2.5, // Max module speed m/s
                         0.5125830761935194, // Drive base radius in meters. Distance from robot center to furthest module.
-                        new ReplanningConfig() // Default path replanning config. See the API for the options here
+                        new ReplanningConfig(true, true) // Default path replanning config. See the API for the options here
                 ),
                 () -> {
                     var alliance = DriverStation.getAlliance();
@@ -65,6 +69,7 @@ public class PheonixDrivebase extends SwerveDrivetrain implements Subsystem {
                 },
                 this // Reference to this subsystem to set requirements
         );
+
 
     }
 
@@ -87,25 +92,43 @@ public class PheonixDrivebase extends SwerveDrivetrain implements Subsystem {
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
+    // public void resetOdometry() {
+    //     m_odometry.resetPosition(getPigeon2().getRotation2d(), m_modulePositions, getState().Pose);
+
+    // }
+
     public void zeroGyro() {
         getPigeon2().reset();
-        resetOdometry();
+        resetPose(getPose());
     }
-
+    Field2d undertale = new Field2d();
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Gyro", getPigeon2().getAngle());
-        // m_odometry.update(getPigeon2().getRotation2d(), m_modulePositions);
+        // m_odometry.update(m_fieldRelativeOffset, m_modulePositions);
+        // Get estimated poses from VisionSubsystem
+        var visionEstimatedRobotPoses = LasaVision.getInstance().getEstimatedGlobalPoses();
+
+        // Exit if no valid vision pose estimates
+        if (visionEstimatedRobotPoses.isEmpty()) return;
+
+        try {
+            // Add vision measurements to pose estimator
+            for (var visionEstimatedRobotPose : visionEstimatedRobotPoses) {
+                // if (visionEstimatedRobotPose.estimatedPose.toPose2d().getTranslation().getDistance(m_previousPose.getTranslation()) > 1.0) continue;
+                m_odometry.addVisionMeasurement(visionEstimatedRobotPose.estimatedPose.toPose2d(), visionEstimatedRobotPose.timestampSeconds);
+            }
+        }catch(ConcurrentModificationException e) {
+            // i am going to throw this dumb robot out a window
+        }
+
+        undertale.setRobotPose(m_odometry.getEstimatedPosition());
+        // SmartDashboard.putData("Field", undertale);
     }
 
     public SwerveDrivePoseEstimator getOdometry() {
         return m_odometry;
     }    
-
-    public void resetOdometry() {
-        m_odometry.resetPosition(getPigeon2().getRotation2d(), m_modulePositions, getState().Pose);
-    }
 
 
     private void startSimThread() {

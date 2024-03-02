@@ -11,13 +11,14 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.subsystems.Angler;
+import frc.robot.subsystems.LasaVision;
 import frc.robot.subsystems.PheonixDrivebase;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Vision;
 
 public class Systems {
-
-  private Vision vision;
+  public static Systems instance;
+  // private Vision vision;
   private Manipulator intake;
   private Angler pivot;
   private Angler shooterAngler;
@@ -41,7 +42,7 @@ public class Systems {
     rightIntakeMotor = new CANSparkMax(Constants.IntakeConstants.rightIntakeId, brushless);
     intakeAnglerMotor = new CANSparkMax(Constants.IntakeConstants.anglerId, brushless);
     drivebase2 = new PheonixDrivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
-    vision = new Vision(this, new PlacedCamera("shooter_camera", Constants.VisionConstants.ShooterCameraPose));
+    // vision = new Vision(this, new PlacedCamera("shooter_camera", Constants.VisionConstants.ShooterCameraPose));
 
 
     shooterLower = new CANSparkFlex(Constants.ShooterConstants.botId, brushless);
@@ -60,14 +61,15 @@ public class Systems {
 
     intake = new Manipulator(leftIntakeMotor, rightIntakeMotor, IntakeConstants.manipulatorConstants);
     pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
+    instance = this;
   }
 
   public PheonixDrivebase getDrivebase() {
     return drivebase2;
   }
 
-  public Vision getVision() {
-    return vision;
+  public LasaVision getVision() {
+    return LasaVision.getInstance();
   }
 
   public Manipulator getShooter() {

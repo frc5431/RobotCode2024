@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
@@ -15,7 +16,7 @@ public class Angler extends SubsystemBase {
 
   public CANSparkBase motor;
   public SparkPIDController controller;
-  public SparkAbsoluteEncoder absoluteEncoder;
+  public AbsoluteEncoder absoluteEncoder;
   public Rotation2d setpoint = new Rotation2d();
   public AnglerModes mode;
   public double massKg;
@@ -31,7 +32,7 @@ public class Angler extends SubsystemBase {
     //absoluteEncoder.setPositionConversionFactor(2 * Math.PI * constants.gearRatio);
     
     controller.setFeedbackDevice(absoluteEncoder);
-    SmartDashboard.putNumber("abs encoder ", absoluteEncoder.getPosition());
+    //SmartDashboard.putNumber("abs encoder ", absoluteEncoder.getPosition());
     //motor.enableVoltageCompensation(12);
     
     motor.setSmartCurrentLimit(60, 35);
@@ -83,8 +84,8 @@ public class Angler extends SubsystemBase {
     double anglerCosMultiplierNoCOMM = massKg * 9.81;
     double cosMult = anglerCosMultiplierNoCOMM * constants.lengthMeters;
     double arbFF = (cosMult * getAngleToGround().getCos()) / constants.stalltorque;
-    SmartDashboard.putNumber(getName() + " arbFF", arbFF);
-    SmartDashboard.putNumber(getName().substring(0, 1) + "2g", getAngleToGround().getDegrees());
+    //SmartDashboard.putNumber(getName() + " arbFF", arbFF);
+    //SmartDashboard.putNumber(getName().substring(0, 1) + "2g", getAngleToGround().getDegrees());
     controller.setReference(
       setpoint.getRotations() * absoluteEncoder.getPositionConversionFactor(), //MathUtil.clamp(setpoint.getRadians(), retractedAngle, deployedAngle),
       CANSparkBase.ControlType.kPosition,

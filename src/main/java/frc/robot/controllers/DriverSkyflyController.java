@@ -1,5 +1,6 @@
 package frc.robot.controllers;
 
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team5431.titan.core.joysticks.CommandSkyFlyController;
 
@@ -34,6 +35,11 @@ public class DriverSkyflyController implements DriverController {
     @Override
     public double getRightX() {
         return controller.getRightX();
+    }
+
+    @Override
+    public CommandXboxController temp_getController() {
+        return null;
     }
     
 }

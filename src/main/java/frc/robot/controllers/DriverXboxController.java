@@ -23,13 +23,12 @@ public class DriverXboxController implements DriverController {
 
     @Override
     public double getLeftY() {
-        return controller.getLeftY();
+        return -controller.getLeftY();
     }
 
     @Override
     public double getLeftX() {
-        return controller.getLeftX();
-
+        return -controller.getLeftX();
     }
 
     @Override
@@ -37,4 +36,8 @@ public class DriverXboxController implements DriverController {
         return controller.getRightX();
     }
     
+    @Override
+    public CommandXboxController temp_getController() {
+        return controller;
+    }
 }

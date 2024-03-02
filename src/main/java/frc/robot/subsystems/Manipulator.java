@@ -18,6 +18,7 @@ public class Manipulator extends SubsystemBase {
 
   protected boolean containedGamePiece;
   private long lastFiredTimestamp = -1;
+  private boolean hasNote;
   protected MotorRatio ratio;
 
   public RelativeEncoder upperRelativeEncoder;
@@ -27,6 +28,7 @@ public class Manipulator extends SubsystemBase {
   public Manipulator(CANSparkBase upper, CANSparkBase lower, ManipulatorConstants constants) {
     this.upper = upper;
     this.lower = lower;
+    this.hasNote = false;
 
     this.constants = constants;
 
@@ -35,8 +37,8 @@ public class Manipulator extends SubsystemBase {
     this.upper.burnFlash();
     this.lower.burnFlash();
 
-    upperRelativeEncoder = upper.getEncoder();
-    lowerRelativeEncoder = lower.getEncoder();
+    this.upperRelativeEncoder = upper.getEncoder();
+    this.lowerRelativeEncoder = lower.getEncoder();
 
     this.ratio = constants.defaultRatio;
 
@@ -67,8 +69,8 @@ public class Manipulator extends SubsystemBase {
     } else if (containedGamePiece) {
       lastFiredTimestamp = System.currentTimeMillis();
     }
-    //SmartDashboard.putNumber("shup RPM", upperRelativeEncoder.getVelocity());
-    //SmartDashboard.putNumber("shlo RPM", lowerRelativeEncoder.getVelocity());
+    SmartDashboard.putNumber("shup RPM", this.upperRelativeEncoder.getVelocity());
+    SmartDashboard.putNumber("shlo RPM", this.lowerRelativeEncoder.getVelocity());
 
   }
 
@@ -118,8 +120,6 @@ public class Manipulator extends SubsystemBase {
     }
   }
 
-
-
   public void runWithPower(double power) {
     upper.set(power * ratio.upperPercent());
     lower.set(power * ratio.lowerPercent());
@@ -127,6 +127,14 @@ public class Manipulator extends SubsystemBase {
 
   public void setRatio(MotorRatio ratio) {
     this.ratio = ratio;
+  }
+
+  public boolean getNoteState(){
+    return this.hasNote;
+  }
+
+  public void setNoteState(boolean state){
+    this.hasNote = state;
   }
 
   /**
