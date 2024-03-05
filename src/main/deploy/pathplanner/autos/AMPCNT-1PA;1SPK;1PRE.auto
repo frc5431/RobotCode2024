@@ -18,6 +18,18 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "AmpScore"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GrabNote"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "cycleShoot3"

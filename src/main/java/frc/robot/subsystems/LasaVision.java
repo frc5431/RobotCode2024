@@ -229,9 +229,9 @@ public class LasaVision extends SubsystemBase implements AutoCloseable {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run in simulation
-    var objectLocation = getObjectLocation();
-    if (objectLocation.isEmpty())
-      return;
+    // var objectLocation = getObjectLocation();
+    // if (objectLocation.isEmpty())
+    //   return;
 
     // Logger.recordOutput(getName() + OBJECT_POSE_LOG_ENTRY, objectLocation.get());
   }
@@ -260,26 +260,26 @@ public class LasaVision extends SubsystemBase implements AutoCloseable {
    * 
    * @return The position of the object, relative to the field
    */
-  public Optional<Translation2d> getObjectLocation() {
-    Optional<Measure<Angle>> yaw = m_objectCamera.getYaw();
-    Optional<Measure<Distance>> distance = m_objectCamera.getDistance();
-    Pose2d pose = m_poseSupplier.get();
-    if (yaw.isEmpty() || distance.isEmpty() || pose == null)
-      return Optional.empty();
+  // public Optional<Translation2d> getObjectLocation() {
+  //   Optional<Measure<Angle>> yaw = m_objectCamera.getYaw();
+  //   Optional<Measure<Distance>> distance = m_objectCamera.getDistance();
+  //   Pose2d pose = m_poseSupplier.get();
+  //   if (yaw.isEmpty() || distance.isEmpty() || pose == null)
+  //     return Optional.empty();
 
-    // Logger.recordOutput(getName() + OBJECT_DISTANCE_LOG_ENTRY, distance.get());
-    // Logger.recordOutput(getName() + OBJECT_HEADING_LOG_ENTRY, yaw.get());
-    return Optional.of(pose.getTranslation().plus(
-        new Translation2d(
-            distance.get().in(Units.Meters),
-            Rotation2d.fromRadians(pose.getRotation().getRadians() + yaw.get().in(Units.Radians)))));
-  }
+  //   // Logger.recordOutput(getName() + OBJECT_DISTANCE_LOG_ENTRY, distance.get());
+  //   // Logger.recordOutput(getName() + OBJECT_HEADING_LOG_ENTRY, yaw.get());
+  //   return Optional.of(pose.getTranslation().plus(
+  //       new Translation2d(
+  //           distance.get().in(Units.Meters),
+  //           Rotation2d.fromRadians(pose.getRotation().getRadians() + yaw.get().in(Units.Radians)))));
+  // }
 
   @Override
   public void close() {
     for (var camera : m_apriltagCameras)
       camera.close();
-    m_objectCamera.close();
+ //   m_objectCamera.close();
     m_cameraNotifier.close();
   }
 }

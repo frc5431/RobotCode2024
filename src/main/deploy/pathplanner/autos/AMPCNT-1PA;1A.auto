@@ -18,9 +18,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "AmpScore"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "nearAmpNoLoad"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GrabNote"
           }
         }
       ]

@@ -29,6 +29,7 @@ import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.PheonixDrivebase;
+import frc.robot.subsystems.Manipulator.Modes;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
 
 public class RobotContainer {

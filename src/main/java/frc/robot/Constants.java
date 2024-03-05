@@ -63,8 +63,8 @@ public final class Constants {
     public static double intakePower = 1;
     public static double outtakePower = -1;
     public static int anglerId = 14;
-    public static int leftIntakeId = 16;
-    public static int rightIntakeId = 19;
+    public static int leftIntakeId = 19;
+    public static int rightIntakeId = 16;
     public static Rotation2d ampAngle = Rotation2d.fromDegrees(105.70);
 
     public static AnglerConstants anglerConstants = new AnglerConstants(

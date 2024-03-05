@@ -54,8 +54,8 @@ public class Systems {
       REVPhysicsSim.getInstance().addSparkMax(intakeAnglerMotor, DCMotor.getNeo550(1));
     }
 
-    leftIntakeMotor.setSmartCurrentLimit(40);
-    rightIntakeMotor.setSmartCurrentLimit(40);
+    leftIntakeMotor.setSmartCurrentLimit(30);
+    rightIntakeMotor.setSmartCurrentLimit(30);
     rightIntakeMotor.burnFlash();
     leftIntakeMotor.burnFlash();
 

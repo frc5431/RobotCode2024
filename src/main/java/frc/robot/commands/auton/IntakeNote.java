@@ -1,38 +1,25 @@
 package frc.robot.commands.auton;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.commands.RunAnglerCommand;
-import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Manipulator.Modes;
 
-public class IntakeNote extends Command {
+public class IntakeNote extends SequentialCommandGroup {
     
-  private final Manipulator intake;
-  private final Angler pivot;
+  private final Manipulator.Modes mode;
 
-  private boolean hasNote;
+  public IntakeNote(Manipulator intake, Angler pivot) {
+    this.mode = Modes.REVERSE;
 
-  public IntakeNote(Manipulator intake, Angler pivot, boolean hasNote) {
-    this.intake = intake;
-    this.pivot = pivot;
-    this.hasNote = hasNote;
-  }
-
-  @Override
-  public void execute() {
-    new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot);
-    new RunManipulatorCommand(intake, Manipulator.Modes.REVERSE);
-
+    // addCommands(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RETRACT, pivot)
+    // , Commands.race(Commands.startEnd(() -> intake.run(mode), () -> intake.stopNeutral(), intake).withTimeout(2), ),
+    // Commands.race(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot), 
+    // new RunManipulatorCommand(intake, Manipulator.Modes.FORWARD));
     
-    
+    //);
   }
-
-  @Override
-  public void end(boolean interrupted) {
-
-
-
-  }
-
 }
