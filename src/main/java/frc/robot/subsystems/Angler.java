@@ -58,11 +58,11 @@ public class Angler extends SubsystemBase {
     setpoint = angle;
   }
 
-  public void deploy() {
+  public void runToMax() {
     setRotation(constants.maxAngle);
   }
 
-  public void retract() {
+  public void runToMin() {
     setRotation(constants.minAngle);
   }
 
