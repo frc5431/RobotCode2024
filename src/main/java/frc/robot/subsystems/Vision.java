@@ -1,28 +1,21 @@
 package frc.robot.subsystems;
 
-import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.ApriltagConstants.zone;
 import frc.robot.PlacedCamera;
 import frc.robot.Systems;
 import frc.robot.TimedThreadExecutor;
 import frc.robot.TypedApriltag;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class Vision extends SubsystemBase {
@@ -48,7 +41,7 @@ public class Vision extends SubsystemBase {
   }
 
   public void updateEstimatedPose(PheonixDrivebase db) {
-    Pose2d prevEstimatedRobotPose = db.getOdometry().getEstimatedPosition();
+    // Pose2d prevEstimatedRobotPose = db.getOdometry().getEstimatedPosition();
 
     for (int i = 0; i < cameras.size(); i++) {
       PlacedCamera camera = cameras.get(i);
@@ -69,21 +62,21 @@ public class Vision extends SubsystemBase {
    * @param fallback    rotation based on controller
    * @return yaw of apriltag target, or fallback
    */
-  public double getTargetYaw(zone desiredZone, double fallback, PlacedCamera apriltagCamera) {
-    var result = apriltagCamera.getLatestResult();
-    // https://docs.photonvision.org/en/latest/docs/programming/photonlib/getting-target-data.html#checking-for-existence-of-targets
-    boolean live = result.hasTargets();
-    PhotonTrackedTarget target = result.getBestTarget();
+  // public double getTargetYaw(zone desiredZone, double fallback, PlacedCamera apriltagCamera) {
+  //   var result = apriltagCamera.getLatestResult();
+  //   // https://docs.photonvision.org/en/latest/docs/programming/photonlib/getting-target-data.html#checking-for-existence-of-targets
+  //   boolean live = result.hasTargets();
+  //   PhotonTrackedTarget target = result.getBestTarget();
 
-    int id = target.getFiducialId();
-    TypedApriltag apriltag = new TypedApriltag(id);
-    zone detect = apriltag.zoneMatch();
+  //   int id = target.getFiducialId();
+  //   TypedApriltag apriltag = new TypedApriltag(id);
+  //   zone detect = apriltag.zoneMatch();
 
-    if (apriltag.isFriendlyApriltag() && detect == desiredZone) {
-      return target.getYaw();
-    }
-    return fallback;
-  }
+  //   if (apriltag.isFriendlyApriltag() && detect == desiredZone) {
+  //     return target.getYaw();
+  //   }
+  //   return fallback;
+  // }
 
   @Override
   public void periodic() {

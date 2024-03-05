@@ -18,7 +18,6 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
-import frc.robot.Constants;
 import frc.robot.AprilTagCamera.Resolution;
 
 /**

@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
@@ -14,7 +13,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -29,7 +27,6 @@ import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.PheonixDrivebase;
-import frc.robot.subsystems.Manipulator.Modes;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
 
 public class RobotContainer {
@@ -44,17 +41,17 @@ public class RobotContainer {
 
   private SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-  private SwerveRequest.RobotCentric driveRC = new SwerveRequest.RobotCentric()
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-  private boolean isFieldRelative;
+  // private SwerveRequest.RobotCentric driveRC = new SwerveRequest.RobotCentric()
+  //     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+  // private boolean isFieldRelative;
 
-  public void setFieldRelativeControl() {
-    isFieldRelative = true;
-  }
+  // public void setFieldRelativeControl() {
+  //   isFieldRelative = true;
+  // }
 
-  public void setRobotRelativeControl() {
-    isFieldRelative = false;
-  }
+  // public void setRobotRelativeControl() {
+  //   isFieldRelative = false;
+  // }
 
   public RobotContainer() {
     NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
@@ -69,7 +66,7 @@ public class RobotContainer {
     }
 
     drivebase.seedFieldRelative();
-    setFieldRelativeControl();
+    // setFieldRelativeControl();
     configureBindings();
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());

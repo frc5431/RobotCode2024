@@ -14,7 +14,6 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import frc.robot.Constants;
 
 /** Create a camera */
 public class AprilTagCamera implements Runnable, AutoCloseable {
