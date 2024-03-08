@@ -213,9 +213,8 @@ public class RobotContainer {
     operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
     driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
 
-    operator.rightTrigger().whileTrue(new RunManipulatorCommand(shooter, -1));
-    operator.b().whileTrue(new RunManipulatorCommand(shooter, 1));
-
+    operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, Manipulator.Modes.FORWARD));
+    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, Manipulator.Modes.REVERSE));
   }
 
 

@@ -14,7 +14,9 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.robot.AprilTagCamera.Resolution;
 import frc.robot.subsystems.Manipulator;
@@ -61,15 +63,15 @@ public final class Constants {
     public static double intakePower = 1;
     public static double outtakePower = -1;
     public static int anglerId = 14;
-    public static int leftIntakeId = 19;
+    public static int leftIntakeId = 15;
     public static int rightIntakeId = 16;
     public static Rotation2d ampAngle = Rotation2d.fromDegrees(105.70);
 
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */Rotation2d.fromDegrees(-9.45),
       /* Max Angle */Rotation2d.fromDegrees(153.11), // temp
-      /* Length Meters */Units.inchesToMeters(12),
-      /* Weight Kilos */Units.lbsToKilograms(7.5), // temp
+      /* Length Meters */Units.inchesToMeters(17),
+      /* Weight Kilos */Units.lbsToKilograms(5.265), // temp
       /* Parallel To Ground Angle */Rotation2d.fromRadians(0),
       /* PID */new MotionMagic(0.3, 0.0, 0.01, -1), // ff goes unused
       /* Stall Torque (Nm) */ neoStallTorque * (50),
@@ -87,6 +89,9 @@ public final class Constants {
   }
 
   public static class ClimberConstants {
+
+    public static int leftClimberId = 21;
+    public static int rightClimberId = 22;
     public static final double maxHeight = 4; // Temp 
     public static final double minHeight = 0;
 
@@ -94,22 +99,22 @@ public final class Constants {
     public static final boolean enableFF = true;
     public static final double torque = vortexStallTorque;
   }
-
   public static class ShooterConstants {
 
-    public static int topId = 18;
-    public static int botId = 17;
+    public static int topId = 20;
+    public static int botId = 19;
 
     public static MotorRatio shooterRatio = new MotorRatio(1, 0.8);
     public static MotorRatio simpleShooterRatio = new MotorRatio(.7, .7);
 
     public static double normalPower = 0.8;
-    public static int anglerId = 15; // temp
+    public static int anglerLeftId = 17;
+    public static int anglerRightId = 18;
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */Rotation2d.fromDegrees(0), // temp
-      /* Max Angle */Rotation2d.fromDegrees(90), // temp
+      /* Max Angle */Rotation2d.fromDegrees(30), // temp
       /* Length Meters */Units.inchesToMeters(16), // temp
-      /* Weight Kilos */Units.lbsToKilograms(10), // temp
+      /* Weight Kilos */Units.lbsToKilograms(7.625), // temp
       /* Parallel To Ground Angle */Rotation2d.fromDegrees(0), // temp
       /* PID */new MotionMagic(0.0, 0.0, 0.1, -1), // ff goes unused
       /* Stall Torque (Nm) */ vortexStallTorque,
@@ -125,7 +130,6 @@ public final class Constants {
       /* estimatedImpulseForceMetersPerSecond */ 1
     );
   }
-
   public static class AnglerConstants {
 
     public final Rotation2d minAngle;
@@ -176,8 +180,10 @@ public final class Constants {
       this.estimatedImpulseForceMetersPerSecond = estimatedImpulseForceMetersPerSecond;
     }
   }
-
   public static class DrivebaseConstant {
+
+
+    
 
     public static final int ID_PIGEON2 = 13;
     public static final int ID_PHUB = 1;
@@ -221,6 +227,36 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 10;
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.060791).getRadians();
     //-Rotation2d.fromRotations(0.059326).plus(Rotation2d.fromDegrees(180)).getRadians();;
+
+ public static final double MAX_VOLTAGE = 12.0;
+ 
+  public static final double MAX_VELOCITY_METERS_PER_SECOND =
+    (6380.0 / 60.0) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+
+  public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
+    MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
+
+  public static final double MIN_ANGULAR_VELOCITY = 0.5;
+  // Max input acceleration (ChassisSpeeds meters per second per second) for x/y
+  // movement
+  public static final double SLEW_RATE_LIMIT_TRANSLATION = MAX_VELOCITY_METERS_PER_SECOND * 2;
+  // Max input acceleration (ChassisSpeeds radians per second per second) for
+  // rotational movement
+  public static final double SLEW_RATE_LIMIT_ROTATION = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 10;
+
+  public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+    // Front left
+    new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+    // Front right
+    new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
+    // Back left
+    new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+    // Back right
+    new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
+  );
+
+    
+
   }
 
   public static class VisionConstants {
@@ -239,8 +275,6 @@ public final class Constants {
     public static final Rotation2d DRIVER_CAMERA_FOV = Rotation2d.fromDegrees(70);
 
   }
-
-  public static MountPoseConfigs config = new MountPoseConfigs();
   
   public static class TunerConstatns {
         // Both sets of gains need to be tuned to your individual robot.
