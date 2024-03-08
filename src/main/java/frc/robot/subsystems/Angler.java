@@ -71,6 +71,11 @@ public class Angler extends SubsystemBase {
     setRotation(constants.minAngle);
   }
 
+  
+  /**
+   * @param tolerance radians
+   * @return
+   */
   public boolean isFinished(double tolerance) {
     return Math.abs(setpoint.getRadians() - absoluteEncoder.getPosition()) < tolerance;
   }
