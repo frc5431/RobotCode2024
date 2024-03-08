@@ -11,6 +11,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.subsystems.Angler;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LasaVision;
 import frc.robot.subsystems.PheonixDrivebase;
 import frc.robot.subsystems.Manipulator;
@@ -22,49 +23,69 @@ public class Systems {
   private Angler pivot;
   private Angler shooterAngler;
   private Manipulator shooter;
+  private Climber climber;
 
   private AnglerConstants intakeAnglerConst;
+  private AnglerConstants shooterAnglerConst;
+
 
   private CANSparkFlex shooterUpper; 
   private CANSparkFlex shooterLower; 
+  private CANSparkFlex anglerLeft;
+  private CANSparkFlex anglerRight;
+  private CANSparkFlex climberLeft;
+  private CANSparkFlex climberRight;
 
   private CANSparkMax leftIntakeMotor;
   private CANSparkMax rightIntakeMotor;
   private CANSparkMax intakeAnglerMotor;
 
+
   private MotorType brushless =  MotorType.kBrushless;
-  public PheonixDrivebase drivebase2;
+  public PheonixDrivebase pheonixdrivebase;
 
   public Systems() {
+
+
+
+    shooterAnglerConst = Constants.ShooterConstants.anglerConstants;
     intakeAnglerConst = Constants.IntakeConstants.anglerConstants;
+
+
     leftIntakeMotor = new CANSparkMax(Constants.IntakeConstants.leftIntakeId, brushless);
     rightIntakeMotor = new CANSparkMax(Constants.IntakeConstants.rightIntakeId, brushless);
     intakeAnglerMotor = new CANSparkMax(Constants.IntakeConstants.anglerId, brushless);
-    drivebase2 = new PheonixDrivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
-    // vision = new Vision(this, new PlacedCamera("shooter_camera", Constants.VisionConstants.ShooterCameraPose));
 
 
     shooterLower = new CANSparkFlex(Constants.ShooterConstants.botId, brushless);
     shooterUpper = new CANSparkFlex(Constants.ShooterConstants.topId, brushless);
-    shooter = new Manipulator(shooterUpper, shooterLower, ShooterConstants.manipulatorConstants);
+    anglerLeft = new CANSparkFlex(Constants.ShooterConstants.anglerLeftId, brushless);
+    anglerRight = new CANSparkFlex(Constants.ShooterConstants.anglerRightId, brushless);
+    climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
+    climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
 
-    if(Robot.isSimulation()) {
-      REVPhysicsSim.getInstance().addSparkMax(leftIntakeMotor, DCMotor.getNeo550(1));
-      REVPhysicsSim.getInstance().addSparkMax(intakeAnglerMotor, DCMotor.getNeo550(1));
-    }
+    anglerRight.follow(anglerLeft);
+    climberRight.follow(climberRight);
 
-    leftIntakeMotor.setSmartCurrentLimit(30);
-    rightIntakeMotor.setSmartCurrentLimit(30);
+    leftIntakeMotor.setSmartCurrentLimit(40);
+    rightIntakeMotor.setSmartCurrentLimit(40);
     rightIntakeMotor.burnFlash();
     leftIntakeMotor.burnFlash();
+    anglerRight.burnFlash();
+    climberRight.burnFlash();
 
+    
+    pheonixdrivebase = new PheonixDrivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
+    shooter = new Manipulator(shooterUpper, shooterLower, ShooterConstants.manipulatorConstants);
     intake = new Manipulator(leftIntakeMotor, rightIntakeMotor, IntakeConstants.manipulatorConstants);
     pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
+    shooterAngler = new Angler(anglerLeft, shooterAnglerConst, "shooter");
+    climber = new Climber(climberLeft, climberRight);
     instance = this;
   }
 
   public PheonixDrivebase getDrivebase() {
-    return drivebase2;
+    return pheonixdrivebase;
   }
 
   public LasaVision getVision() {
@@ -77,6 +98,10 @@ public class Systems {
 
   public Manipulator getIntake() {
     return intake;
+  }
+
+  public Climber getClimber() {
+    return climber;
   }
 
   public Angler getPivot() {
