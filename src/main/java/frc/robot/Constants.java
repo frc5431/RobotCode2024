@@ -81,8 +81,18 @@ public final class Constants {
       /* Is Inverted */false,
       /* Default Ratio */ new MotorRatio(1, 1),
       /* Forward Speed */ intakePower,
-      /* Reverse Speed */ outtakePower * (3./4.)
+      /* Reverse Speed */ outtakePower * (3./4.),
+      /* estimatedImpulseForceMetersPerSecond */ 1
     );
+  }
+
+  public static class ClimberConstants {
+    public static final double maxHeight = 4; // Temp 
+    public static final double minHeight = 0;
+
+    public static final double roboWeight = 120; // Temp
+    public static final boolean enableFF = true;
+    public static final double torque = vortexStallTorque;
   }
 
   public static class ShooterConstants {
@@ -111,7 +121,8 @@ public final class Constants {
       /* Is Inverted */false,
       /* Default Ratio */ shooterRatio,
       /* Forward Speed */ normalPower,
-      /* Reverse Speed */ normalPower / 4
+      /* Reverse Speed */ normalPower / 4,
+      /* estimatedImpulseForceMetersPerSecond */ 1
     );
   }
 
@@ -155,12 +166,14 @@ public final class Constants {
     public final Manipulator.MotorRatio defaultRatio;
     public final double forwardSpeed;
     public final double reverseSpeed;
+    public final double estimatedImpulseForceMetersPerSecond;
 
-    public ManipulatorConstants(boolean isInverted, Manipulator.MotorRatio defaultRatio, double forwardSpeed, double reverseSpeed) {
+    public ManipulatorConstants(boolean isInverted, Manipulator.MotorRatio defaultRatio, double forwardSpeed, double reverseSpeed, double estimatedImpulseForceMetersPerSecond) {
       this.isInverted = isInverted;
       this.defaultRatio = defaultRatio;
       this.forwardSpeed = forwardSpeed;
       this.reverseSpeed = reverseSpeed;
+      this.estimatedImpulseForceMetersPerSecond = estimatedImpulseForceMetersPerSecond;
     }
   }
 

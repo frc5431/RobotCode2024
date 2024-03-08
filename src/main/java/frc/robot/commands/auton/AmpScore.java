@@ -11,15 +11,12 @@ import frc.robot.subsystems.Manipulator.Modes;
 
 public class AmpScore extends SequentialCommandGroup {
     
-  private final Manipulator.Modes mode;
-
   public AmpScore(Manipulator intake, Angler pivot) {
-    this.mode = Modes.REVERSE;
 
     addCommands(
       new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED),
-      new RunManipulatorCommand(intake, mode).withTimeout(2),
-      new RunManipulatorCommand(intake, 0)
+      RunManipulatorCommand.withMode(intake, Modes.REVERSE).withTimeout(2),
+      RunManipulatorCommand.withMode(intake, Modes.STOPPED)
     );
   }
 }

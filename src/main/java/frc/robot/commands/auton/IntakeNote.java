@@ -15,7 +15,7 @@ public class IntakeNote extends SequentialCommandGroup {
   public IntakeNote(Manipulator intake, Angler pivot) {
     addCommands(
       new RunAnglerCommand(AnglerModes.RUN_TO_MINIMUM, pivot, TerminationCondition.SETPOINT_REACHED),
-      new RunManipulatorCommand(intake, Modes.REVERSE).withTimeout(1.5),
+      RunManipulatorCommand.withMode(intake, Modes.FORWARD).withTimeout(1.5),
       new RunAnglerCommand(AnglerModes.RUN_TO_MAXIMUM, pivot, TerminationCondition.IMMEDIATE)
     );
   }

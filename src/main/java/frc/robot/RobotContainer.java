@@ -193,12 +193,12 @@ public class RobotContainer {
         -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
     // Shooter
-    operator.rightTrigger().whileTrue(new RunManipulatorCommand(shooter, -1));
-    operator.b().whileTrue(new RunManipulatorCommand(shooter, 1));
+    operator.rightTrigger().whileTrue(RunManipulatorCommand.withPower(shooter, -1));
+    operator.b().whileTrue(RunManipulatorCommand.withPower(shooter, 1));
 
     // Intake
-    operator.leftTrigger().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.FORWARD));
-    operator.x().whileTrue(new RunManipulatorCommand(intake, Manipulator.Modes.REVERSE));
+    operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, Manipulator.Modes.FORWARD));
+    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, Manipulator.Modes.REVERSE));
 
     // Intake Angler
     operator.y().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));

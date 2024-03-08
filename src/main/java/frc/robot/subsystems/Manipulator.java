@@ -43,6 +43,10 @@ public class Manipulator extends SubsystemBase {
 
   }
 
+  public ManipulatorConstants geConstants() {
+    return constants;
+  }
+
   public void runNeutral() {
     this.upper.setIdleMode(IdleMode.kCoast);
     this.upper.burnFlash();
@@ -73,8 +77,8 @@ public class Manipulator extends SubsystemBase {
 
   }
 
-  public double[] getRPM(){
-    return new double[] {upperRelativeEncoder.getVelocity(), lowerRelativeEncoder.getVelocity()};
+  public double[] getRPM() {
+    return new double[] { upperRelativeEncoder.getVelocity(), lowerRelativeEncoder.getVelocity() };
   }
 
   /**
@@ -128,19 +132,23 @@ public class Manipulator extends SubsystemBase {
     this.ratio = ratio;
   }
 
-  public boolean getNoteState(){
+  public boolean getNoteState() {
     return this.hasNote;
   }
 
-  public void setNoteState(boolean state){
+  public void setNoteState(boolean state) {
     this.hasNote = state;
   }
+  
+
+
 
   /**
    * @param upperPercent a percentage in [0,1]
    * @param upperPercent a percentage in [0,1]
    */
-  public record MotorRatio(double upperPercent, double lowerPercent) {}
+  public record MotorRatio(double upperPercent, double lowerPercent) {
+  }
 
   public enum Modes {
     FORWARD,
