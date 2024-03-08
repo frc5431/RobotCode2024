@@ -4,6 +4,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Manipulator;
 
 public class RunManipulatorCommand extends Command {
+  public enum ManipulatorMode {
+    FORWARD,
+    REVERSE,
+    STOPPED,
+  }
 
   // Subsystems
   private Manipulator manipulator;
@@ -11,9 +16,9 @@ public class RunManipulatorCommand extends Command {
   // Config
   private boolean usePower;
   private double power;
-  private Manipulator.Modes mode;
+  private ManipulatorMode mode;
 
-  public static RunManipulatorCommand withMode(Manipulator manipulator, Manipulator.Modes mode) {
+  public static RunManipulatorCommand withMode(Manipulator manipulator, ManipulatorMode mode) {
     RunManipulatorCommand cmd = new RunManipulatorCommand();
 
     cmd.manipulator = manipulator;
@@ -61,6 +66,6 @@ public class RunManipulatorCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    manipulator.run(Manipulator.Modes.STOPPED);
+    manipulator.run(ManipulatorMode.STOPPED);
   }
 }

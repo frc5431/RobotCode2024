@@ -7,8 +7,9 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ManipulatorConstants;
+import frc.robot.commands.RunManipulatorCommand.ManipulatorMode;
 
-import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 public class Manipulator extends SubsystemBase {
 
@@ -16,7 +17,6 @@ public class Manipulator extends SubsystemBase {
   public CANSparkBase lower;
 
   protected boolean containedGamePiece;
-  private long lastFiredTimestamp = -1;
   private boolean hasNote;
   protected MotorRatio ratio;
 
@@ -24,7 +24,13 @@ public class Manipulator extends SubsystemBase {
   public RelativeEncoder lowerRelativeEncoder;
   private ManipulatorConstants constants;
 
+  private BooleanSupplier gamePieceDetector;
+
   public Manipulator(CANSparkBase upper, CANSparkBase lower, ManipulatorConstants constants) {
+    this(upper, lower, constants, () -> false);
+  }
+
+  public Manipulator(CANSparkBase upper, CANSparkBase lower, ManipulatorConstants constants, BooleanSupplier gamePieceDetector) {
     this.upper = upper;
     this.lower = lower;
     this.hasNote = false;
@@ -41,6 +47,7 @@ public class Manipulator extends SubsystemBase {
 
     this.ratio = constants.defaultRatio;
 
+    this.gamePieceDetector = gamePieceDetector;
   }
 
   public ManipulatorConstants geConstants() {
@@ -67,11 +74,6 @@ public class Manipulator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (getAverageAppliedOutput() > 35) {
-      containedGamePiece = true;
-    } else if (containedGamePiece) {
-      lastFiredTimestamp = System.currentTimeMillis();
-    }
     SmartDashboard.putNumber("shup RPM", this.upperRelativeEncoder.getVelocity());
     SmartDashboard.putNumber("shlo RPM", this.lowerRelativeEncoder.getVelocity());
 
@@ -81,44 +83,18 @@ public class Manipulator extends SubsystemBase {
     return new double[] { upperRelativeEncoder.getVelocity(), lowerRelativeEncoder.getVelocity() };
   }
 
-  /**
-   * Gets the timestamp of the latest fire
-   *
-   * @return empty if never fired, otherwise returns the timestamp in epoch
-   *         miliseconds
-   */
-  public Optional<Long> getLastFiredTimestamp() {
-    if (lastFiredTimestamp == -1) {
-      return Optional.empty();
-    }
-
-    return Optional.of(lastFiredTimestamp);
-  }
-
-  /**
-   * WARN: may be stale if read too late after game piece was fired.
-   *
-   * @return whether or not a game piece was fired since this method was last
-   *         called. It will return false if a game piece is currently contained
-   *         <br>
-   */
   public boolean checkGamePieceStatus() {
-    if (containedGamePiece && getAverageAppliedOutput() <= 35) {
-      containedGamePiece = false;
-      return true;
-    }
-
-    return false;
+    return gamePieceDetector.getAsBoolean();
   }
 
-  public void run(Modes mode) {
+  public void run(ManipulatorMode mode) {
     SmartDashboard.putString(getName() + " mode", mode.toString());
 
-    if (mode == Modes.FORWARD) {
+    if (mode == ManipulatorMode.FORWARD) {
       runWithPower(constants.forwardSpeed);
-    } else if (mode == Modes.REVERSE) {
+    } else if (mode == ManipulatorMode.REVERSE) {
       runWithPower(constants.reverseSpeed);
-    } else if (mode == Modes.STOPPED) {
+    } else if (mode == ManipulatorMode.STOPPED) {
       runWithPower(0);
     }
   }
@@ -150,9 +126,5 @@ public class Manipulator extends SubsystemBase {
   public record MotorRatio(double upperPercent, double lowerPercent) {
   }
 
-  public enum Modes {
-    FORWARD,
-    REVERSE,
-    STOPPED,
-  }
+
 }

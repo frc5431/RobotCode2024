@@ -20,6 +20,7 @@ import frc.robot.Constants.TunerConstatns;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunClimberCommand;
 import frc.robot.commands.RunManipulatorCommand;
+import frc.robot.commands.RunManipulatorCommand.ManipulatorMode;
 import frc.robot.commands.auton.AmpScore;
 import frc.robot.commands.auton.IntakeNote;
 
@@ -211,8 +212,8 @@ public class RobotContainer {
     operator.b().whileTrue(RunManipulatorCommand.withPower(shooter, 1));
 
     // Intake
-    operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, Manipulator.Modes.FORWARD));
-    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, Manipulator.Modes.REVERSE));
+    operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.FORWARD));
+    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.REVERSE));
 
     // Intake Angler
 
@@ -231,8 +232,8 @@ public class RobotContainer {
     operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
    // driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
 
-    operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, Manipulator.Modes.FORWARD));
-    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, Manipulator.Modes.REVERSE));
+    operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.FORWARD));
+    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.REVERSE));
   }
 
 
