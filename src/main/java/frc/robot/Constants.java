@@ -112,7 +112,7 @@ public final class Constants {
     public static int anglerRightId = 18;
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */Rotation2d.fromDegrees(0), // temp
-      /* Max Angle */Rotation2d.fromDegrees(30), // temp
+      /* Max Angle */Rotation2d.fromRotations(1.5), // temp
       /* Length Meters */Units.inchesToMeters(16), // temp
       /* Weight Kilos */Units.lbsToKilograms(7.625), // temp
       /* Parallel To Ground Angle */Rotation2d.fromDegrees(0), // temp
