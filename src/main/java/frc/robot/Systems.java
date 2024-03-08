@@ -13,7 +13,7 @@ import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LasaVision;
 import frc.robot.subsystems.Manipulator;
-import frc.robot.subsystems.PheonixDrivebase;
+import frc.robot.subsystems.Drivebase;
 
 public class Systems {
   public static Systems instance;
@@ -42,7 +42,7 @@ public class Systems {
 
 
   private MotorType brushless =  MotorType.kBrushless;
-  public PheonixDrivebase pheonixdrivebase;
+  public Drivebase pheonixdrivebase;
 
   public Systems() {
 
@@ -75,7 +75,7 @@ public class Systems {
     climberRight.burnFlash();
 
     
-    pheonixdrivebase = new PheonixDrivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
+    pheonixdrivebase = new Drivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
     shooter = new Manipulator(shooterUpper, shooterLower, ShooterConstants.manipulatorConstants);
     intake = new Manipulator(leftIntakeMotor, rightIntakeMotor, IntakeConstants.manipulatorConstants);
     pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
@@ -85,7 +85,7 @@ public class Systems {
     instance = this;
   }
 
-  public PheonixDrivebase getDrivebase() {
+  public Drivebase getDrivebase() {
     return pheonixdrivebase;
   }
 
@@ -109,7 +109,7 @@ public class Systems {
     return pivot;
   }
 
-  public Boolean getBeamBreak() {
+  public boolean getBeamBreakStatus() {
     return beambreak.get();
   }
 
