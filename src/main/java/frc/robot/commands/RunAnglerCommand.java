@@ -12,8 +12,8 @@ public class RunAnglerCommand extends Command {
   Supplier<Rotation2d> rotation;
 
   public enum AnglerModes {
-    RUN_TO_MAXIMUM,
-    RUN_TO_MINIMUM,
+    MAXIMUM,
+    MINIMUM,
     CUSTOM
   }
 
@@ -52,9 +52,9 @@ public class RunAnglerCommand extends Command {
   }
 
   public void execute() {
-    if (AnglerModes.RUN_TO_MINIMUM == mode) {
+    if (AnglerModes.MINIMUM == mode) {
       angler.runToMin();
-    } else if (AnglerModes.RUN_TO_MAXIMUM == mode) {
+    } else if (AnglerModes.MAXIMUM == mode) {
       angler.runToMax();
     } else {
       angler.setRotation(this.rotation.get());
@@ -67,6 +67,6 @@ public class RunAnglerCommand extends Command {
       return true;
     }
 
-    return angler.isFinished(5);
+    return angler.isFinished(0.3);
   }
 }

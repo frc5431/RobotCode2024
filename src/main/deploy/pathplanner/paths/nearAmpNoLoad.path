@@ -3,29 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.9,
+        "x": 1.8,
         "y": 7.2
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9,
+        "x": 1.8,
         "y": 7.193650138647855
-      },
-      "isLocked": true,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.1593004620986824,
-        "y": 6.948451565064565
-      },
-      "prevControl": {
-        "x": -0.2595849968956383,
-        "y": 6.983981470369325
-      },
-      "nextControl": {
-        "x": 2.426549104169781,
-        "y": 6.944526071647626
       },
       "isLocked": false,
       "linkedName": null
@@ -33,11 +17,27 @@
     {
       "anchor": {
         "x": 1.9,
-        "y": 7.2
+        "y": 7.0
       },
       "prevControl": {
-        "x": 1.8644289499722682,
-        "y": 7.225586148746382
+        "x": 0.5860481452789963,
+        "y": 6.908119535752098
+      },
+      "nextControl": {
+        "x": 2.441337479407986,
+        "y": 7.037854004120536
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.8,
+        "y": 7.6
+      },
+      "prevControl": {
+        "x": 1.7644289499722683,
+        "y": 7.625586148746382
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,15 +47,27 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.0,
-      "rotationDegrees": 4.376275534678985,
+      "rotationDegrees": 0.0,
       "rotateFast": false
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.85,
+      "maxWaypointRelativePos": 1.5,
+      "constraints": {
+        "maxVelocity": 1.75,
+        "maxAcceleration": 1.75,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "grab",
-      "waypointRelativePos": 1.05,
+      "waypointRelativePos": 0.9,
       "command": {
         "type": "sequential",
         "data": {
@@ -90,7 +102,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 1.75,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

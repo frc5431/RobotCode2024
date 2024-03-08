@@ -16,15 +16,18 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.commands.auton.AmpScore;
+import frc.robot.commands.auton.IntakeNote;
+
 import frc.robot.controllers.DriverController;
 import frc.robot.controllers.DriverSkyflyController;
 import frc.robot.controllers.DriverXboxController;
 import frc.robot.subsystems.Angler;
-import frc.robot.subsystems.Drivebase;
+//import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.PheonixDrivebase;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
@@ -55,6 +58,9 @@ public class RobotContainer {
 
   public RobotContainer() {
     NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
+    NamedCommands.registerCommand("GrabNote", new IntakeNote(intake, pivot));
+    NamedCommands.registerCommand("SpeakerScore", new WaitCommand(2));
+
 
     autonMagic = new AutonMagic(systems);
 
@@ -99,12 +105,11 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    SmartDashboard.putNumberArray("Shooter Speeds", shooter.getRPM());
-    SmartDashboard.putNumberArray("Intake Speeds", intake.getRPM());
-    SmartDashboard.putBoolean("is red?",  DriverStation.getAlliance().get() == DriverStation.Alliance.Red);
+    //SmartDashboard.putNumberArray("Shooter Speeds", shooter.getRPM());
+    //SmartDashboard.putNumberArray("Intake Speeds", intake.getRPM());
 
-    SmartDashboard.putNumber("dx", driver.getLeftX());
-    SmartDashboard.putNumber("dy", driver.getLeftY());
+    //SmartDashboard.putNumber("dx", driver.getLeftX());
+    //SmartDashboard.putNumber("dy", driver.getLeftY());
   }
 
   Translation2d ellipticalDiscToSquare(double u, double v) {
@@ -189,8 +194,8 @@ public class RobotContainer {
       driver.resetGyro().onFalse(new InstantCommand(() -> drivebase.zeroGyro()));
     }
 
-    SmartDashboard.putNumber("turn axis",
-        -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+    // SmartDashboard.putNumber("turn axis",
+    //     -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
     // Shooter
     operator.rightTrigger().whileTrue(RunManipulatorCommand.withPower(shooter, -1));
@@ -204,17 +209,13 @@ public class RobotContainer {
     operator.y().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
     operator.a().onFalse(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(10)), pivot));
     operator.povUp().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));
-    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RUN_TO_MINIMUM, pivot));
-    operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RUN_TO_MAXIMUM, pivot));
-    driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.RUN_TO_MAXIMUM, pivot));
+    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
+    operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
+    driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
 
-    // driver.povDown().onTrue(new InstantCommand(() -> {
-    //   if (isFieldRelative) {
-    //     setRobotRelativeControl();
-    //   } else {
-    //     setFieldRelativeControl();
-    //   }
-    // }));
+    operator.rightTrigger().whileTrue(new RunManipulatorCommand(shooter, -1));
+    operator.b().whileTrue(new RunManipulatorCommand(shooter, 1));
+
   }
 
 

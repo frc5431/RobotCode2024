@@ -76,7 +76,7 @@ public class ObjectCamera implements AutoCloseable {
 
   /**
     * Get distance to game object
-    * @return Distance to object, empty if undetected
+    * @return Distance to object, empty Q/if undetected
     */
   public Optional<Measure<Distance>> getDistance() {
     PhotonPipelineResult result = m_camera.getLatestResult();

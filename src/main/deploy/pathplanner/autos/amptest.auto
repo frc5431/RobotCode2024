@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 1.8,
-      "y": 7.0
+      "y": 7.5
     },
     "rotation": 90.0
   },
@@ -12,9 +12,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "AmpScore"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "ampPreload"
+            "pathName": "nearAmpNoLoad"
           }
         },
         {

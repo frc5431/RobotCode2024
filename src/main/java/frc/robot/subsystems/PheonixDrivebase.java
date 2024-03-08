@@ -4,6 +4,7 @@ import java.util.ConcurrentModificationException;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -28,6 +29,7 @@ public class PheonixDrivebase extends SwerveDrivetrain implements Subsystem {
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
     private SwerveRequest.ApplyChassisSpeeds drive = new SwerveRequest.ApplyChassisSpeeds();
+   //private MountPoseConfigs config;
 
 
     public PheonixDrivebase(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
@@ -35,7 +37,11 @@ public class PheonixDrivebase extends SwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        //getPigeon2().getConfigurator().apply(config);
+        // this.config = new MountPoseConfigs();
+        
+        // config.withMountPoseYaw(45);
+
+        // getPigeon2().getConfigurator().apply(config);
 
         AutoBuilder.configureHolonomic(
                 this::getPose, // Robot pose supplier
@@ -43,11 +49,11 @@ public class PheonixDrivebase extends SwerveDrivetrain implements Subsystem {
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                        new PIDConstants(10.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(10.0, 0.0, 0.0), // Rotation PID constants
+                        new PIDConstants(8.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(12.0, 0.0, 0.0), // Rotation PID constants
                         2.5, // Max module speed m/s
                         0.5125830761935194, // Drive base radius in meters. Distance from robot center to furthest module.
-                        new ReplanningConfig(true, true) // Default path replanning config. See the API for the options here
+                        new ReplanningConfig(true, false) // Default path replanning config. See the API for the options here
                 ),
                 () -> {
                     var alliance = DriverStation.getAlliance();
@@ -58,7 +64,7 @@ public class PheonixDrivebase extends SwerveDrivetrain implements Subsystem {
                 },
                 this // Reference to this subsystem to set requirements
         );
-
+        
 
     }
 

@@ -15,8 +15,7 @@ public class AmpScore extends SequentialCommandGroup {
 
     addCommands(
       new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED),
-      RunManipulatorCommand.withMode(intake, Modes.REVERSE).withTimeout(2),
-      RunManipulatorCommand.withMode(intake, Modes.STOPPED)
+      RunManipulatorCommand.withMode(intake, Modes.REVERSE).withTimeout(0.3)
     );
   }
 }
