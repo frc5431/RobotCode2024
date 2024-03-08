@@ -1,11 +1,10 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkFlex;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
 
-import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.AnglerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -13,8 +12,8 @@ import frc.robot.Constants.TunerConstatns;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LasaVision;
-import frc.robot.subsystems.PheonixDrivebase;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.PheonixDrivebase;
 
 public class Systems {
   public static Systems instance;
@@ -24,6 +23,7 @@ public class Systems {
   private Angler shooterAngler;
   private Manipulator shooter;
   private Climber climber;
+  private DigitalInput beambreak;
 
   private AnglerConstants intakeAnglerConst;
   private AnglerConstants shooterAnglerConst;
@@ -81,6 +81,7 @@ public class Systems {
     pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
     shooterAngler = new Angler(anglerLeft, shooterAnglerConst, "shooter");
     climber = new Climber(climberLeft, climberRight);
+    beambreak = new DigitalInput(9);
     instance = this;
   }
 
@@ -106,6 +107,10 @@ public class Systems {
 
   public Angler getPivot() {
     return pivot;
+  }
+
+  public Boolean getBeamBreak() {
+    return beambreak.get();
   }
 
   public Angler getShooterAngler() {
