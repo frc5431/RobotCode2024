@@ -1,11 +1,10 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkFlex;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
 
-import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.AnglerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -13,8 +12,8 @@ import frc.robot.Constants.TunerConstatns;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LasaVision;
-import frc.robot.subsystems.PheonixDrivebase;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Drivebase;
 
 public class Systems {
   public static Systems instance;
@@ -24,6 +23,7 @@ public class Systems {
   private Angler shooterAngler;
   private Manipulator shooter;
   private Climber climber;
+  private DigitalInput beambreak;
 
   private AnglerConstants intakeAnglerConst;
   private AnglerConstants shooterAnglerConst;
@@ -42,7 +42,7 @@ public class Systems {
 
 
   private MotorType brushless =  MotorType.kBrushless;
-  public PheonixDrivebase pheonixdrivebase;
+  public Drivebase pheonixdrivebase;
 
   public Systems() {
 
@@ -75,16 +75,17 @@ public class Systems {
     climberRight.burnFlash();
 
     
-    pheonixdrivebase = new PheonixDrivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
+    pheonixdrivebase = new Drivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
     shooter = new Manipulator(shooterUpper, shooterLower, ShooterConstants.manipulatorConstants);
     intake = new Manipulator(leftIntakeMotor, rightIntakeMotor, IntakeConstants.manipulatorConstants);
     pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
     shooterAngler = new Angler(anglerLeft, shooterAnglerConst, "shooter");
     climber = new Climber(climberLeft, climberRight);
+    beambreak = new DigitalInput(9);
     instance = this;
   }
 
-  public PheonixDrivebase getDrivebase() {
+  public Drivebase getDrivebase() {
     return pheonixdrivebase;
   }
 
@@ -106,6 +107,10 @@ public class Systems {
 
   public Angler getPivot() {
     return pivot;
+  }
+
+  public boolean getBeamBreakStatus() {
+    return beambreak.get();
   }
 
   public Angler getShooterAngler() {

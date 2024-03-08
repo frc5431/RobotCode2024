@@ -4,7 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.PheonixDrivebase;
+import frc.robot.subsystems.Drivebase;
 import frc.team5431.titan.core.misc.Logger;
 import java.util.function.BooleanSupplier;
 
@@ -13,7 +13,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 public class DriveLockedRotCommand extends Command {
 
-  private final PheonixDrivebase m_drivetrainSubsystem;
+  private final Drivebase m_drivetrainSubsystem;
 
   private final double gyroAngle;
 
@@ -24,7 +24,7 @@ public class DriveLockedRotCommand extends Command {
     private SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-  public DriveLockedRotCommand(PheonixDrivebase drivebase, double angle, BooleanSupplier shouldConclude) {
+  public DriveLockedRotCommand(Drivebase drivebase, double angle, BooleanSupplier shouldConclude) {
     this.m_drivetrainSubsystem = drivebase;
     this.gyroAngle = angle;
     this.isManualRotating = shouldConclude;

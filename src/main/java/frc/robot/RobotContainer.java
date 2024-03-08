@@ -13,7 +13,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -21,6 +20,7 @@ import frc.robot.Constants.TunerConstatns;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunClimberCommand;
 import frc.robot.commands.RunManipulatorCommand;
+import frc.robot.commands.RunManipulatorCommand.ManipulatorMode;
 import frc.robot.commands.auton.AmpScore;
 import frc.robot.commands.auton.IntakeNote;
 
@@ -29,9 +29,9 @@ import frc.robot.controllers.DriverSkyflyController;
 import frc.robot.controllers.DriverXboxController;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Drivebase;
 //import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Manipulator;
-import frc.robot.subsystems.PheonixDrivebase;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
 
 public class RobotContainer {
@@ -39,7 +39,7 @@ public class RobotContainer {
 
   public static final CommandXboxController operator = new CommandXboxController(1);
   private final Systems systems = new Systems();
-  private final PheonixDrivebase drivebase = systems.getDrivebase();
+  private final Drivebase drivebase = systems.getDrivebase();
   private final Angler shooterAngler = systems.getShooterAngler();
 
   private final Angler pivot = systems.getPivot();
@@ -212,8 +212,8 @@ public class RobotContainer {
     operator.b().whileTrue(RunManipulatorCommand.withPower(shooter, 1));
 
     // Intake
-    operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, Manipulator.Modes.FORWARD));
-    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, Manipulator.Modes.REVERSE));
+    operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.FORWARD));
+    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.REVERSE));
 
     // Intake Angler
 
@@ -232,8 +232,8 @@ public class RobotContainer {
     operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
    // driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
 
-    operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, Manipulator.Modes.FORWARD));
-    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, Manipulator.Modes.REVERSE));
+    operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.FORWARD));
+    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.REVERSE));
   }
 
 
