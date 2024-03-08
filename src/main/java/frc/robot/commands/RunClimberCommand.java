@@ -17,6 +17,8 @@ public class RunClimberCommand extends Command {
     public RunClimberCommand(Climber climber, ClimberMode mode) {
         this.climber = climber;
         this.mode = mode;
+
+        addRequirements(climber);
         
     }
 
@@ -24,13 +26,13 @@ public class RunClimberCommand extends Command {
     public void initialize() {
         double position;
         if(mode == ClimberMode.EXTENDED) {
-            position = Constants.ClimberConstants.minHeight;
-        }else if(mode == ClimberMode.RETRACTED) {
             position = Constants.ClimberConstants.maxHeight;
+        }else if(mode == ClimberMode.RETRACTED) {
+            position = Constants.ClimberConstants.minHeight;
         }else {
             throw new IllegalStateException();
         }
 
-        this.climber.setPosition(position);
+        this.climber.setpoint = position;
     }
 }

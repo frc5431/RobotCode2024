@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -20,6 +21,7 @@ import frc.robot.Constants.TunerConstatns;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunClimberCommand;
 import frc.robot.commands.RunManipulatorCommand;
+import frc.robot.commands.RunClimberCommand.ClimberMode;
 import frc.robot.commands.RunManipulatorCommand.ManipulatorMode;
 import frc.robot.commands.auton.AmpScore;
 import frc.robot.commands.auton.IntakeNote;
@@ -117,6 +119,8 @@ public class RobotContainer {
 
     //SmartDashboard.putNumber("dx", driver.getLeftX());
     //SmartDashboard.putNumber("dy", driver.getLeftY());
+
+    SmartDashboard.putBoolean("Beam Break", systems.getBeamBreakStatus().get());
   }
 
   Translation2d ellipticalDiscToSquare(double u, double v) {
@@ -168,29 +172,10 @@ public class RobotContainer {
   private void configureBindings() {
     shooter.setRatio(Constants.ShooterConstants.simpleShooterRatio);
 
-    // driver.setDeadzone(0.15);
-    /*
-     * // drivebase.setDefaultCommand(
-     * // new DefaultDriveCommand(
-     * // systems,
-     * // (Supplier<Pair<Double, Double>>) () -> {
-     * // double inX = -driver.getLeftY(); // swap intended
-     * // if(driver.povUp().getAsBoolean()) {
-     * // inX = 0.3;
-     * // }
-     * // double inY = -driver.getLeftX();
-     * // double mag = Math.hypot(inX, inY);
-     * // double theta = Math.atan2(inY, inX);
-     * // return Pair.of(modifyAxis(mag) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
-     * theta);
-     * // },
-     * // () -> -modifyAxis(-driver.getRightX()) *
-     * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
-     */
     drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
         drivebase.applyRequest(() -> {
           // var axis = FGSquircularMap(driver.getLeftX() * .89, driver.getLeftY() * 0.89);
-          return driveFC.withVelocityX(modifyAxis(driver.getLeftY()) * TunerConstatns.kSpeedAt12VoltsMps)
+          return driveFC.withVelocityX(modifyAxis(driver.getLeftY() + (driver.temp_getController().povUp().getAsBoolean() ? 0.1 : 0)) * TunerConstatns.kSpeedAt12VoltsMps)
             .withVelocityY(modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps)
             .withRotationalRate(
                 -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
@@ -201,8 +186,11 @@ public class RobotContainer {
       driver.resetGyro().onFalse(new InstantCommand(() -> drivebase.zeroGyro()));
     }
 
-    driver.temp_getController().rightTrigger().whileTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
-    driver.temp_getController().leftTrigger().whileTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
+    driver.temp_getController().rightTrigger().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
+    driver.temp_getController().leftTrigger().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
+
+    operator.povLeft().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
+
 
     // SmartDashboard.putNumber("turn axis",
     //     -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
@@ -217,18 +205,17 @@ public class RobotContainer {
 
     // Intake Angler
 
-    operator.axisGreaterThan(1, 0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
-    operator.axisLessThan(1, -0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
+    operator.axisGreaterThan(1, 0.15).onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
+    operator.axisLessThan(1, -0.15).onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
 
     operator.axisGreaterThan(5, 0.15).whileTrue(new RunAnglerCommand(() -> shooterAngler.setpoint.plus(Rotation2d.fromDegrees(10)), shooterAngler));
-    operator.axisLessThan(5, -0.15).whileTrue(new RunAnglerCommand(() -> shooterAngler.setpoint.plus(Rotation2d.fromDegrees(10)), shooterAngler));
+    operator.axisLessThan(5, -0.15).whileTrue(new RunAnglerCommand(() -> shooterAngler.setpoint.minus(Rotation2d.fromDegrees(10)), shooterAngler));
 
-
-
+    
     operator.y().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
     operator.a().onFalse(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(10)), pivot));
     operator.povUp().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));
-    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
+    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot));
     operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
    // driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
 

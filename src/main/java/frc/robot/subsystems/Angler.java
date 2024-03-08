@@ -25,6 +25,7 @@ public class Angler extends SubsystemBase {
   public AnglerModes mode;
   public double massKg;
   protected AnglerConstants constants;
+  public boolean isShooter;
 
   public Angler(CANSparkBase motor, AnglerConstants constants, String name) {
     this.motor = motor;
@@ -33,6 +34,7 @@ public class Angler extends SubsystemBase {
     this.controller.setP(constants.pid.p());
     this.controller.setI(constants.pid.i());
     this.controller.setD(constants.pid.d());
+    isShooter = name.equals("shooter");
     // absoluteEncoder.setPositionConversionFactor(2 * Math.PI *
     // constants.gearRatio);
 
@@ -40,19 +42,24 @@ public class Angler extends SubsystemBase {
     // SmartDashboard.putNumber("abs encoder ", absoluteEncoder.getPosition());
     // motor.enableVoltageCompensation(12);
 
-    motor.setSmartCurrentLimit(60, 35);
-    controller.setOutputRange(-0.8, 0.8);
-    controller.setPositionPIDWrappingEnabled(true);
-    controller.setPositionPIDWrappingMinInput(0);
-    controller.setPositionPIDWrappingMaxInput(2 * Math.PI);
-    absoluteEncoder.setPositionConversionFactor(2 * Math.PI);
-    absoluteEncoder.setVelocityConversionFactor(2 * Math.PI);
+    // motor.setSmartCurrentLimit(60, 35);
+    controller.setOutputRange(-constants.speedLimit, constants.speedLimit);
+    double convFact = 2 * Math.PI;
+    //controller.setPositionPIDWrappingEnabled(name != "shooter");
+    this.setName(name);
+    
+    
+    if(!isShooter) {
+      controller.setPositionPIDWrappingMinInput(0);
+      absoluteEncoder.setPositionConversionFactor(convFact);
+      absoluteEncoder.setVelocityConversionFactor(convFact);
+      controller.setPositionPIDWrappingMaxInput(convFact);
+    }
 
     motor.burnFlash();
     this.constants = constants;
     this.setpoint = Rotation2d.fromRadians(absoluteEncoder.getPosition());
 
-    this.setName(name);
   } // 4esahtf v bbbbbbbbbbbbbbbbbbbbbbbbbbb -p[[;lm ]]
 
   public Rotation2d getAngleToGround() {

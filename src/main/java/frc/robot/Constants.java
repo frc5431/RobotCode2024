@@ -67,19 +67,20 @@ public final class Constants {
     public static Rotation2d ampAngle = Rotation2d.fromDegrees(105.70);
 
     public static AnglerConstants anglerConstants = new AnglerConstants(
-      /* Min Angle */Rotation2d.fromDegrees(-9.45),
-      /* Max Angle */Rotation2d.fromDegrees(153.11), // temp
-      /* Length Meters */Units.inchesToMeters(17),
-      /* Weight Kilos */Units.lbsToKilograms(5.265), // temp
+      /* Min Angle */Rotation2d.fromDegrees(-25),
+      /* Max Angle */Rotation2d.fromDegrees(150), // temp
+      /* Length Meters */Units.inchesToMeters(12),
+      /* Weight Kilos */Units.lbsToKilograms(5.625), // temp
       /* Parallel To Ground Angle */Rotation2d.fromRadians(0),
-      /* PID */new MotionMagic(0.3, 0.0, 0.01, -1), // ff goes unused
-      /* Stall Torque (Nm) */ neoStallTorque * (50),
+      /* PID */new MotionMagic(0.14, 0.0, 0.02, -1),
+      /* Stall Torque (Nm) */ neoStallTorque * (15),
       /* Enable FF */ true,
-      /* Gear Ratio */1
+      /* Gear Ratio */2,
+      0.8
     );
 
     public static ManipulatorConstants manipulatorConstants = new ManipulatorConstants(
-      /* Is Inverted */false,
+      /* Is Inverted */ true,
       /* Default Ratio */ new MotorRatio(1, 1),
       /* Forward Speed */ intakePower,
       /* Reverse Speed */ outtakePower * (3./4.),
@@ -91,7 +92,7 @@ public final class Constants {
 
     public static int leftClimberId = 21;
     public static int rightClimberId = 22;
-    public static final double maxHeight = 4; // Temp 
+    public static final double maxHeight = 23; // Temp 
     public static final double minHeight = 0;
 
     public static final double roboWeight = 120; // Temp
@@ -111,18 +112,19 @@ public final class Constants {
     public static int anglerRightId = 18;
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */Rotation2d.fromDegrees(0), // temp
-      /* Max Angle */Rotation2d.fromRotations(1.5), // temp
-      /* Length Meters */Units.inchesToMeters(16), // temp
+      /* Max Angle */Rotation2d.fromRotations(1.25), // temp
+      /* Length Meters */Units.inchesToMeters(5), // temp
       /* Weight Kilos */Units.lbsToKilograms(7.625), // temp
       /* Parallel To Ground Angle */Rotation2d.fromDegrees(0), // temp
-      /* PID */new MotionMagic(0.0, 0.0, 0.1, -1), // ff goes unused
+      /* PID */new MotionMagic(0.4, 0.0, 0.01, -1), // ff goes unused
       /* Stall Torque (Nm) */ vortexStallTorque,
       /* Enable FF */ false,
-      /* Gear Ratio */ 1
+      /* Gear Ratio */ 306/10,
+      0.2
     );
 
     public static ManipulatorConstants manipulatorConstants = new ManipulatorConstants(
-      /* Is Inverted */false,
+      /* Is Inverted */ true,
       /* Default Ratio */ shooterRatio,
       /* Forward Speed */ normalPower,
       /* Reverse Speed */ normalPower / 4,
@@ -140,6 +142,7 @@ public final class Constants {
     public final double stalltorque;
     public final boolean enableFF;
     public final double gearRatio;
+    public final double speedLimit;
 
     public AnglerConstants(
       Rotation2d minAngle,
@@ -150,7 +153,8 @@ public final class Constants {
       MotionMagic pid,
       double stallTorque,
       boolean enableFF,
-      double gearRatio
+      double gearRatio,
+      double speedLimit
     ) {
       this.minAngle = minAngle;
       this.maxAngle = maxAngle;
@@ -161,6 +165,7 @@ public final class Constants {
       this.stalltorque = stallTorque;
       this.enableFF = enableFF;
       this.gearRatio = gearRatio;
+      this.speedLimit = speedLimit;
     }
   }
 
@@ -206,25 +211,25 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 7;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 8;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 12;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.427979 + 0.5).getRadians();
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0).getRadians();
     //-Rotation2d.fromRotations(0.428223).plus(Rotation2d.fromDegrees(180)).getRadians();
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 1;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 2;
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 9;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.414551).getRadians();
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0).getRadians();
     //-Rotation2d.fromRotations(0.413818).plus(Rotation2d.fromDegrees(180)).getRadians();
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 5;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 6;
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 11;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.072998 + 0.5).getRadians();
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0).getRadians();
     //-Rotation2d.fromRotations(0.071533).plus(Rotation2d.fromDegrees(-180)).getRadians();
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 3;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 4;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 10;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0.060791).getRadians();
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0).getRadians();
     //-Rotation2d.fromRotations(0.059326).plus(Rotation2d.fromDegrees(180)).getRadians();;
 
  public static final double MAX_VOLTAGE = 12.0;
@@ -260,11 +265,17 @@ public final class Constants {
 
   public static class VisionConstants {
     public static final Transform3d SHOOTER_CAMERA_POSE = new Transform3d(
-      new Translation3d(Units.inchesToMeters(-13.5), Units.inchesToMeters(5),Units.inchesToMeters(13.75)),
+      new Translation3d(Units.inchesToMeters(-13.5), Units.inchesToMeters(5),Units.inchesToMeters(8+1.87)),
       new Rotation3d(0, Units.degreesToRadians(-32.5), Units.degreesToRadians(180))
     ); //32.5
     public static final Resolution SHOOTER_CAMERA_RESOLUTION = Resolution.RES_640_480;
     public static final Rotation2d SHOOTER_CAMERA_FOV = Rotation2d.fromDegrees(76.2);
+
+     public static final Transform3d INTAKE_CAMERA_POSE = new Transform3d(
+      new Translation3d(Units.inchesToMeters(5), Units.inchesToMeters(8),Units.inchesToMeters(13+1.87)),
+      new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(0))
+      );
+
 
     public static final Transform3d DRIVER_CAMERA_POSE = new Transform3d(
       new Translation3d(Units.inchesToMeters(13.5), Units.inchesToMeters(0),Units.inchesToMeters(4)),
@@ -319,7 +330,7 @@ public final class Constants {
 
     private static final boolean kSteerMotorReversed = false;
     private static final boolean kInvertLeftSide = false;
-    private static final boolean kInvertRightSide = false;
+    private static final boolean kInvertRightSide = true;
 
     private static final String kCANbusName = "Omnivore2024";
     private static final int kPigeonId = 13;
@@ -359,7 +370,7 @@ public final class Constants {
     private static final int kFrontLeftDriveMotorId = 7;
     private static final int kFrontLeftSteerMotorId = 8;
     private static final int kFrontLeftEncoderId = 12;
-    private static final double kFrontLeftEncoderOffset = -(0.430176);
+    private static final double kFrontLeftEncoderOffset = -(0.258545);
 
     private static final double kFrontLeftXPosInches = 10.25;
     private static final double kFrontLeftYPosInches = 11.75;
@@ -368,7 +379,7 @@ public final class Constants {
     private static final int kFrontRightDriveMotorId = 1;
     private static final int kFrontRightSteerMotorId = 2;
     private static final int kFrontRightEncoderId = 9;
-    private static final double kFrontRightEncoderOffset = -(0.410889 + 0.5);
+    private static final double kFrontRightEncoderOffset = -(-0.019043);
 
     private static final double kFrontRightXPosInches = 10.25;
     private static final double kFrontRightYPosInches = -11.75;
@@ -377,7 +388,7 @@ public final class Constants {
     private static final int kBackLeftDriveMotorId = 5;
     private static final int kBackLeftSteerMotorId = 6;
     private static final int kBackLeftEncoderId = 11;
-    private static final double kBackLeftEncoderOffset = -(0.069336);
+    private static final double kBackLeftEncoderOffset = -(0.344727);
 
     private static final double kBackLeftXPosInches = -10.25;
     private static final double kBackLeftYPosInches = 11.75;
@@ -386,7 +397,7 @@ public final class Constants {
     private static final int kBackRightDriveMotorId = 3;
     private static final int kBackRightSteerMotorId = 4;
     private static final int kBackRightEncoderId = 10;
-    private static final double kBackRightEncoderOffset = -(0.062256 + 0.5);
+    private static final double kBackRightEncoderOffset = -(-0.193359);
 
     private static final double kBackRightXPosInches = -10.25;
     private static final double kBackRightYPosInches = -11.75;

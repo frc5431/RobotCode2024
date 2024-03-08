@@ -46,8 +46,6 @@ public class Systems {
 
   public Systems() {
 
-
-
     shooterAnglerConst = Constants.ShooterConstants.anglerConstants;
     intakeAnglerConst = Constants.IntakeConstants.anglerConstants;
 
@@ -63,9 +61,10 @@ public class Systems {
     anglerRight = new CANSparkFlex(Constants.ShooterConstants.anglerRightId, brushless);
     climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
     climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
-
-    anglerRight.follow(anglerLeft);
-    climberRight.follow(climberRight);
+    
+    anglerLeft.setInverted(true);
+    anglerLeft.burnFlash();
+    anglerRight.follow(anglerLeft, true);
 
     leftIntakeMotor.setSmartCurrentLimit(40);
     rightIntakeMotor.setSmartCurrentLimit(40);
@@ -73,7 +72,6 @@ public class Systems {
     leftIntakeMotor.burnFlash();
     anglerRight.burnFlash();
     climberRight.burnFlash();
-
     
     pheonixdrivebase = new Drivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
     shooter = new Manipulator(shooterUpper, shooterLower, ShooterConstants.manipulatorConstants);
@@ -109,8 +107,8 @@ public class Systems {
     return pivot;
   }
 
-  public boolean getBeamBreakStatus() {
-    return beambreak.get();
+  public DigitalInput getBeamBreakStatus() {
+    return beambreak;
   }
 
   public Angler getShooterAngler() {
