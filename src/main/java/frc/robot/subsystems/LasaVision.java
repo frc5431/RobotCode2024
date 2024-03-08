@@ -20,12 +20,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AprilTagCamera;
 import frc.robot.Constants;
 import frc.robot.ObjectCamera;
-import frc.robot.Systems;
 
 public class LasaVision extends SubsystemBase implements AutoCloseable {
   public static class Hardware {
