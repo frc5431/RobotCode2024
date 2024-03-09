@@ -103,8 +103,8 @@ public class Manipulator extends SubsystemBase {
   }
 
   public void runWithPower(double power) {
-    upper.set(power * ratio.upperPercent());
-    lower.set(power * ratio.lowerPercent());
+    upper.set(power);
+    lower.set(power);
 
     // if(upper.getAppliedOutput() == power && lower.getAppliedOutput() == power){
     //   this.speed = true;

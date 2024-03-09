@@ -70,10 +70,10 @@ public class RobotContainer {
   public RobotContainer() {
     NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
     NamedCommands.registerCommand("GrabNote", new IntakeNote(intake, pivot, bb));
-    NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(intake, shooter));
+    NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(intake, shooter, pivot));
     NamedCommands.registerCommand("ZeroGyro", new InstantCommand(() -> drivebase.zeroGyro()));
     NamedCommands.registerCommand("PutDown", new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED).andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot)));
-    NamedCommands.registerCommand("90Gyro", new WaitCommand(0));
+    NamedCommands.registerCommand("90Gyro", new InstantCommand(() -> drivebase.set(-90)));
 
 
 

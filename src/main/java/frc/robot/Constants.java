@@ -64,11 +64,11 @@ public final class Constants {
     public static int anglerId = 14;
     public static int leftIntakeId = 15;
     public static int rightIntakeId = 16;
-    public static Rotation2d ampAngle = Rotation2d.fromDegrees(84);
+    public static Rotation2d ampAngle = Rotation2d.fromDegrees(101);
 
     public static AnglerConstants anglerConstants = new AnglerConstants(
-      /* Min Angle */Rotation2d.fromDegrees(-25),
-      /* Max Angle */Rotation2d.fromDegrees(148.57757899398146), // temp
+      /* Min Angle */Rotation2d.fromDegrees(-3),
+      /* Max Angle */Rotation2d.fromDegrees(158.413966), // temp
       /* Length Meters */Units.inchesToMeters(12),
       /* Weight Kilos */Units.lbsToKilograms(5.625), // temp
       /* Parallel To Ground Angle */Rotation2d.fromRadians(0),
@@ -107,7 +107,7 @@ public final class Constants {
     public static MotorRatio shooterRatio = new MotorRatio(1, 0.95);
     public static MotorRatio simpleShooterRatio = new MotorRatio(.7, .7);
 
-    public static double normalPower = 0.8;
+    public static double normalPower = 1;
     public static int anglerLeftId = 18;
     public static int anglerRightId = 17;
     public static AnglerConstants anglerConstants = new AnglerConstants(

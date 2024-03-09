@@ -3,38 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4907783370069108,
-        "y": 7.4797973292629045
+        "x": 1.4831966763403048,
+        "y": 7.374840577375375
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4923878801363115,
-        "y": 7.471111195298708
+        "x": 1.4920306761325486,
+        "y": 7.374840577375375
       },
       "isLocked": false,
       "linkedName": "SpeakerLeftEdge"
     },
     {
       "anchor": {
-        "x": 1.8312112453608795,
-        "y": 7.596517183555695
+        "x": 1.8471167806533142,
+        "y": 7.650369868640972
       },
       "prevControl": {
-        "x": 1.8312112453608795,
-        "y": 7.584455124274801
+        "x": 1.8350547213724209,
+        "y": 7.650369868640972
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AmpCenter"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.7,
-      "rotationDegrees": 90.0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
