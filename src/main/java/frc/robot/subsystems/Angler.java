@@ -35,25 +35,21 @@ public class Angler extends SubsystemBase {
     this.controller.setI(constants.pid.i());
     this.controller.setD(constants.pid.d());
     isShooter = name.equals("shooter");
-    // absoluteEncoder.setPositionConversionFactor(2 * Math.PI *
-    // constants.gearRatio);
-
+   
     controller.setFeedbackDevice(absoluteEncoder);
-    // SmartDashboard.putNumber("abs encoder ", absoluteEncoder.getPosition());
-    // motor.enableVoltageCompensation(12);
 
     // motor.setSmartCurrentLimit(60, 35);
     controller.setOutputRange(-0.8, 0.8);
     double convFact = 2 * Math.PI;
     //controller.setPositionPIDWrappingEnabled(name != "shooter");
     this.setName(name);
-    
+      controller.setPositionPIDWrappingEnabled(true);
+
     
     controller.setPositionPIDWrappingMinInput(0);
     absoluteEncoder.setPositionConversionFactor(convFact);
     absoluteEncoder.setVelocityConversionFactor(convFact);
     controller.setPositionPIDWrappingMaxInput(convFact);
-    controller.setPositionPIDWrappingEnabled(true);
 
     motor.burnFlash();
     this.constants = constants;

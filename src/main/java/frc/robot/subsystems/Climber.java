@@ -38,6 +38,10 @@ public class Climber extends SubsystemBase {
     right.set(percentage);
   }
 
+  public double getposition() {
+    return setpoint;
+  }
+
   @Override public void periodic() {
     SmartDashboard.putNumber("climber setpoint", setpoint);
     SmartDashboard.putNumber("climber encoder", relativeEncoder.getPosition());

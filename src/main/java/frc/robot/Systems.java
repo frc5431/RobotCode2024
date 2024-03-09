@@ -13,6 +13,7 @@ import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LasaVision;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.RelativeAngler;
 import frc.robot.subsystems.ShooterAngler;
 import frc.robot.subsystems.Drivebase;
 
@@ -21,7 +22,7 @@ public class Systems {
   // private Vision vision;
   private Manipulator intake;
   private Angler pivot;
-  private ShooterAngler shooterAngler;
+  private RelativeAngler shooterAngler;
   private Manipulator shooter;
   private Climber climber;
   private DigitalInput beambreak;
@@ -50,11 +51,9 @@ public class Systems {
     shooterAnglerConst = Constants.ShooterConstants.anglerConstants;
     intakeAnglerConst = Constants.IntakeConstants.anglerConstants;
 
-
     leftIntakeMotor = new CANSparkMax(Constants.IntakeConstants.leftIntakeId, brushless);
     rightIntakeMotor = new CANSparkMax(Constants.IntakeConstants.rightIntakeId, brushless);
     intakeAnglerMotor = new CANSparkMax(Constants.IntakeConstants.anglerId, brushless);
-
 
     shooterLower = new CANSparkFlex(Constants.ShooterConstants.botId, brushless);
     shooterUpper = new CANSparkFlex(Constants.ShooterConstants.topId, brushless);
@@ -62,27 +61,19 @@ public class Systems {
     anglerRight = new CANSparkFlex(Constants.ShooterConstants.anglerRightId, brushless);
     climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
     climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
-    
-    // anglerLeft.setInverted(true);
-    // anglerLeft.burnFlash();
-    // anglerRight.follow(anglerLeft, true);
-    intakeAnglerMotor.setInverted(false);
-    
-
-
+  
     leftIntakeMotor.setSmartCurrentLimit(40);
     rightIntakeMotor.setSmartCurrentLimit(40);
     rightIntakeMotor.burnFlash();
     leftIntakeMotor.burnFlash();
     intakeAnglerMotor.burnFlash();
-    anglerRight.burnFlash();
     climberRight.burnFlash();
     
     pheonixdrivebase = new Drivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
     shooter = new Manipulator(shooterUpper, shooterLower, ShooterConstants.manipulatorConstants);
     intake = new Manipulator(leftIntakeMotor, rightIntakeMotor, IntakeConstants.manipulatorConstants);
     pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
-    // shooterAngler = new ShooterAngler(anglerLeft, shooterAnglerConst, "shooter");
+    shooterAngler = new RelativeAngler(anglerLeft, anglerRight);
     climber = new Climber(climberLeft, climberRight);
     beambreak = new DigitalInput(9);
     instance = this;
@@ -116,7 +107,7 @@ public class Systems {
     return beambreak;
   }
 
-  public ShooterAngler getShooterAngler() {
+  public RelativeAngler getShooterAngler() {
     return shooterAngler;
   }
 }

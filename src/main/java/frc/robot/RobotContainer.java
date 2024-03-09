@@ -23,6 +23,7 @@ import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunClimberCommand;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.commands.RunShooterAnglerCommand;
+import frc.robot.commands.RunAnglerCommand.TerminationCondition;
 import frc.robot.commands.RunClimberCommand.ClimberMode;
 import frc.robot.commands.RunManipulatorCommand.ManipulatorMode;
 import frc.robot.commands.auton.AmpScore;
@@ -36,6 +37,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivebase;
 //import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.RelativeAngler;
 import frc.robot.subsystems.ShooterAngler;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
 
@@ -45,7 +47,7 @@ public class RobotContainer {
   public static final CommandXboxController operator = new CommandXboxController(1);
   private final Systems systems = new Systems();
   private final Drivebase drivebase = systems.getDrivebase();
-  private final ShooterAngler shooterAngler = systems.getShooterAngler();
+  private final RelativeAngler shooterAngler = systems.getShooterAngler();
 
   private final Angler pivot = systems.getPivot();
   private final Climber climber = systems.getClimber();
@@ -173,7 +175,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    shooter.setRatio(Constants.ShooterConstants.simpleShooterRatio);
+    shooter.setRatio(Constants.ShooterConstants.shooterRatio);
 
     drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
         drivebase.applyRequest(() -> {
@@ -189,42 +191,37 @@ public class RobotContainer {
       driver.resetGyro().onFalse(new InstantCommand(() -> drivebase.zeroGyro()));
     }
 
-    driver.temp_getController().rightTrigger().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
-    driver.temp_getController().leftTrigger().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
+    driver.temp_getController().rightBumper().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
+    driver.temp_getController().leftBumper().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
+    driver.temp_getController().leftTrigger().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
 
-    // SmartDashboard.putNumber("turn axis",
-    //     -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
     // Shooter
     operator.rightTrigger().whileTrue(RunManipulatorCommand.withPower(shooter, -1));
     operator.b().whileTrue(RunManipulatorCommand.withPower(shooter, 1));
+    operator.a().whileTrue(RunManipulatorCommand.withPower(shooter, -0.70));
 
     // Intake
-    operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.FORWARD));
+    operator.leftTrigger().whileTrue(RunManipulatorCommand.withPower(intake, 1));
     operator.x().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.REVERSE));
 
     // Intake Angler
     operator.axisGreaterThan(1, 0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(2)), pivot));
     operator.axisLessThan(1, -0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(2)), pivot));
- //   operator.y().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
- //   operator.a().onFalse(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(10)), pivot));
-    
+
     operator.povUp().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));
     // TODO: find shooter angle
     // operator.a().onTrue(new RunShooterAnglerCommand(RunShooterAnglerCommand.ShooterAnglerModes.CUSTOM, shooterAngler));
-    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot));
-    operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
+    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
+    operator.rightBumper().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED).andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot)));
 
     // Shooter Angler
-    operator.axisGreaterThan(5, 0.15).whileTrue(new RunShooterAnglerCommand(() -> (shooterAngler.setpoint + Units.degreesToRadians(10)), shooterAngler));
-    operator.axisLessThan(5, -0.15).whileTrue(new RunShooterAnglerCommand(() -> (shooterAngler.setpoint - Units.degreesToRadians(10)), shooterAngler));
+    operator.axisGreaterThan(5, 0.15).onTrue(shooterAngler.SetAnglerPosition(0));
+    operator.axisLessThan(5, -0.15).onTrue(shooterAngler.SetAnglerPosition(10));
 
-    
       // driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
 
-    operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.FORWARD));
   }
-
 
   public Command getAutonomousCommand() {
     return autonMagic.procureAuton();
@@ -232,6 +229,6 @@ public class RobotContainer {
 
   public void onTeleop() {
     pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
-    shooterAngler.setpoint = shooterAngler.absoluteEncoder.getPosition();
   }
+
 }

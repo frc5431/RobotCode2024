@@ -38,23 +38,6 @@ public class RunManipulatorCommand extends Command {
     return cmd;
   }
 
-  // public RunManipulatorCommand(Manipulator manipulator, Manipulator.Modes mode) {
-  //   this(manipulator);
-  //   this.usePower = false;
-  //   this.mode = mode;
-  // }
-
-  // public RunManipulatorCommand(Manipulator manipulator, double power) {
-  //   this(manipulator);
-  //   this.usePower = true;
-  //   this.power = power;
-  // }
-
-  // private RunManipulatorCommand(Manipulator manipulator) {
-  //   this.manipulator = manipulator;
-  //   addRequirements(manipulator);
-  // }
-
   @Override
   public void initialize() {
     if (usePower) {

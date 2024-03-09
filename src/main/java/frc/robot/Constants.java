@@ -64,15 +64,15 @@ public final class Constants {
     public static int anglerId = 14;
     public static int leftIntakeId = 15;
     public static int rightIntakeId = 16;
-    public static Rotation2d ampAngle = Rotation2d.fromDegrees(88);
+    public static Rotation2d ampAngle = Rotation2d.fromDegrees(84);
 
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */Rotation2d.fromDegrees(-25),
-      /* Max Angle */Rotation2d.fromDegrees(150), // temp
+      /* Max Angle */Rotation2d.fromDegrees(148.57757899398146), // temp
       /* Length Meters */Units.inchesToMeters(12),
       /* Weight Kilos */Units.lbsToKilograms(5.625), // temp
       /* Parallel To Ground Angle */Rotation2d.fromRadians(0),
-      /* PID */new MotionMagic(0.3, 0.0, 0.02, -1),
+      /* PID */new MotionMagic(0.4, 0.0, 0.01, -1),
       /* Stall Torque (Nm) */ neoStallTorque * (15),
       /* Enable FF */ true,
       /* Gear Ratio */2,
@@ -104,12 +104,12 @@ public final class Constants {
     public static int topId = 20;
     public static int botId = 19;
 
-    public static MotorRatio shooterRatio = new MotorRatio(1, 0.8);
+    public static MotorRatio shooterRatio = new MotorRatio(1, 0.95);
     public static MotorRatio simpleShooterRatio = new MotorRatio(.7, .7);
 
     public static double normalPower = 0.8;
-    public static int anglerLeftId = 17;
-    public static int anglerRightId = 18;
+    public static int anglerLeftId = 18;
+    public static int anglerRightId = 17;
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */Rotation2d.fromDegrees(0), // temp
       /* Max Angle */Rotation2d.fromRotations(1.25), // temp
@@ -297,7 +297,7 @@ public final class Constants {
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGains = new Slot0Configs()
-        .withKP(1.5).withKI(0).withKD(0)
+        .withKP(1.6).withKI(0).withKD(0)
         .withKS(0).withKV(0).withKA(0);
 
 
@@ -315,7 +315,8 @@ public final class Constants {
 
     // Theoretical free speed (m/s) at 12v applied output;
     // This needs to be tuned to your individual robot
-    public static final double kSpeedAt12VoltsMps = (6380.0 / 60.0) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+    //public static final double kSpeedAt12VoltsMps = (6380.0 / 60.0) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+    public static final double kSpeedAt12VoltsMps = 16;
 
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
         kSpeedAt12VoltsMps / Math.hypot(DrivebaseConstant.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DrivebaseConstant.DRIVETRAIN_WHEELBASE_METERS / 2.0);
