@@ -64,7 +64,7 @@ public final class Constants {
     public static int anglerId = 14;
     public static int leftIntakeId = 15;
     public static int rightIntakeId = 16;
-    public static Rotation2d ampAngle = Rotation2d.fromDegrees(105.70);
+    public static Rotation2d ampAngle = Rotation2d.fromDegrees(88);
 
     public static AnglerConstants anglerConstants = new AnglerConstants(
       /* Min Angle */Rotation2d.fromDegrees(-25),
@@ -72,7 +72,7 @@ public final class Constants {
       /* Length Meters */Units.inchesToMeters(12),
       /* Weight Kilos */Units.lbsToKilograms(5.625), // temp
       /* Parallel To Ground Angle */Rotation2d.fromRadians(0),
-      /* PID */new MotionMagic(0.14, 0.0, 0.02, -1),
+      /* PID */new MotionMagic(0.3, 0.0, 0.02, -1),
       /* Stall Torque (Nm) */ neoStallTorque * (15),
       /* Enable FF */ true,
       /* Gear Ratio */2,
@@ -116,7 +116,7 @@ public final class Constants {
       /* Length Meters */Units.inchesToMeters(5), // temp
       /* Weight Kilos */Units.lbsToKilograms(7.625), // temp
       /* Parallel To Ground Angle */Rotation2d.fromDegrees(0), // temp
-      /* PID */new MotionMagic(0.4, 0.0, 0.01, -1), // ff goes unused
+      /* PID */new MotionMagic(0.3, 0.0, 0.01, -1), // ff goes unused
       /* Stall Torque (Nm) */ vortexStallTorque,
       /* Enable FF */ false,
       /* Gear Ratio */ 306/10,

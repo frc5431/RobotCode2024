@@ -11,6 +11,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,6 +22,7 @@ import frc.robot.Constants.TunerConstatns;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunClimberCommand;
 import frc.robot.commands.RunManipulatorCommand;
+import frc.robot.commands.RunShooterAnglerCommand;
 import frc.robot.commands.RunClimberCommand.ClimberMode;
 import frc.robot.commands.RunManipulatorCommand.ManipulatorMode;
 import frc.robot.commands.auton.AmpScore;
@@ -34,6 +36,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivebase;
 //import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.ShooterAngler;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
 
 public class RobotContainer {
@@ -42,7 +45,7 @@ public class RobotContainer {
   public static final CommandXboxController operator = new CommandXboxController(1);
   private final Systems systems = new Systems();
   private final Drivebase drivebase = systems.getDrivebase();
-  private final Angler shooterAngler = systems.getShooterAngler();
+  private final ShooterAngler shooterAngler = systems.getShooterAngler();
 
   private final Angler pivot = systems.getPivot();
   private final Climber climber = systems.getClimber();
@@ -189,9 +192,6 @@ public class RobotContainer {
     driver.temp_getController().rightTrigger().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
     driver.temp_getController().leftTrigger().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
 
-    operator.povLeft().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
-
-
     // SmartDashboard.putNumber("turn axis",
     //     -modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
@@ -204,23 +204,25 @@ public class RobotContainer {
     operator.x().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.REVERSE));
 
     // Intake Angler
-
-    operator.axisGreaterThan(1, 0.15).onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
-    operator.axisLessThan(1, -0.15).onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
-
-    operator.axisGreaterThan(5, 0.15).whileTrue(new RunAnglerCommand(() -> shooterAngler.setpoint.plus(Rotation2d.fromDegrees(10)), shooterAngler));
-    operator.axisLessThan(5, -0.15).whileTrue(new RunAnglerCommand(() -> shooterAngler.setpoint.minus(Rotation2d.fromDegrees(10)), shooterAngler));
-
+    operator.axisGreaterThan(1, 0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(2)), pivot));
+    operator.axisLessThan(1, -0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(2)), pivot));
+ //   operator.y().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
+ //   operator.a().onFalse(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(10)), pivot));
     
-    operator.y().onTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(10)), pivot));
-    operator.a().onFalse(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(10)), pivot));
     operator.povUp().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));
+    // TODO: find shooter angle
+    // operator.a().onTrue(new RunShooterAnglerCommand(RunShooterAnglerCommand.ShooterAnglerModes.CUSTOM, shooterAngler));
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot));
     operator.rightBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
-   // driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
+
+    // Shooter Angler
+    operator.axisGreaterThan(5, 0.15).whileTrue(new RunShooterAnglerCommand(() -> (shooterAngler.setpoint + Units.degreesToRadians(10)), shooterAngler));
+    operator.axisLessThan(5, -0.15).whileTrue(new RunShooterAnglerCommand(() -> (shooterAngler.setpoint - Units.degreesToRadians(10)), shooterAngler));
+
+    
+      // driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
 
     operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.FORWARD));
-    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.REVERSE));
   }
 
 
@@ -230,6 +232,6 @@ public class RobotContainer {
 
   public void onTeleop() {
     pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
-    shooterAngler.setpoint = Rotation2d.fromRadians(shooterAngler.absoluteEncoder.getPosition());
+    shooterAngler.setpoint = shooterAngler.absoluteEncoder.getPosition();
   }
 }

@@ -13,6 +13,7 @@ import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LasaVision;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.ShooterAngler;
 import frc.robot.subsystems.Drivebase;
 
 public class Systems {
@@ -20,7 +21,7 @@ public class Systems {
   // private Vision vision;
   private Manipulator intake;
   private Angler pivot;
-  private Angler shooterAngler;
+  private ShooterAngler shooterAngler;
   private Manipulator shooter;
   private Climber climber;
   private DigitalInput beambreak;
@@ -62,14 +63,18 @@ public class Systems {
     climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
     climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
     
-    anglerLeft.setInverted(true);
-    anglerLeft.burnFlash();
-    anglerRight.follow(anglerLeft, true);
+    // anglerLeft.setInverted(true);
+    // anglerLeft.burnFlash();
+    // anglerRight.follow(anglerLeft, true);
+    intakeAnglerMotor.setInverted(false);
+    
+
 
     leftIntakeMotor.setSmartCurrentLimit(40);
     rightIntakeMotor.setSmartCurrentLimit(40);
     rightIntakeMotor.burnFlash();
     leftIntakeMotor.burnFlash();
+    intakeAnglerMotor.burnFlash();
     anglerRight.burnFlash();
     climberRight.burnFlash();
     
@@ -77,7 +82,7 @@ public class Systems {
     shooter = new Manipulator(shooterUpper, shooterLower, ShooterConstants.manipulatorConstants);
     intake = new Manipulator(leftIntakeMotor, rightIntakeMotor, IntakeConstants.manipulatorConstants);
     pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
-    shooterAngler = new Angler(anglerLeft, shooterAnglerConst, "shooter");
+    // shooterAngler = new ShooterAngler(anglerLeft, shooterAnglerConst, "shooter");
     climber = new Climber(climberLeft, climberRight);
     beambreak = new DigitalInput(9);
     instance = this;
@@ -111,7 +116,7 @@ public class Systems {
     return beambreak;
   }
 
-  public Angler getShooterAngler() {
+  public ShooterAngler getShooterAngler() {
     return shooterAngler;
   }
 }
