@@ -316,7 +316,7 @@ public final class Constants {
     // Theoretical free speed (m/s) at 12v applied output;
     // This needs to be tuned to your individual robot
     //public static final double kSpeedAt12VoltsMps = (6380.0 / 60.0) * SdsModuleConfigurations.MK4_L2.getDriveReduction() * SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
-    public static final double kSpeedAt12VoltsMps = 16;
+    public static final double kSpeedAt12VoltsMps = 10;
 
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
         kSpeedAt12VoltsMps / Math.hypot(DrivebaseConstant.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DrivebaseConstant.DRIVETRAIN_WHEELBASE_METERS / 2.0);
@@ -365,7 +365,6 @@ public final class Constants {
             .withFeedbackSource(SteerFeedbackType.FusedCANcoder)
             .withCouplingGearRatio(kCoupleRatio)
             .withSteerMotorInverted(kSteerMotorReversed);
-
 
     // Front Left
     private static final int kFrontLeftDriveMotorId = 7;

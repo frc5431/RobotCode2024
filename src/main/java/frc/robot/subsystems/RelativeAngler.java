@@ -6,6 +6,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,20 +23,21 @@ public class RelativeAngler extends SubsystemBase {
     private SparkPIDController leftPID;
     private SparkPIDController rightPID;
 
-    public double setpoint;
+    public double setpoint = 0;
 
     public RelativeAngler(CANSparkFlex left, CANSparkFlex right) {
-        this.right = right;
         this.left = left;
+        this.right = right;
 
-        this.rightAbs = left.getAbsoluteEncoder();
         this.leftAbs = left.getAbsoluteEncoder();
+        this.rightAbs = right.getAbsoluteEncoder();
+    
+        this.leftRel = left.getEncoder();
+        this.rightRel = right.getEncoder();
 
         leftAbs.setPositionConversionFactor(2 * Math.PI);
         rightAbs.setPositionConversionFactor(2 * Math.PI);
-        
-        this.leftRel = left.getEncoder();
-        this.rightRel = left.getEncoder();
+    
 
         leftRel.setPositionConversionFactor(2 * Math.PI);
         rightRel.setPositionConversionFactor(2 * Math.PI);
@@ -43,22 +45,28 @@ public class RelativeAngler extends SubsystemBase {
         leftRel.setPosition(leftAbs.getPosition());
         rightRel.setPosition(rightAbs.getPosition());
         
-        left.setInverted(true);
-        leftRel.setInverted(true);
+        left.setInverted(false);
+        leftAbs.setInverted(false);
+        // leftRel.setInverted(true);
+        right.setInverted(true);
+        rightAbs.setInverted(true);
 
-        this.leftPID.setP(0.2);
+        this.leftPID = left.getPIDController();
+        this.rightPID = right.getPIDController();
+
+        this.leftPID.setP(0.03);
         this.leftPID.setI(0);
         this.leftPID.setD(0.01);
         
-        this.rightPID.setP(0.2);
+        this.rightPID.setP(0.03);
         this.rightPID.setI(0);
         this.rightPID.setD(0.01);
 
         leftPID.setFeedbackDevice(leftRel);
         rightPID.setFeedbackDevice(rightRel);
     
-        leftPID.setOutputRange(-0.8, 0.8);
-        rightPID.setOutputRange(-0.8, 0.8);
+        leftPID.setOutputRange(-0.2, 0.2);
+        rightPID.setOutputRange(-0.2, 0.2);
 
         this.left.burnFlash();
         this.right.burnFlash();
@@ -72,12 +80,24 @@ public class RelativeAngler extends SubsystemBase {
         this.setpoint += rate;
     }
 
+    public double getSetpoint() {
+        return this.setpoint;
+    }
+
+    public double[] getPositions() {
+        return new double[]{leftRel.getPosition(), rightRel.getPosition()};
+    }
 
     @Override
     public void periodic() {
+
+        // SmartDashboard.putNumberArray("sbooter abs", new double[]{leftAbs.getPosition(), rightAbs.getPositionConversionFactor()});
+        // SmartDashboard.putNumberArray("sbooter rel", new double[]{leftRel.getPosition(), leftRel.getPositionConversionFactor()});
+        // SmartDashboard.putNumber("shooter setpoint", setpoint);
+        
         //how the fuck feedfword?
         leftPID.setReference(
-            setpoint,
+            this.setpoint,
             ControlType.kPosition,
             0
         );
@@ -91,10 +111,7 @@ public class RelativeAngler extends SubsystemBase {
     }
 
     public Command SetAnglerPosition(double setpoint){
-        return new StartEndCommand(() -> setPosition(setpoint), null, this);
+        return new StartEndCommand(() -> setPosition(setpoint), () -> {}, this);
     }
     
-
-
-
 }

@@ -1,5 +1,7 @@
 package frc.robot.commands.auton;
 
+import edu.wpi.first.wpilibj.DigitalGlitchFilter;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -14,13 +16,11 @@ import frc.robot.Systems;
 
 public class IntakeNote extends SequentialCommandGroup {
     
-  private Systems systems;
-
-  public IntakeNote(Manipulator intake, Angler pivot) {
+  public IntakeNote(Manipulator intake, Angler pivot, DigitalInput bb) {
     addCommands(
-      RunManipulatorCommand.withMode(intake, ManipulatorMode.REVERSE),
-      new RunAnglerCommand(AnglerModes.MINIMUM, pivot, TerminationCondition.SETPOINT_REACHED),
-
+      Commands.parallel(
+      RunManipulatorCommand.withMode(intake, ManipulatorMode.REVERSE).until(bb::get),
+      new RunAnglerCommand(AnglerModes.MINIMUM, pivot, TerminationCondition.SETPOINT_REACHED)),
       new RunAnglerCommand(AnglerModes.MAXIMUM, pivot, TerminationCondition.SETPOINT_REACHED)
     );
     

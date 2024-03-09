@@ -45,6 +45,8 @@ public class RunManipulatorCommand extends Command {
     } else {
       manipulator.run(mode);
     }
+    
+
   }
 
   @Override

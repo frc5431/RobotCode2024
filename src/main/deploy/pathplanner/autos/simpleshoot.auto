@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.8,
-      "y": 7.3
+      "x": 1.3,
+      "y": 5.3
     },
-    "rotation": 90.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,31 +14,19 @@
         {
           "type": "named",
           "data": {
-            "name": "90Gyro"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ampPreload"
+            "name": "ZeroGyro"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AmpScore"
+            "name": "SpeakerScore"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "nearAmpNoLoad"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "generalMovement"
+            "pathName": "saftey "
           }
         }
       ]

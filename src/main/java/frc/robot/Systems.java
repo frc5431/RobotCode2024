@@ -10,11 +10,10 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.subsystems.Angler;
-import frc.robot.subsystems.Climber;
+//import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LasaVision;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.RelativeAngler;
-import frc.robot.subsystems.ShooterAngler;
 import frc.robot.subsystems.Drivebase;
 
 public class Systems {
@@ -24,7 +23,7 @@ public class Systems {
   private Angler pivot;
   private RelativeAngler shooterAngler;
   private Manipulator shooter;
-  private Climber climber;
+  //private Climber climber;
   private DigitalInput beambreak;
 
   private AnglerConstants intakeAnglerConst;
@@ -33,8 +32,8 @@ public class Systems {
 
   private CANSparkFlex shooterUpper; 
   private CANSparkFlex shooterLower; 
-  private CANSparkFlex anglerLeft;
-  private CANSparkFlex anglerRight;
+  // private CANSparkFlex anglerLeft;
+  // private CANSparkFlex anglerRight;
   private CANSparkFlex climberLeft;
   private CANSparkFlex climberRight;
 
@@ -57,8 +56,8 @@ public class Systems {
 
     shooterLower = new CANSparkFlex(Constants.ShooterConstants.botId, brushless);
     shooterUpper = new CANSparkFlex(Constants.ShooterConstants.topId, brushless);
-    anglerLeft = new CANSparkFlex(Constants.ShooterConstants.anglerLeftId, brushless);
-    anglerRight = new CANSparkFlex(Constants.ShooterConstants.anglerRightId, brushless);
+    // anglerLeft = new CANSparkFlex(Constants.ShooterConstants.anglerLeftId, brushless);
+    // anglerRight = new CANSparkFlex(Constants.ShooterConstants.anglerRightId, brushless);
     climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
     climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
   
@@ -73,8 +72,8 @@ public class Systems {
     shooter = new Manipulator(shooterUpper, shooterLower, ShooterConstants.manipulatorConstants);
     intake = new Manipulator(leftIntakeMotor, rightIntakeMotor, IntakeConstants.manipulatorConstants);
     pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
-    shooterAngler = new RelativeAngler(anglerLeft, anglerRight);
-    climber = new Climber(climberLeft, climberRight);
+    // shooterAngler = new RelativeAngler(anglerLeft, anglerRight);
+    //climber = new Climber(climberLeft, climberRight);
     beambreak = new DigitalInput(9);
     instance = this;
   }
@@ -95,9 +94,9 @@ public class Systems {
     return intake;
   }
 
-  public Climber getClimber() {
-    return climber;
-  }
+  // public Climber getClimber() {
+  //   return climber;
+  // }
 
   public Angler getPivot() {
     return pivot;

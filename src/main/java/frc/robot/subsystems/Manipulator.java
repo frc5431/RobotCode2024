@@ -18,6 +18,7 @@ public class Manipulator extends SubsystemBase {
 
   protected boolean containedGamePiece;
   private boolean hasNote;
+  //private boolean speed;
   protected MotorRatio ratio;
 
   public RelativeEncoder upperRelativeEncoder;
@@ -34,7 +35,7 @@ public class Manipulator extends SubsystemBase {
     this.upper = upper;
     this.lower = lower;
     this.hasNote = false;
-
+   //this.speed = false;
     this.constants = constants;
 
     upper.setInverted(constants.isInverted);
@@ -97,11 +98,19 @@ public class Manipulator extends SubsystemBase {
     } else if (mode == ManipulatorMode.STOPPED) {
       runWithPower(0);
     }
+
+
   }
 
   public void runWithPower(double power) {
     upper.set(power * ratio.upperPercent());
     lower.set(power * ratio.lowerPercent());
+
+    // if(upper.getAppliedOutput() == power && lower.getAppliedOutput() == power){
+    //   this.speed = true;
+    // }
+   
+  
   }
 
   public void setRatio(MotorRatio ratio) {

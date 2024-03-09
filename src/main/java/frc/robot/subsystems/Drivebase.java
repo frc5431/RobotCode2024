@@ -91,33 +91,41 @@ public class Drivebase extends SwerveDrivetrain implements Subsystem {
 
     // }
 
+    public void set(double angle) {
+        getPigeon2().setYaw(angle);
+        resetPose(getPose());
+    }
+
+    
     public void zeroGyro() {
         getPigeon2().reset();
         resetPose(getPose());
     }
+
+
     Field2d undertale = new Field2d();
 
     @Override
     public void periodic() {
         // m_odometry.update(m_fieldRelativeOffset, m_modulePositions);
         // Get estimated poses from VisionSubsystem
-        var visionEstimatedRobotPoses = LasaVision.getInstance().getEstimatedGlobalPoses();
+        // var visionEstimatedRobotPoses = LasaVision.getInstance().getEstimatedGlobalPoses();
 
-        // Exit if no valid vision pose estimates
-        if (visionEstimatedRobotPoses.isEmpty()) return;
+        // // // Exit if no valid vision pose estimates
+        // if (visionEstimatedRobotPoses.isEmpty()) return;
 
-        try {
-            // Add vision measurements to pose estimator
-            for (var visionEstimatedRobotPose : visionEstimatedRobotPoses) {
-                // if (visionEstimatedRobotPose.estimatedPose.toPose2d().getTranslation().getDistance(m_previousPose.getTranslation()) > 1.0) continue;
-                m_odometry.addVisionMeasurement(visionEstimatedRobotPose.estimatedPose.toPose2d(), visionEstimatedRobotPose.timestampSeconds);
-            }
-        }catch(ConcurrentModificationException e) {
-            // i am going to throw this dumb robot out a window
-        }
+        // try {
+        //     // Add vision measurements to pose estimator
+        //     for (var visionEstimatedRobotPose : visionEstimatedRobotPoses) {
+        //         // if (visionEstimatedRobotPose.estimatedPose.toPose2d().getTranslation().getDistance(m_previousPose.getTranslation()) > 1.0) continue;
+        //         m_odometry.addVisionMeasurement(visionEstimatedRobotPose.estimatedPose.toPose2d(), visionEstimatedRobotPose.timestampSeconds);
+        //     }
+        // }catch(ConcurrentModificationException e) {
+        //     // i am going to throw this dumb robot out a window
+        // }
 
-        undertale.setRobotPose(m_odometry.getEstimatedPosition());
-        // SmartDashboard.putData("Field", undertale);
+        // undertale.setRobotPose(m_odometry.getEstimatedPosition());
+        // // SmartDashboard.putData("Field", undertale);
     }
 
     public SwerveDrivePoseEstimator getOdometry() {

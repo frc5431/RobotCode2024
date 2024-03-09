@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.8,
-      "y": 7.5
+      "x": 1.5,
+      "y": 7.45
     },
     "rotation": 90.0
   },
@@ -11,6 +11,12 @@
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ampPreload"
+          }
+        },
         {
           "type": "named",
           "data": {
@@ -20,13 +26,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "nearAmpNoLoad"
+            "pathName": "generalMovement"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AmpScore"
+            "name": "PutDown"
           }
         }
       ]

@@ -42,6 +42,8 @@ public class Climber extends SubsystemBase {
     return setpoint;
   }
 
+  
+
   @Override public void periodic() {
     SmartDashboard.putNumber("climber setpoint", setpoint);
     SmartDashboard.putNumber("climber encoder", relativeEncoder.getPosition());
@@ -50,10 +52,6 @@ public class Climber extends SubsystemBase {
       CANSparkBase.ControlType.kPosition,
       0
     );
-  
-     
-
-
   
   }
 
