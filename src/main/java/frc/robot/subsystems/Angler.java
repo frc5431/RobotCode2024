@@ -46,7 +46,7 @@ public class Angler extends SubsystemBase {
       controller.setPositionPIDWrappingEnabled(true);
 
     
-    controller.setPositionPIDWrappingMinInput(0);
+    controller.setPositionPIDWrappingMinInput(-(convFact/6));
     absoluteEncoder.setPositionConversionFactor(convFact);
     absoluteEncoder.setVelocityConversionFactor(convFact);
     controller.setPositionPIDWrappingMaxInput(convFact);

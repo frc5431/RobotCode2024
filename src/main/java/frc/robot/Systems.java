@@ -32,8 +32,8 @@ public class Systems {
 
   private CANSparkFlex shooterUpper; 
   private CANSparkFlex shooterLower; 
-  // private CANSparkFlex anglerLeft;
-  // private CANSparkFlex anglerRight;
+  private CANSparkFlex anglerLeft;
+  private CANSparkFlex anglerRight;
   private CANSparkFlex climberLeft;
   private CANSparkFlex climberRight;
 
@@ -58,15 +58,15 @@ public class Systems {
     shooterUpper = new CANSparkFlex(Constants.ShooterConstants.topId, brushless);
     // anglerLeft = new CANSparkFlex(Constants.ShooterConstants.anglerLeftId, brushless);
     // anglerRight = new CANSparkFlex(Constants.ShooterConstants.anglerRightId, brushless);
-    climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
-    climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
+  //  climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
+   // climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
   
     leftIntakeMotor.setSmartCurrentLimit(40);
     rightIntakeMotor.setSmartCurrentLimit(40);
     rightIntakeMotor.burnFlash();
     leftIntakeMotor.burnFlash();
     intakeAnglerMotor.burnFlash();
-    climberRight.burnFlash();
+  //  climberRight.burnFlash();
     
     pheonixdrivebase = new Drivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
     shooter = new Manipulator(shooterUpper, shooterLower, ShooterConstants.manipulatorConstants);

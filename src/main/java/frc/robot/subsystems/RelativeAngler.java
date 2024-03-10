@@ -90,11 +90,6 @@ public class RelativeAngler extends SubsystemBase {
 
     @Override
     public void periodic() {
-
-        // SmartDashboard.putNumberArray("sbooter abs", new double[]{leftAbs.getPosition(), rightAbs.getPositionConversionFactor()});
-        // SmartDashboard.putNumberArray("sbooter rel", new double[]{leftRel.getPosition(), leftRel.getPositionConversionFactor()});
-        // SmartDashboard.putNumber("shooter setpoint", setpoint);
-        
         //how the fuck feedfword?
         leftPID.setReference(
             this.setpoint,
