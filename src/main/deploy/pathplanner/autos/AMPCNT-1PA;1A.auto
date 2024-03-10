@@ -12,12 +12,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "90Gyro"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "ampPreload"

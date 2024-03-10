@@ -198,7 +198,6 @@ public class RobotContainer {
 
     // Shooter
     operator.rightTrigger().whileTrue(shooter.runPower(-1));
-    operator.leftTrigger().whileTrue(shooter.runPower(1));
 
     operator.b().whileTrue(RunManipulatorCommand.withPower(shooter, 0.1));
     operator.a().whileTrue(RunManipulatorCommand.withPower(shooter, -0.70));
@@ -229,7 +228,7 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
-    //pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
+    pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
   }
 
 }
