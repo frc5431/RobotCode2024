@@ -64,15 +64,15 @@ public final class Constants {
     public static int anglerId = 14;
     public static int leftIntakeId = 15;
     public static int rightIntakeId = 16;
-    public static Rotation2d ampAngle = Rotation2d.fromDegrees(101);
+    public static Rotation2d ampAngle = Rotation2d.fromDegrees(111); //and we do it, we do it all again
 
     public static AnglerConstants anglerConstants = new AnglerConstants(
-      /* Min Angle */Rotation2d.fromDegrees(-3),
-      /* Max Angle */Rotation2d.fromDegrees(158.413966), // temp
+      /* Min Angle */Rotation2d.fromDegrees(10), // change again
+      /* Max Angle */Rotation2d.fromDegrees(181), // change
       /* Length Meters */Units.inchesToMeters(12),
       /* Weight Kilos */Units.lbsToKilograms(5.625), // temp
       /* Parallel To Ground Angle */Rotation2d.fromRadians(0),
-      /* PID */new MotionMagic(0.4, 0.0, 0.01, -1),
+      /* PID */new MotionMagic(0.3, 0.0, 0.01, -1),
       /* Stall Torque (Nm) */ neoStallTorque * (15),
       /* Enable FF */ true,
       /* Gear Ratio */2,

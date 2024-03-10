@@ -38,15 +38,15 @@ public class Angler extends SubsystemBase {
    
     controller.setFeedbackDevice(absoluteEncoder);
 
-    // motor.setSmartCurrentLimit(60, 35);
-    controller.setOutputRange(-0.6, 0.6);
+    //motor.setSmartCurrentLimit(60, 35);
+    controller.setOutputRange(-0.8, 0.8);
     double convFact = 2 * Math.PI;
     //controller.setPositionPIDWrappingEnabled(name != "shooter");
     this.setName(name);
-      controller.setPositionPIDWrappingEnabled(true);
+    controller.setPositionPIDWrappingEnabled(true);
 
     
-    controller.setPositionPIDWrappingMinInput(-(convFact/6));
+    controller.setPositionPIDWrappingMinInput(0);
     absoluteEncoder.setPositionConversionFactor(convFact);
     absoluteEncoder.setVelocityConversionFactor(convFact);
     controller.setPositionPIDWrappingMaxInput(convFact);

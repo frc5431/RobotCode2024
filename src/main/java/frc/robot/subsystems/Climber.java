@@ -59,9 +59,4 @@ public class Climber extends SubsystemBase {
   
   }
 
-   public Command SetAnglerPosition(double setpoint){
-        return new StartEndCommand(() -> setPosition(setpoint), () -> {}, this);
-    }
-
-
 }

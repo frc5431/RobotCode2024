@@ -47,7 +47,6 @@ public class RelativeAngler extends SubsystemBase {
         
         left.setInverted(false);
         leftAbs.setInverted(false);
-        // leftRel.setInverted(true);
         right.setInverted(true);
         rightAbs.setInverted(true);
 
@@ -84,6 +83,11 @@ public class RelativeAngler extends SubsystemBase {
         return this.setpoint;
     }
 
+    public void resetRel() { 
+        this.leftRel.setPosition(0);
+        this.rightRel.setPosition(0);
+    }
+
     public double[] getPositions() {
         return new double[]{leftRel.getPosition(), rightRel.getPosition()};
     }
@@ -96,7 +100,6 @@ public class RelativeAngler extends SubsystemBase {
             ControlType.kPosition,
             0
         );
-
         
         rightPID.setReference(
             setpoint,
@@ -107,6 +110,10 @@ public class RelativeAngler extends SubsystemBase {
 
     public Command SetAnglerPosition(double setpoint){
         return new StartEndCommand(() -> setPosition(setpoint), () -> {}, this);
+    }
+
+    public Command ResetAngler(){
+        return new StartEndCommand(() -> resetRel(), () -> {}, this);
     }
     
 }

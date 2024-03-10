@@ -1,15 +1,17 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.CANSparkBase;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ManipulatorConstants;
 import frc.robot.commands.RunManipulatorCommand.ManipulatorMode;
-
-import java.util.function.BooleanSupplier;
 
 public class Manipulator extends SubsystemBase {
 
@@ -110,9 +112,13 @@ public class Manipulator extends SubsystemBase {
     //   this.speed = true;
     // }
    
-  
   }
 
+  public Command runPower(double power) {
+    return new StartEndCommand(() -> runWithPower(power), () -> runWithPower(0), this);
+  }
+
+ 
   public void setRatio(MotorRatio ratio) {
     this.ratio = ratio;
   }
