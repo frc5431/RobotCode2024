@@ -12,17 +12,17 @@ import frc.robot.Constants.TunerConstatns;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LasaVision;
-import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.RelativeAngler;
 import frc.robot.subsystems.Drivebase;
 
 public class Systems {
   public static Systems instance;
   // private Vision vision;
-  private Manipulator intake;
+  private Intake intake;
   private Angler pivot;
   private RelativeAngler shooterAngler;
-  private Manipulator shooter;
+  private Intake shooter;
   private Climber climber;
   private DigitalInput beambreak;
 
@@ -47,15 +47,14 @@ public class Systems {
 
   public Systems() {
 
-    shooterAnglerConst = Constants.ShooterConstants.anglerConstants;
     intakeAnglerConst = Constants.IntakeConstants.anglerConstants;
 
     leftIntakeMotor = new CANSparkMax(Constants.IntakeConstants.leftIntakeId, brushless);
     rightIntakeMotor = new CANSparkMax(Constants.IntakeConstants.rightIntakeId, brushless);
     intakeAnglerMotor = new CANSparkMax(Constants.IntakeConstants.anglerId, brushless);
 
-    shooterLower = new CANSparkFlex(Constants.ShooterConstants.botId, brushless);
-    shooterUpper = new CANSparkFlex(Constants.ShooterConstants.topId, brushless);
+    shooterLower = new CANSparkFlex(Constants.ShooterConstants.mainBotId, brushless);
+    shooterUpper = new CANSparkFlex(Constants.ShooterConstants.mainTopId, brushless);
     //anglerLeft = new CANSparkFlex(Constants.ShooterConstants.anglerLeftId, brushless);
     //anglerRight = new CANSparkFlex(Constants.ShooterConstants.anglerRightId, brushless);
     climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
@@ -69,8 +68,8 @@ public class Systems {
     
     
     pheonixdrivebase = new Drivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
-    shooter = new Manipulator(shooterUpper, shooterLower, ShooterConstants.manipulatorConstants);
-    intake = new Manipulator(leftIntakeMotor, rightIntakeMotor, IntakeConstants.manipulatorConstants);
+    shooter = new Intake(shooterUpper, shooterLower, ShooterConstants.manipulatorConstants);
+    intake = new Intake(leftIntakeMotor, rightIntakeMotor, IntakeConstants.manipulatorConstants);
     pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
     //shooterAngler = new RelativeAngler(anglerLeft, anglerRight);
     climber = new Climber(climberLeft, climberRight);
@@ -86,11 +85,11 @@ public class Systems {
     return LasaVision.getInstance();
   }
 
-  public Manipulator getShooter() {
+  public Intake getShooter() {
     return shooter;
   }
 
-  public Manipulator getIntake() {
+  public Intake getIntake() {
     return intake;
   }
 

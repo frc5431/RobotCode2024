@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Intake;
 
 public class RunManipulatorCommand extends Command {
   public enum ManipulatorMode {
@@ -11,14 +11,14 @@ public class RunManipulatorCommand extends Command {
   }
 
   // Subsystems
-  private Manipulator manipulator;
+  private Intake manipulator;
 
   // Config
   private boolean usePower;
   private double power;
   private ManipulatorMode mode;
 
-  public static RunManipulatorCommand withMode(Manipulator manipulator, ManipulatorMode mode) {
+  public static RunManipulatorCommand withMode(Intake manipulator, ManipulatorMode mode) {
     RunManipulatorCommand cmd = new RunManipulatorCommand();
 
     cmd.manipulator = manipulator;
@@ -28,7 +28,7 @@ public class RunManipulatorCommand extends Command {
     return cmd;
   }
 
-  public static RunManipulatorCommand withPower(Manipulator manipulator, double power) {
+  public static RunManipulatorCommand withPower(Intake manipulator, double power) {
     RunManipulatorCommand cmd = new RunManipulatorCommand();
 
     cmd.manipulator = manipulator;

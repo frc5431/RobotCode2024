@@ -12,6 +12,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -29,7 +30,7 @@ import frc.robot.controllers.DriverXboxController;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivebase;
-import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Intake;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
 
 public class RobotContainer {
@@ -38,14 +39,13 @@ public class RobotContainer {
   public static final CommandXboxController operator = new CommandXboxController(1);
   private final Systems systems = new Systems();
   private final Drivebase drivebase = systems.getDrivebase();
-  //private final RelativeAngler shooterAngler = systems.getShooterAngler();
 
-  //private final Angler pivot = systems.getPivot();
+  private final Angler pivot = systems.getPivot();
   private final Climber climber = systems.getClimber();
 
-  private final Manipulator intake = systems.getIntake();
-  private final Manipulator shooter = systems.getShooter();
- // private final DigitalInput bb = systems.getBeamBreakStatus();
+  private final Intake intake = systems.getIntake();
+  private final Intake shooter = systems.getShooter();
+  private final DigitalInput bb = systems.getBeamBreakStatus();
   private final AutonMagic autonMagic;
 
   private SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
@@ -207,21 +207,17 @@ public class RobotContainer {
     operator.x().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.REVERSE));
 
     //Intake Angler
-    // operator.axisGreaterThan(1, 0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(2)), pivot));
-    // operator.axisLessThan(1, -0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(2)), pivot));
+    operator.axisGreaterThan(1, 0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(2)), pivot));
+    operator.axisLessThan(1, -0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(2)), pivot));
 
-    // operator.povRight().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));  
-    // operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
-    // operator.rightBumper().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED).andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot)));
-    // operator.leftStick().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot));
+    operator.povRight().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));  
+    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
+    operator.rightBumper().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED).andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot)));
+    operator.leftStick().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot));
 
 
-    // Shooter Angler
-    // operator.povDown().onTrue(shooterAngler.SetAnglerPosition(0));
-    // operator.povLeft().onTrue(shooterAngler.SetAnglerPosition(0.65));
-    // operator.povUp().onTrue(shooterAngler.SetAnglerPosition(1.5 * 2 * Math.PI));
 
-  //  driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
+    // driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
 
   }
 

@@ -20,10 +20,10 @@ import frc.robot.commands.RunManipulatorCommand.ManipulatorMode;
 import frc.robot.commands.RunAnglerCommand.TerminationCondition;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
-import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Intake;
 
 public class SpeakerScore extends SequentialCommandGroup {
-    public SpeakerScore(Manipulator intake, Manipulator shooter, Angler angler, Angler pivot,
+    public SpeakerScore(Intake intake, Intake shooter, Angler angler, Angler pivot,
             Drivebase drivebase) {
 
         Alliance alliance = DriverStation.getAlliance().get();

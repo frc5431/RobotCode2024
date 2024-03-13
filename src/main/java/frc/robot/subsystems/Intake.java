@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ManipulatorConstants;
 import frc.robot.commands.RunManipulatorCommand.ManipulatorMode;
 
-public class Manipulator extends SubsystemBase {
+public class Intake extends SubsystemBase {
 
   public CANSparkBase upper;
   public CANSparkBase lower;
@@ -29,11 +29,11 @@ public class Manipulator extends SubsystemBase {
 
   private BooleanSupplier gamePieceDetector;
 
-  public Manipulator(CANSparkBase upper, CANSparkBase lower, ManipulatorConstants constants) {
+  public Intake(CANSparkBase upper, CANSparkBase lower, ManipulatorConstants constants) {
     this(upper, lower, constants, () -> false);
   }
 
-  public Manipulator(CANSparkBase upper, CANSparkBase lower, ManipulatorConstants constants, BooleanSupplier gamePieceDetector) {
+  public Intake(CANSparkBase upper, CANSparkBase lower, ManipulatorConstants constants, BooleanSupplier gamePieceDetector) {
     this.upper = upper;
     this.lower = lower;
     this.hasNote = false;
@@ -131,8 +131,6 @@ public class Manipulator extends SubsystemBase {
     this.hasNote = state;
   }
   
-
-
 
   /**
    * @param upperPercent a percentage in [0,1]

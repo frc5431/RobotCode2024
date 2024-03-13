@@ -18,8 +18,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.robot.AprilTagCamera.Resolution;
-import frc.robot.subsystems.Manipulator;
-import frc.robot.subsystems.Manipulator.MotorRatio;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.MotorRatio;
 import frc.team5431.titan.core.robot.MotionMagic;
 
 public final class Constants {
@@ -101,28 +101,35 @@ public final class Constants {
   }
   public static class ShooterConstants {
 
-    public static int topId = 20;
-    public static int botId = 19;
+    public static int mainTopId = 20;
+    public static int mainBotId = 19;
+    public static int distantTopId = 18;
+    public static int distantBotId = 17;
 
+    public static double spkSpeed = 1;
+    public static double ampSpeed = 0.4;
+    public static double stgSpeed = 0.7;
+    public static double inSpeed = -0.2;
+
+    public static final double p = 0.3;
+    public static final double i = 0.0;
+    public static final double d = 0.01;
+
+    public enum ShooterMode {
+      SpeakerShot, 
+      AmpShot,
+      StageShot,
+      MainIn,
+      SpeakerDistant,
+      DistantIn
+    } 
+
+    
     public static MotorRatio shooterRatio = new MotorRatio(1, 0.95);
     public static MotorRatio simpleShooterRatio = new MotorRatio(.7, .7);
 
     public static double normalPower = 1;
-    public static int anglerLeftId = 18;
-    public static int anglerRightId = 17;
-    public static AnglerConstants anglerConstants = new AnglerConstants(
-      /* Min Angle */Rotation2d.fromDegrees(0), // temp
-      /* Max Angle */Rotation2d.fromRotations(1.25), // temp
-      /* Length Meters */Units.inchesToMeters(5), // temp
-      /* Weight Kilos */Units.lbsToKilograms(7.625), // temp
-      /* Parallel To Ground Angle */Rotation2d.fromDegrees(0), // temp
-      /* PID */new MotionMagic(0.3, 0.0, 0.01, -1), // ff goes unused
-      /* Stall Torque (Nm) */ vortexStallTorque,
-      /* Enable FF */ false,
-      /* Gear Ratio */ 306/10,
-      0.2
-    );
-
+   
     public static ManipulatorConstants manipulatorConstants = new ManipulatorConstants(
       /* Is Inverted */ true,
       /* Default Ratio */ shooterRatio,
@@ -171,12 +178,12 @@ public final class Constants {
 
   public static class ManipulatorConstants {
     public final boolean isInverted;
-    public final Manipulator.MotorRatio defaultRatio;
+    public final Intake.MotorRatio defaultRatio;
     public final double forwardSpeed;
     public final double reverseSpeed;
     public final double estimatedImpulseForceMetersPerSecond;
 
-    public ManipulatorConstants(boolean isInverted, Manipulator.MotorRatio defaultRatio, double forwardSpeed, double reverseSpeed, double estimatedImpulseForceMetersPerSecond) {
+    public ManipulatorConstants(boolean isInverted, Intake.MotorRatio defaultRatio, double forwardSpeed, double reverseSpeed, double estimatedImpulseForceMetersPerSecond) {
       this.isInverted = isInverted;
       this.defaultRatio = defaultRatio;
       this.forwardSpeed = forwardSpeed;

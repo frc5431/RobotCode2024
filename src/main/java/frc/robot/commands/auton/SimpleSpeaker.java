@@ -8,11 +8,11 @@ import frc.robot.commands.RunAnglerCommand.TerminationCondition;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.commands.RunManipulatorCommand.ManipulatorMode;
 import frc.robot.subsystems.Angler;
-import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Intake;
 
 public class SimpleSpeaker extends SequentialCommandGroup {
     
-    public SimpleSpeaker(Manipulator intake, Manipulator shooter, Angler pivot) {
+    public SimpleSpeaker(Intake intake, Intake shooter, Angler pivot) {
 
     addCommands(
         Commands.race(

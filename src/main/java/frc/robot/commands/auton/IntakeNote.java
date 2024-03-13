@@ -9,11 +9,11 @@ import frc.robot.commands.RunManipulatorCommand.ManipulatorMode;
 import frc.robot.commands.RunAnglerCommand.AnglerModes;
 import frc.robot.commands.RunAnglerCommand.TerminationCondition;
 import frc.robot.subsystems.Angler;
-import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Intake;
 
 public class IntakeNote extends SequentialCommandGroup {
     
-  public IntakeNote(Manipulator intake, Angler pivot, DigitalInput bb) {
+  public IntakeNote(Intake intake, Angler pivot, DigitalInput bb) {
     addCommands(
       Commands.parallel(
       RunManipulatorCommand.withMode(intake, ManipulatorMode.REVERSE).until(bb::get),
