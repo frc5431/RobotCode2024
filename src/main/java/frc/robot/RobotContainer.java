@@ -40,7 +40,7 @@ public class RobotContainer {
   private final Drivebase drivebase = systems.getDrivebase();
   //private final RelativeAngler shooterAngler = systems.getShooterAngler();
 
-  private final Angler pivot = systems.getPivot();
+  //private final Angler pivot = systems.getPivot();
   private final Climber climber = systems.getClimber();
 
   private final Manipulator intake = systems.getIntake();
@@ -63,10 +63,10 @@ public class RobotContainer {
   // }
 
   public RobotContainer() {
-    NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
-    // NamedCommands.registerCommand("GrabNote", new IntakeNote(intake, pivot, bb));
-    NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(intake, shooter, pivot));
-    NamedCommands.registerCommand("ZeroGyro", new InstantCommand(() -> drivebase.zeroGyro()));
+    // NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
+    // // NamedCommands.registerCommand("GrabNote", new IntakeNote(intake, pivot, bb));
+    // NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(intake, shooter, pivot));
+    // NamedCommands.registerCommand("ZeroGyro", new InstantCommand(() -> drivebase.zeroGyro()));
  //   NamedCommands.registerCommand("PutDown", new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED).andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot)));
     NamedCommands.registerCommand("90Gyro", new InstantCommand(() -> drivebase.set(-90)));
 
@@ -193,7 +193,7 @@ public class RobotContainer {
 
    driver.temp_getController().rightBumper().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
    driver.temp_getController().leftBumper().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
-  driver.temp_getController().leftTrigger().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
+   //driver.temp_getController().leftTrigger().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
 
 
     // Shooter
@@ -207,19 +207,21 @@ public class RobotContainer {
     operator.x().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.REVERSE));
 
     //Intake Angler
-    operator.axisGreaterThan(1, 0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(2)), pivot));
-    operator.axisLessThan(1, -0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(2)), pivot));
+    // operator.axisGreaterThan(1, 0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(2)), pivot));
+    // operator.axisLessThan(1, -0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(2)), pivot));
 
-    operator.povRight().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));  
-    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
-    operator.rightBumper().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED).andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot)));
+    // operator.povRight().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));  
+    // operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
+    // operator.rightBumper().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED).andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot)));
+    // operator.leftStick().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot));
+
 
     // Shooter Angler
     // operator.povDown().onTrue(shooterAngler.SetAnglerPosition(0));
     // operator.povLeft().onTrue(shooterAngler.SetAnglerPosition(0.65));
     // operator.povUp().onTrue(shooterAngler.SetAnglerPosition(1.5 * 2 * Math.PI));
 
-    driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
+  //  driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
 
   }
 
@@ -228,7 +230,7 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
-    pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
+  //  pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
   }
 
 }
