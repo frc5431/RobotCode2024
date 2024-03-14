@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.8,
-      "y": 7.3
-    },
-    "rotation": 90.0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -27,6 +21,12 @@
           "type": "path",
           "data": {
             "pathName": "nearAmpNoLoad"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AmpScore"
           }
         },
         {

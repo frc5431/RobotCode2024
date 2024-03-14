@@ -76,8 +76,8 @@ public class Intake extends SubsystemBase {
     return (upper.getAppliedOutput() + lower.getAppliedOutput()) / 2;
   }
   
-  public boolean getBeamBreakStatus() {
-    return beamBreak.get();
+  public DigitalInput getBeamBreakStatus() {
+    return beamBreak;
   }
 
   @Override

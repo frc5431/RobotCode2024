@@ -12,7 +12,7 @@
         "y": 7.374840577375375
       },
       "isLocked": false,
-      "linkedName": "SpeakerLeftEdge"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,15 +20,21 @@
         "y": 7.6874978441314905
       },
       "prevControl": {
-        "x": 1.8072087397545318,
-        "y": 7.6874978441314905
+        "x": 1.819270799035425,
+        "y": 7.675435784850597
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 90.0,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {

@@ -115,6 +115,9 @@ public final class Constants {
     public static double mainAngle = 55;
     public static double secondaryAngle = 35;// ?
 
+    public static double[] ampRatio = new double[]{0.65, 1};
+
+
     public static final double p = 0.3;
     public static final double i = 0.0;
     public static final double d = 0.01;

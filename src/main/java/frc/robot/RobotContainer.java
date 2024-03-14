@@ -23,6 +23,7 @@ import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.commands.RunAnglerCommand.TerminationCondition;
 import frc.robot.commands.RunManipulatorCommand.ManipulatorMode;
 import frc.robot.commands.auton.AmpScore;
+import frc.robot.commands.auton.IntakeNote;
 import frc.robot.commands.auton.SimpleSpeaker;
 import frc.robot.controllers.DriverController;
 import frc.robot.controllers.DriverSkyflyController;
@@ -54,12 +55,8 @@ public class RobotContainer {
   public RobotContainer() {
     NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
     NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(intake, shooter, pivot));
-    NamedCommands.registerCommand("ZeroGyro", new InstantCommand(() -> drivebase.zeroGyro()));
-    NamedCommands.registerCommand("PutDown",
-        new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot,
-            TerminationCondition.SETPOINT_REACHED)
-            .andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot)));
-    NamedCommands.registerCommand("90Gyro", new InstantCommand(() -> drivebase.set(-90)));
+    NamedCommands.registerCommand("DistantSpeakerScore", shooter.speakerDistantShot());
+    NamedCommands.registerCommand("GrabNote", new IntakeNote(intake, pivot));
 
     autonMagic = new AutonMagic(systems);
 
@@ -100,6 +97,19 @@ public class RobotContainer {
 
     return newValue;
   }
+
+  public void periodic() {
+    if (shooter.getMode() == ShooterMode.AmpShot || shooter.getMode() == ShooterMode.SpeakerShot ||
+        shooter.getMode() == ShooterMode.StageShot) {
+        pivot.setpoint = Constants.IntakeConstants.mainStowAngle;
+      } else if (shooter.getMode() == ShooterMode.SpeakerDistant) {
+        pivot.setpoint = Constants.IntakeConstants.anglerConstants.maxAngle;
+      } else {
+        pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
+    }
+  }
+
+
 
   Translation2d ellipticalDiscToSquare(double u, double v) {
     double u2 = u * u;
@@ -205,14 +215,8 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
-    if (shooter.getMode() == ShooterMode.AmpShot || shooter.getMode() == ShooterMode.SpeakerShot ||
-        shooter.getMode() == ShooterMode.StageShot) {
-      pivot.setpoint = Constants.IntakeConstants.mainStowAngle;
-    } else if (shooter.getMode() == ShooterMode.SpeakerDistant) {
-      pivot.setpoint = Constants.IntakeConstants.anglerConstants.maxAngle;
-    } else {
       pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
-    }
+    
   }
 
 }

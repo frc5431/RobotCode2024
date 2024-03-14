@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2788871226815193,
-        "y": 4.485250397034318
+        "x": 1.1509672402060853,
+        "y": 4.819361737488906
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.2671762861357376,
-        "y": 4.496961233580098
+        "x": 1.1392564036603037,
+        "y": 4.831072574034686
       },
       "isLocked": false,
       "linkedName": "SpeakerRightEdge"
@@ -92,7 +92,7 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": -1.2188752351313346,
+    "rotation": -35.217592968192626,
     "velocity": 0
   },
   "useDefaultConstraints": true

@@ -87,8 +87,13 @@ public class Shooter extends SubsystemBase {
     }
 
     public void RunPair(double percentage, SparkPIDController top, SparkPIDController bot) {
-        top.setReference(percentage, ControlType.kVelocity);
-        bot.setReference(percentage, ControlType.kVelocity);
+        top.setReference(percentage, ControlType.kDutyCycle);
+        bot.setReference(percentage, ControlType.kDutyCycle);
+    }
+
+    public void RunPair(double percentage, double[] ratio, SparkPIDController top, SparkPIDController bot) {
+        top.setReference(percentage * ratio[0], ControlType.kVelocity);
+        bot.setReference(percentage * ratio[1], ControlType.kVelocity);
     }
 
     public void stopNeutral() {
@@ -121,7 +126,8 @@ public class Shooter extends SubsystemBase {
 
     public Command ampScore() {
         this.mode = ShooterMode.AmpShot;
-        return new StartEndCommand(() -> RunPair(ShooterConstants.ampSpeed, mtController, mbController), () -> stopNeutral(), this);
+        return new StartEndCommand(() -> RunPair(ShooterConstants.ampSpeed, ShooterConstants.ampRatio, mtController, mbController),
+        () -> stopNeutral(), this);
     } 
 
     public Command mainReverse() {

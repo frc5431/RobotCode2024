@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 1.8,
-        "y": 7.2
+        "y": 7.6
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.8,
-        "y": 7.193650138647855
+        "y": 7.593650138647854
       },
       "isLocked": false,
       "linkedName": null
@@ -67,7 +67,7 @@
   "eventMarkers": [
     {
       "name": "grab",
-      "waypointRelativePos": 0.9,
+      "waypointRelativePos": 0.8,
       "command": {
         "type": "sequential",
         "data": {
@@ -76,23 +76,6 @@
               "type": "named",
               "data": {
                 "name": "GrabNote"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Do It again",
-      "waypointRelativePos": 2.0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "AmpScore"
               }
             }
           ]
@@ -108,13 +91,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0,
+    "rotation": -90.38197812402284,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 90.0,
+    "rotation": -91.73592061332467,
     "velocity": 0
   },
   "useDefaultConstraints": true
