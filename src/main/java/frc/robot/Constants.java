@@ -124,7 +124,8 @@ public final class Constants {
       StageShot,
       MainIn,
       SpeakerDistant,
-      DistantIn
+      DistantIn,
+      NONE
     }
 
     public static MotorRatio shooterRatio = new MotorRatio(1, 0.95);

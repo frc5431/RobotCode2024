@@ -34,6 +34,7 @@ public class Shooter extends SubsystemBase {
     private final double[] pid = new double[] {ShooterConstants.p, ShooterConstants.i, ShooterConstants.d};
 
     public ShooterMode mode;
+    public boolean useSmartStow;
 
     public Shooter(CANSparkFlex mainTop, CANSparkFlex mainBot, CANSparkFlex distantTop, CANSparkFlex distantBot) {
         this.mainTop = mainTop;
@@ -75,6 +76,7 @@ public class Shooter extends SubsystemBase {
         this.mainBot.burnFlash();
         this.distantTop.burnFlash();
         this.distantBot.burnFlash();
+
     }
 
     public void setGains(SparkPIDController controller) {
@@ -92,6 +94,7 @@ public class Shooter extends SubsystemBase {
     public void stopNeutral() {
         RunPair(0, dtController, dbController);
         RunPair(0, mtController, mbController);
+        this.mode = ShooterMode.NONE;
     }
 
     @Override
@@ -129,6 +132,10 @@ public class Shooter extends SubsystemBase {
     public Command distantReverse() {
         this.mode = ShooterMode.DistantIn;
         return new StartEndCommand(() -> RunPair(ShooterConstants.inSpeed, dtController, dbController), () -> stopNeutral(), this);
-    } 
+    }
+
+    public ShooterMode getMode() {
+        return this.mode;  
+    }
 
 }

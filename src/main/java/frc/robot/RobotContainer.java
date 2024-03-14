@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.TunerConstatns;
+import frc.robot.Constants.ShooterConstants.ShooterMode;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunClimberCommand;
 import frc.robot.commands.RunManipulatorCommand;
@@ -197,6 +198,10 @@ public class RobotContainer {
 
   public void onTeleop() {
     pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
+    if(shooter.getMode() == ShooterMode.AmpShot || shooter.getMode() == ShooterMode.SpeakerShot ||
+      shooter.getMode() == ShooterMode.StageShot || shooter.getMode() == ShooterMode.DistantIn) {
+      
+    }
   }
 
 }

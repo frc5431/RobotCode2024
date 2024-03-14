@@ -57,4 +57,5 @@ public class DriveLockedRotCommand extends Command {
   public boolean isFinished() {
     return rotController.atSetpoint() || isManualRotating.getAsBoolean();
   }
+  
 }
