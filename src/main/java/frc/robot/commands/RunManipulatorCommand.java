@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
 public class RunManipulatorCommand extends Command {
-  public enum ManipulatorMode {
+  public enum IntakeModes {
     OUTAKE,
     INTAKE,
     STOPPED,
@@ -16,9 +16,9 @@ public class RunManipulatorCommand extends Command {
   // Config
   private boolean usePower;
   private double power;
-  private ManipulatorMode mode;
+  private IntakeModes mode;
 
-  public static RunManipulatorCommand withMode(Intake manipulator, ManipulatorMode mode) {
+  public static RunManipulatorCommand withMode(Intake manipulator, IntakeModes mode) {
     RunManipulatorCommand cmd = new RunManipulatorCommand();
 
     cmd.manipulator = manipulator;
@@ -51,6 +51,6 @@ public class RunManipulatorCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    manipulator.run(ManipulatorMode.STOPPED);
+    manipulator.run(IntakeModes.STOPPED);
   }
 }

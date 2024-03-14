@@ -1,44 +1,32 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.5,
-      "y": 7.3
-    },
-    "rotation": -90.0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "SpeakerScore"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "ampPreload"
+            "pathName": "cycleShoot1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AmpScore"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "nearAmpNoLoad"
+            "name": "GrabNote"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AmpScore"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "generalMovement"
+            "name": "SpeakerScore"
           }
         }
       ]

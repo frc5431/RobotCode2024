@@ -16,7 +16,7 @@ import frc.robot.Constants;
 import frc.robot.commands.DriveLockedRotCommand;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
-import frc.robot.commands.RunManipulatorCommand.ManipulatorMode;
+import frc.robot.commands.RunManipulatorCommand.IntakeModes;
 import frc.robot.commands.RunAnglerCommand.TerminationCondition;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
@@ -54,9 +54,9 @@ public class SpeakerScore extends SequentialCommandGroup {
                                     () -> Rotation2d.fromDegrees(angle.get()),
                                     angler, TerminationCondition.SETPOINT_REACHED),
                             new DriveLockedRotCommand(drivebase, drivebaseAngle, () -> false)),
-                    RunManipulatorCommand.withMode(shooter, ManipulatorMode.OUTAKE).withTimeout(1),
-                    Commands.parallel(RunManipulatorCommand.withMode(intake, ManipulatorMode.OUTAKE).withTimeout(2),
-                            RunManipulatorCommand.withMode(shooter, ManipulatorMode.OUTAKE).withTimeout(3)));
+                    RunManipulatorCommand.withMode(shooter, IntakeModes.OUTAKE).withTimeout(1),
+                    Commands.parallel(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE).withTimeout(2),
+                            RunManipulatorCommand.withMode(shooter, IntakeModes.OUTAKE).withTimeout(3)));
 
         } catch (Exception ignored) {
 

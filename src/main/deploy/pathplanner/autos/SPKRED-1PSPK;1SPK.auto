@@ -12,9 +12,15 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "generalMovement"
+            "name": "GrabNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SpeakerScore"
           }
         }
       ]

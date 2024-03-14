@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ManipulatorConstants;
-import frc.robot.commands.RunManipulatorCommand.ManipulatorMode;
+import frc.robot.commands.RunManipulatorCommand.IntakeModes;
 
 public class Intake extends SubsystemBase {
 
@@ -95,14 +95,14 @@ public class Intake extends SubsystemBase {
     return gamePieceDetector.getAsBoolean();
   }
 
-  public void run(ManipulatorMode mode) {
+  public void run(IntakeModes mode) {
     SmartDashboard.putString(getName() + " mode", mode.toString());
 
-    if (mode == ManipulatorMode.OUTAKE) {
+    if (mode == IntakeModes.OUTAKE) {
       runWithPower(constants.outakeSpeed);
-    } else if (mode == ManipulatorMode.INTAKE) {
+    } else if (mode == IntakeModes.INTAKE) {
       runWithPower(constants.intakeSpeed);
-    } else if (mode == ManipulatorMode.STOPPED) {
+    } else if (mode == IntakeModes.STOPPED) {
       runWithPower(0);
     }
   }
@@ -116,7 +116,7 @@ public class Intake extends SubsystemBase {
     return new StartEndCommand(() -> runWithPower(power), () -> runWithPower(0), this);
   }
 
-  public Command runMode(ManipulatorMode mode) {
+  public Command runMode(IntakeModes mode) {
     return new StartEndCommand(() -> run(mode), () -> runWithPower(0), this);
   }
 

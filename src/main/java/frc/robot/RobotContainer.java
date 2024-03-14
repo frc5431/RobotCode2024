@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.Constants.ShooterConstants.ShooterMode;
@@ -21,7 +22,7 @@ import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunClimberCommand;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.commands.RunAnglerCommand.TerminationCondition;
-import frc.robot.commands.RunManipulatorCommand.ManipulatorMode;
+import frc.robot.commands.RunManipulatorCommand.IntakeModes;
 import frc.robot.commands.auton.AmpScore;
 import frc.robot.commands.auton.IntakeNote;
 import frc.robot.commands.auton.SimpleSpeaker;
@@ -36,8 +37,8 @@ import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
 
 public class RobotContainer {
-  private final DriverController driver;
 
+  public static final CommandXboxController driver = new CommandXboxController(0);
   public static final CommandXboxController operator = new CommandXboxController(1);
   private final Systems systems = new Systems();
   private final Drivebase drivebase = systems.getDrivebase();
@@ -59,12 +60,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("GrabNote", new IntakeNote(intake, pivot));
 
     autonMagic = new AutonMagic(systems);
-
-    if (Constants.useXboxController) {
-      driver = new DriverXboxController();
-    } else {
-      driver = new DriverSkyflyController();
-    }
 
     drivebase.seedFieldRelative();
     configureBindings();
@@ -165,41 +160,38 @@ public class RobotContainer {
           // 0.89);
           return driveFC
               .withVelocityX(
-                  modifyAxis(driver.getLeftY() + (driver.temp_getController().povUp().getAsBoolean() ? 0.1 : 0))
+                  modifyAxis(driver.getLeftY() + (driver.povUp().getAsBoolean() ? 0.1 : 0))
                       * TunerConstatns.kSpeedAt12VoltsMps)
               .withVelocityY(modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps)
               .withRotationalRate(
                   -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
         }));
 
-    driver.resetGyro().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
-    if (driver instanceof DriverSkyflyController) {
-      driver.resetGyro().onFalse(new InstantCommand(() -> drivebase.zeroGyro()));
-    }
-
-    driver.temp_getController().rightBumper()
+    driver.y().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
+    driver.leftTrigger().whileTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
+    driver.rightBumper()
         .onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
-    driver.temp_getController().leftBumper()
+    driver.leftBumper()
         .onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
-    // driver.temp_getController().leftTrigger().onTrue(new
-    // RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
+    
 
     // Shooter
     operator.rightTrigger().whileTrue(shooter.speakerShot());
-    operator.b().whileTrue(shooter.mainReverse());
-    operator.a().whileTrue(shooter.stageShot());
+    operator.b().whileTrue(Commands.parallel(shooter.mainReverse(), shooter.distantReverse()));
+    operator.y().whileTrue(shooter.stageShot());
+    operator.start().whileTrue(shooter.ampScore());
 
     // Intake
     operator.leftTrigger().whileTrue(RunManipulatorCommand.withPower(intake, 1));
-    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.OUTAKE));
+    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE));
 
     // Intake Angler
-    operator.axisGreaterThan(1, 0.15)
-        .whileTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(2)), pivot));
+    operator.axisGreaterThan(1, 0.15).whileTrue(new RunAnglerCommand(
+      () -> pivot.setpoint.plus(Rotation2d.fromDegrees(-operator.getLeftY())), pivot));
     operator.axisLessThan(1, -0.15)
         .whileTrue(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(2)), pivot));
 
-    operator.povRight()
+    operator.back()
         .onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));
     operator.rightBumper()

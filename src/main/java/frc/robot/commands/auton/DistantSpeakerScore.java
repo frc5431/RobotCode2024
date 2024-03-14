@@ -11,15 +11,15 @@ import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
-public class SimpleSpeaker extends SequentialCommandGroup {
+public class DistantSpeakerScore extends SequentialCommandGroup {
 
-    public SimpleSpeaker(Shooter shooter, Intake intake, Angler pivot) {
+    public DistantSpeakerScore(Shooter shooter, Intake intake, Angler pivot) {
         addCommands(
             RunManipulatorCommand.withMode(intake, IntakeModes.INTAKE).withTimeout(0.3),
             new RunAnglerCommand(AnglerModes.STOW, pivot, TerminationCondition.SETPOINT_REACHED),
-            shooter.speakerShot().withTimeout(1),
+            shooter.speakerDistantShot().withTimeout(1),
             Commands.parallel(
-                    shooter.speakerShot(),
+                    shooter.speakerDistantShot(),
                     RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE)).withTimeout(2));
     }
 }
