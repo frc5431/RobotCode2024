@@ -66,10 +66,11 @@ public final class Constants {
     public static int leftIntakeId = 15;
     public static int rightIntakeId = 16;
     public static Rotation2d ampAngle = Rotation2d.fromDegrees(119.7); // and we do it, we do it all again
+    public static Rotation2d mainStowAngle = Rotation2d.fromDegrees(179.5);
 
     public static AnglerConstants anglerConstants = new AnglerConstants(
         /* Min Angle */Rotation2d.fromDegrees(2), // change again
-        /* Max Angle */Rotation2d.fromDegrees(179.5), // change
+        /* Max Angle */Rotation2d.fromDegrees(190), // change
         /* Length Meters */Units.inchesToMeters(12),
         /* Weight Kilos */Units.lbsToKilograms(5.625), // temp
         /* Parallel To Ground Angle */Rotation2d.fromRadians(0),

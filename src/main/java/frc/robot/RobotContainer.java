@@ -55,17 +55,17 @@ public class RobotContainer {
     NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
     NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(intake, shooter, pivot));
     NamedCommands.registerCommand("ZeroGyro", new InstantCommand(() -> drivebase.zeroGyro()));
-    NamedCommands.registerCommand("PutDown", new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED).andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot)));
+    NamedCommands.registerCommand("PutDown",
+        new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot,
+            TerminationCondition.SETPOINT_REACHED)
+            .andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot)));
     NamedCommands.registerCommand("90Gyro", new InstantCommand(() -> drivebase.set(-90)));
-
-
 
     autonMagic = new AutonMagic(systems);
 
-
-    if(Constants.useXboxController) {
+    if (Constants.useXboxController) {
       driver = new DriverXboxController();
-    }else {
+    } else {
       driver = new DriverSkyflyController();
     }
 
@@ -101,10 +101,6 @@ public class RobotContainer {
     return newValue;
   }
 
-  public void periodic() {
-    
-  }
-
   Translation2d ellipticalDiscToSquare(double u, double v) {
     double u2 = u * u;
     double v2 = v * v;
@@ -119,58 +115,64 @@ public class RobotContainer {
     double x = MathUtil.clamp(0.5 * Math.sqrt(termx1) - 0.5 * Math.sqrt(termx2), -1, 1);
     double y = MathUtil.clamp(0.5 * Math.sqrt(termy1) - 0.5 * Math.sqrt(termy2), -1, 1);
 
-    if(Math.abs(x) > 0.9 && Math.abs(y) < 0.2) {
+    if (Math.abs(x) > 0.9 && Math.abs(y) < 0.2) {
       x = Math.copySign(1, x);
     }
 
-    if(Math.abs(y) > 0.9 && Math.abs(x) < 0.2) {
+    if (Math.abs(y) > 0.9 && Math.abs(x) < 0.2) {
       y = Math.copySign(1, y);
     }
-    return new Translation2d(x, y) ;
+    return new Translation2d(x, y);
   }
 
   Translation2d FGSquircularMap(double u, double v) {
     double sgnuv = Math.signum(u * v);
     double sqrt2 = Math.sqrt(2);
-    double root = Math.sqrt((u*u) + (v*v) - Math.sqrt(((u*u) + (v*v)) * ((u*u) + (v*v) - 4 * (u*u) * (v*v))));
+    double root = Math
+        .sqrt((u * u) + (v * v) - Math.sqrt(((u * u) + (v * v)) * ((u * u) + (v * v) - 4 * (u * u) * (v * v))));
 
-    double x = (sgnuv / (v * sqrt2)) * ( root);
-    double y = (sgnuv / (u * sqrt2)) * ( root);
+    double x = (sgnuv / (v * sqrt2)) * (root);
+    double y = (sgnuv / (u * sqrt2)) * (root);
 
-    if(Math.abs(x) > 0.85 && Math.abs(y) < 0.2) {
+    if (Math.abs(x) > 0.85 && Math.abs(y) < 0.2) {
       x = Math.copySign(1, x);
     }
 
-    if(Math.abs(y) > 0.85 && Math.abs(x) < 0.2) {
+    if (Math.abs(y) > 0.85 && Math.abs(x) < 0.2) {
       y = Math.copySign(1, y);
     }
 
     return new Translation2d(
-      x,
-      y
-    );
+        x,
+        y);
   }
 
   private void configureBindings() {
 
     drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
         drivebase.applyRequest(() -> {
-          // var axis = FGSquircularMap(driver.getLeftX() * .89, driver.getLeftY() * 0.89);
-          return driveFC.withVelocityX(modifyAxis(driver.getLeftY() + (driver.temp_getController().povUp().getAsBoolean() ? 0.1 : 0)) * TunerConstatns.kSpeedAt12VoltsMps)
-            .withVelocityY(modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps)
-            .withRotationalRate(
-                -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+          // var axis = FGSquircularMap(driver.getLeftX() * .89, driver.getLeftY() *
+          // 0.89);
+          return driveFC
+              .withVelocityX(
+                  modifyAxis(driver.getLeftY() + (driver.temp_getController().povUp().getAsBoolean() ? 0.1 : 0))
+                      * TunerConstatns.kSpeedAt12VoltsMps)
+              .withVelocityY(modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps)
+              .withRotationalRate(
+                  -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
         }));
 
     driver.resetGyro().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
-    if(driver instanceof DriverSkyflyController) {
+    if (driver instanceof DriverSkyflyController) {
       driver.resetGyro().onFalse(new InstantCommand(() -> drivebase.zeroGyro()));
     }
 
-   driver.temp_getController().rightBumper().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
-   driver.temp_getController().leftBumper().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
-   //driver.temp_getController().leftTrigger().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
-
+    driver.temp_getController().rightBumper()
+        .onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
+    driver.temp_getController().leftBumper()
+        .onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
+    // driver.temp_getController().leftTrigger().onTrue(new
+    // RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
 
     // Shooter
     operator.rightTrigger().whileTrue(shooter.speakerShot());
@@ -181,13 +183,19 @@ public class RobotContainer {
     operator.leftTrigger().whileTrue(RunManipulatorCommand.withPower(intake, 1));
     operator.x().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.OUTAKE));
 
-    //Intake Angler
-    operator.axisGreaterThan(1, 0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(2)), pivot));
-    operator.axisLessThan(1, -0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(2)), pivot));
+    // Intake Angler
+    operator.axisGreaterThan(1, 0.15)
+        .whileTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(2)), pivot));
+    operator.axisLessThan(1, -0.15)
+        .whileTrue(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(2)), pivot));
 
-    operator.povRight().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));  
+    operator.povRight()
+        .onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));
-    operator.rightBumper().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED).andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot)));
+    operator.rightBumper()
+        .onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot,
+            TerminationCondition.SETPOINT_REACHED)
+            .andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot)));
     operator.leftStick().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
 
   }
@@ -197,10 +205,13 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
-    pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
-    if(shooter.getMode() == ShooterMode.AmpShot || shooter.getMode() == ShooterMode.SpeakerShot ||
-      shooter.getMode() == ShooterMode.StageShot || shooter.getMode() == ShooterMode.DistantIn) {
-      
+    if (shooter.getMode() == ShooterMode.AmpShot || shooter.getMode() == ShooterMode.SpeakerShot ||
+        shooter.getMode() == ShooterMode.StageShot) {
+      pivot.setpoint = Constants.IntakeConstants.mainStowAngle;
+    } else if (shooter.getMode() == ShooterMode.SpeakerDistant) {
+      pivot.setpoint = Constants.IntakeConstants.anglerConstants.maxAngle;
+    } else {
+      pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
     }
   }
 
