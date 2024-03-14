@@ -98,24 +98,26 @@ public class Intake extends SubsystemBase {
   public void run(ManipulatorMode mode) {
     SmartDashboard.putString(getName() + " mode", mode.toString());
 
-    if (mode == ManipulatorMode.FORWARD) {
-      runWithPower(constants.forwardSpeed);
-    } else if (mode == ManipulatorMode.REVERSE) {
-      runWithPower(constants.reverseSpeed);
+    if (mode == ManipulatorMode.OUTAKE) {
+      runWithPower(constants.outakeSpeed);
+    } else if (mode == ManipulatorMode.INTAKE) {
+      runWithPower(constants.intakeSpeed);
     } else if (mode == ManipulatorMode.STOPPED) {
       runWithPower(0);
     }
-
   }
 
   public void runWithPower(double power) {
     upper.set(power);
     lower.set(power);
-   
   }
 
   public Command runPower(double power) {
     return new StartEndCommand(() -> runWithPower(power), () -> runWithPower(0), this);
+  }
+
+  public Command runMode(ManipulatorMode mode) {
+    return new StartEndCommand(() -> run(mode), () -> runWithPower(0), this);
   }
 
  
@@ -130,7 +132,6 @@ public class Intake extends SubsystemBase {
   public void setNoteState(boolean state) {
     this.hasNote = state;
   }
-  
 
   /**
    * @param upperPercent a percentage in [0,1]

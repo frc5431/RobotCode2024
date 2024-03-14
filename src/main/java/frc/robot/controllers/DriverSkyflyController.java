@@ -29,7 +29,6 @@ public class DriverSkyflyController implements DriverController {
     @Override
     public double getLeftX() {
         return -controller.getLeftY();
-
     }
 
     @Override

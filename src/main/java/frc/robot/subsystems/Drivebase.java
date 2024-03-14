@@ -28,19 +28,12 @@ public class Drivebase extends SwerveDrivetrain implements Subsystem {
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
     private SwerveRequest.ApplyChassisSpeeds drive = new SwerveRequest.ApplyChassisSpeeds();
-   //private MountPoseConfigs config;
-
 
     public Drivebase(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        // this.config = new MountPoseConfigs();
-        
-        // config.withMountPoseYaw(45);
-
-        // getPigeon2().getConfigurator().apply(config);
 
         AutoBuilder.configureHolonomic(
                 this::getPose, // Robot pose supplier

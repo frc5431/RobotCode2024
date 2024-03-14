@@ -89,55 +89,46 @@ public class Shooter extends SubsystemBase {
         bot.setReference(percentage, ControlType.kVelocity);
     }
 
-        @Override
+    public void stopNeutral() {
+        RunPair(0, dtController, dbController);
+        RunPair(0, mtController, mbController);
+    }
+
+    @Override
     public void periodic() {
         SmartDashboard.putNumberArray("Main Set", new Double[]{mainTopRel.getVelocity(), mainBotRel.getVelocity()});
         SmartDashboard.putNumberArray("Distant Set", new Double[]{distantTopRel.getVelocity(), distantBotRel.getVelocity()});
     }
 
-    public void ampShot() {
-        this.mode = ShooterMode.AmpShot;
-        RunPair(ShooterConstants.ampSpeed, mtController, mbController);
-    }
-
-    public void mainIn() {
-        this.mode = ShooterMode.MainIn;
-        RunPair(ShooterConstants.inSpeed, mtController, mbController);
-    }
-
-    public void distantIn() {
-        this.mode = ShooterMode.MainIn;
-        RunPair(ShooterConstants.inSpeed, dtController, dbController);
-    }
 
     public Command speakerShot() {
         this.mode = ShooterMode.SpeakerShot;
-        return new StartEndCommand(() -> RunPair(ShooterConstants.spkSpeed, mtController, mbController), () -> {}, this);
+        return new StartEndCommand(() -> RunPair(ShooterConstants.spkSpeed, mtController, mbController), () -> stopNeutral(), this);
     }
 
     public Command speakerDistantShot() {
         this.mode = ShooterMode.SpeakerDistant;     
-        return new StartEndCommand(() -> RunPair(ShooterConstants.stgSpeed, dtController, dbController), () -> {}, this);
+        return new StartEndCommand(() -> RunPair(ShooterConstants.stgSpeed, dtController, dbController), () -> stopNeutral(), this);
     }
 
     public Command stageShot() {
         this.mode = ShooterMode.StageShot;
-        return new StartEndCommand(() -> RunPair(ShooterConstants.stgSpeed, mtController, mbController), () -> {}, this);
+        return new StartEndCommand(() -> RunPair(ShooterConstants.stgSpeed, mtController, mbController), () -> stopNeutral(), this);
     }
 
     public Command ampScore() {
         this.mode = ShooterMode.AmpShot;
-        return new StartEndCommand(() -> RunPair(ShooterConstants.ampSpeed, mtController, mbController), () -> {}, this);
+        return new StartEndCommand(() -> RunPair(ShooterConstants.ampSpeed, mtController, mbController), () -> stopNeutral(), this);
     } 
 
     public Command mainReverse() {
         this.mode = ShooterMode.MainIn;
-        return new StartEndCommand(() -> RunPair(ShooterConstants.inSpeed, mtController, mbController), () -> {}, this);
+        return new StartEndCommand(() -> RunPair(ShooterConstants.inSpeed, mtController, mbController), () -> stopNeutral(), this);
     } 
 
     public Command distantReverse() {
         this.mode = ShooterMode.DistantIn;
-        return new StartEndCommand(() -> RunPair(ShooterConstants.inSpeed, dtController, dbController), () -> {}, this);
+        return new StartEndCommand(() -> RunPair(ShooterConstants.inSpeed, dtController, dbController), () -> stopNeutral(), this);
     } 
 
 }

@@ -5,8 +5,8 @@ import frc.robot.subsystems.Intake;
 
 public class RunManipulatorCommand extends Command {
   public enum ManipulatorMode {
-    FORWARD,
-    REVERSE,
+    OUTAKE,
+    INTAKE,
     STOPPED,
   }
 

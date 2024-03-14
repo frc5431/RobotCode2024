@@ -16,11 +16,10 @@ public class SimpleSpeaker extends SequentialCommandGroup {
     public SimpleSpeaker(Intake intake, Shooter shooter, Angler pivot) {
 
     addCommands(
-        Commands.race(
-        RunManipulatorCommand.withMode(intake, ManipulatorMode.FORWARD).withTimeout(0.1),
-        shooter.speakerShot(),
-        new RunAnglerCommand(AnglerModes.MAXIMUM, pivot, TerminationCondition.SETPOINT_REACHED),
-        RunManipulatorCommand.withMode(intake, ManipulatorMode.REVERSE).withTimeout(0.3))
+        RunManipulatorCommand.withMode(intake, ManipulatorMode.INTAKE).withTimeout(0.1),
+        Commands.race(shooter.speakerShot(),
+        new RunAnglerCommand(AnglerModes.STOW, pivot, TerminationCondition.SETPOINT_REACHED),
+        RunManipulatorCommand.withMode(intake, ManipulatorMode.OUTAKE).withTimeout(0.3))
 
     );
     }

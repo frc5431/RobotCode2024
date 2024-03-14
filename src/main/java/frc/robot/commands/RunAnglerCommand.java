@@ -13,8 +13,9 @@ public class RunAnglerCommand extends Command {
   Supplier<Rotation2d> rotation;
 
   public enum AnglerModes {
-    MAXIMUM,
-    MINIMUM,
+    STOW,
+    DEPLOY,
+    SMARTSTOW,
     CUSTOM
   }
 
@@ -53,9 +54,9 @@ public class RunAnglerCommand extends Command {
   }
 
   public void execute() {
-    if (AnglerModes.MINIMUM == mode) {
+    if (AnglerModes.DEPLOY == mode) {
       angler.runToMin();
-    } else if (AnglerModes.MAXIMUM == mode) {
+    } else if (AnglerModes.STOW == mode) {
       angler.runToMax();
     } else {
       angler.setRotation(this.rotation.get());

@@ -49,23 +49,12 @@ public class RobotContainer {
 
   private SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-  // private SwerveRequest.RobotCentric driveRC = new SwerveRequest.RobotCentric()
-  //     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-  // private boolean isFieldRelative;
-
-  // public void setFieldRelativeControl() {
-  //   isFieldRelative = true;
-  // }
-
-  // public void setRobotRelativeControl() {
-  //   isFieldRelative = false;
-  // }
 
   public RobotContainer() {
     NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
     NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(intake, shooter, pivot));
     NamedCommands.registerCommand("ZeroGyro", new InstantCommand(() -> drivebase.zeroGyro()));
-    NamedCommands.registerCommand("PutDown", new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED).andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot)));
+    NamedCommands.registerCommand("PutDown", new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED).andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot)));
     NamedCommands.registerCommand("90Gyro", new InstantCommand(() -> drivebase.set(-90)));
 
 
@@ -80,7 +69,6 @@ public class RobotContainer {
     }
 
     drivebase.seedFieldRelative();
-    // setFieldRelativeControl();
     configureBindings();
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
@@ -190,20 +178,16 @@ public class RobotContainer {
 
     // Intake
     operator.leftTrigger().whileTrue(RunManipulatorCommand.withPower(intake, 1));
-    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.REVERSE));
+    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, ManipulatorMode.OUTAKE));
 
     //Intake Angler
     operator.axisGreaterThan(1, 0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.plus(Rotation2d.fromDegrees(2)), pivot));
     operator.axisLessThan(1, -0.15).whileTrue(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(2)), pivot));
 
     operator.povRight().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));  
-    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
-    operator.rightBumper().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED).andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot)));
-    operator.leftStick().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot));
-
-
-
-    // driver.stow().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MAXIMUM, pivot));
+    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));
+    operator.rightBumper().onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED).andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot)));
+    operator.leftStick().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
 
   }
 
@@ -212,7 +196,7 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
-  //  pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
+    pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
   }
 
 }

@@ -15,7 +15,6 @@ public class AutonMagic {
         SmartDashboard.putData("Auto Chooser", chooser);
     }
 
- 
     public Command procureAuton() {
         return chooser.getSelected();
     }

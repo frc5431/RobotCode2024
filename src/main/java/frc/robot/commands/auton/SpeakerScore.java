@@ -54,9 +54,9 @@ public class SpeakerScore extends SequentialCommandGroup {
                                     () -> Rotation2d.fromDegrees(angle.get()),
                                     angler, TerminationCondition.SETPOINT_REACHED),
                             new DriveLockedRotCommand(drivebase, drivebaseAngle, () -> false)),
-                    RunManipulatorCommand.withMode(shooter, ManipulatorMode.FORWARD).withTimeout(1),
-                    Commands.parallel(RunManipulatorCommand.withMode(intake, ManipulatorMode.FORWARD).withTimeout(2),
-                            RunManipulatorCommand.withMode(shooter, ManipulatorMode.FORWARD).withTimeout(3)));
+                    RunManipulatorCommand.withMode(shooter, ManipulatorMode.OUTAKE).withTimeout(1),
+                    Commands.parallel(RunManipulatorCommand.withMode(intake, ManipulatorMode.OUTAKE).withTimeout(2),
+                            RunManipulatorCommand.withMode(shooter, ManipulatorMode.OUTAKE).withTimeout(3)));
 
         } catch (Exception ignored) {
 
