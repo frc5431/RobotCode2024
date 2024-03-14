@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -17,10 +18,10 @@ public class Intake extends SubsystemBase {
 
   public CANSparkBase upper;
   public CANSparkBase lower;
+  private DigitalInput beamBreak;
 
   protected boolean containedGamePiece;
   private boolean hasNote;
-  //private boolean speed;
   protected MotorRatio ratio;
 
   public RelativeEncoder upperRelativeEncoder;
@@ -37,8 +38,8 @@ public class Intake extends SubsystemBase {
     this.upper = upper;
     this.lower = lower;
     this.hasNote = false;
-   //this.speed = false;
     this.constants = constants;
+    this.beamBreak = new DigitalInput(9);
 
     upper.setInverted(constants.isInverted);
     lower.setInverted(constants.isInverted);
@@ -74,6 +75,10 @@ public class Intake extends SubsystemBase {
   public double getAverageAppliedOutput() {
     return (upper.getAppliedOutput() + lower.getAppliedOutput()) / 2;
   }
+  
+  public boolean getBeamBreakStatus() {
+    return beamBreak.get();
+  }
 
   @Override
   public void periodic() {
@@ -101,16 +106,11 @@ public class Intake extends SubsystemBase {
       runWithPower(0);
     }
 
-
   }
 
   public void runWithPower(double power) {
     upper.set(power);
     lower.set(power);
-
-    // if(upper.getAppliedOutput() == power && lower.getAppliedOutput() == power){
-    //   this.speed = true;
-    // }
    
   }
 

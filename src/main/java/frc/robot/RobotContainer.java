@@ -12,7 +12,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -31,6 +30,7 @@ import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
 
 public class RobotContainer {
@@ -44,8 +44,7 @@ public class RobotContainer {
   private final Climber climber = systems.getClimber();
 
   private final Intake intake = systems.getIntake();
-  private final Intake shooter = systems.getShooter();
-  private final DigitalInput bb = systems.getBeamBreakStatus();
+  private final Shooter shooter = systems.getShooter();
   private final AutonMagic autonMagic;
 
   private SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
@@ -63,11 +62,10 @@ public class RobotContainer {
   // }
 
   public RobotContainer() {
-    // NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
-    // // NamedCommands.registerCommand("GrabNote", new IntakeNote(intake, pivot, bb));
-    // NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(intake, shooter, pivot));
-    // NamedCommands.registerCommand("ZeroGyro", new InstantCommand(() -> drivebase.zeroGyro()));
- //   NamedCommands.registerCommand("PutDown", new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED).andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot)));
+    NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
+    NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(intake, shooter, pivot));
+    NamedCommands.registerCommand("ZeroGyro", new InstantCommand(() -> drivebase.zeroGyro()));
+    NamedCommands.registerCommand("PutDown", new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot, TerminationCondition.SETPOINT_REACHED).andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.MINIMUM, pivot)));
     NamedCommands.registerCommand("90Gyro", new InstantCommand(() -> drivebase.set(-90)));
 
 
@@ -115,17 +113,7 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    //SmartDashboard.putNumberArray("Shooter Speeds", shooter.getRPM());
-    //SmartDashboard.putNumberArray("Intake Speeds", intake.getRPM());
-
-    //SmartDashboard.putNumber("dx", driver.getLeftX());
-    //SmartDashboard.putNumber("dy", driver.getLeftY());
-
-    //SmartDashboard.putNumber("angler setpoint", shooterAngler.getSetpoint());
-    //SmartDashboard.putNumberArray("angler pos", shooterAngler.getPositions());
-
-
-   // SmartDashboard.putBoolean("Beam Break", systems.getBeamBreakStatus().get());
+    
   }
 
   Translation2d ellipticalDiscToSquare(double u, double v) {
@@ -175,7 +163,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    //shooter.setRatio(Constants.ShooterConstants.shooterRatio);
 
     drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
         drivebase.applyRequest(() -> {
@@ -197,10 +184,9 @@ public class RobotContainer {
 
 
     // Shooter
-    operator.rightTrigger().whileTrue(shooter.runPower(-1));
-
-    operator.b().whileTrue(RunManipulatorCommand.withPower(shooter, 0.1));
-    operator.a().whileTrue(RunManipulatorCommand.withPower(shooter, -0.70));
+    operator.rightTrigger().whileTrue(shooter.speakerShot());
+    operator.b().whileTrue(shooter.mainReverse());
+    operator.a().whileTrue(shooter.stageShot());
 
     // Intake
     operator.leftTrigger().whileTrue(RunManipulatorCommand.withPower(intake, 1));

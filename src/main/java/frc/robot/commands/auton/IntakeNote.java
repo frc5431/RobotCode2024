@@ -17,8 +17,8 @@ public class IntakeNote extends SequentialCommandGroup {
     addCommands(
       Commands.parallel(
       RunManipulatorCommand.withMode(intake, ManipulatorMode.REVERSE).until(bb::get),
-      new RunAnglerCommand(AnglerModes.MINIMUM, pivot, TerminationCondition.SETPOINT_REACHED)),
-      new RunAnglerCommand(AnglerModes.MAXIMUM, pivot, TerminationCondition.SETPOINT_REACHED)
+      new RunAnglerCommand(AnglerModes.MINIMUM, pivot, TerminationCondition.SETPOINT_REACHED))
+      .andThen(new RunAnglerCommand(AnglerModes.MAXIMUM, pivot, TerminationCondition.SETPOINT_REACHED))
     );
     
   }

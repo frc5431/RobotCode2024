@@ -71,6 +71,10 @@ public class Shooter extends SubsystemBase {
         distantTop.setIdleMode(IdleMode.kCoast);
         distantTop.setIdleMode(IdleMode.kCoast);
 
+        this.mainTop.burnFlash();
+        this.mainBot.burnFlash();
+        this.distantTop.burnFlash();
+        this.distantBot.burnFlash();
     }
 
     public void setGains(SparkPIDController controller) {
@@ -85,14 +89,10 @@ public class Shooter extends SubsystemBase {
         bot.setReference(percentage, ControlType.kVelocity);
     }
 
-    public void spkShot() {
-        this.mode = ShooterMode.SpeakerShot;
-        RunPair(ShooterConstants.spkSpeed, mtController, mbController);
-    }
-
-    public void stgShot() {
-        this.mode = ShooterMode.StageShot;
-        RunPair(ShooterConstants.spkSpeed, mtController, mbController);
+        @Override
+    public void periodic() {
+        SmartDashboard.putNumberArray("Main Set", new Double[]{mainTopRel.getVelocity(), mainBotRel.getVelocity()});
+        SmartDashboard.putNumberArray("Distant Set", new Double[]{distantTopRel.getVelocity(), distantBotRel.getVelocity()});
     }
 
     public void ampShot() {
@@ -105,47 +105,39 @@ public class Shooter extends SubsystemBase {
         RunPair(ShooterConstants.inSpeed, mtController, mbController);
     }
 
-    public void spkDistantShot() {
-        this.mode = ShooterMode.SpeakerDistant;
-        RunPair(ShooterConstants.stgSpeed, dtController, dbController);
-    }
-    
     public void distantIn() {
         this.mode = ShooterMode.MainIn;
         RunPair(ShooterConstants.inSpeed, dtController, dbController);
     }
 
-    @Override
-    public void periodic() {
-        SmartDashboard.putNumberArray("Main Set", new Double[]{mainTopRel.getVelocity(), mainBotRel.getVelocity()});
-        SmartDashboard.putNumberArray("Distant Set", new Double[]{distantTopRel.getVelocity(), distantBotRel.getVelocity()});
-
+    public Command speakerShot() {
+        this.mode = ShooterMode.SpeakerShot;
+        return new StartEndCommand(() -> RunPair(ShooterConstants.spkSpeed, mtController, mbController), () -> {}, this);
     }
 
-    public Command spkScore() {
-        return new StartEndCommand(() -> spkShot(), () -> {}, this);
+    public Command speakerDistantShot() {
+        this.mode = ShooterMode.SpeakerDistant;     
+        return new StartEndCommand(() -> RunPair(ShooterConstants.stgSpeed, dtController, dbController), () -> {}, this);
     }
 
-    public Command spkDistant() {
-        return new StartEndCommand(() -> spkDistantShot(), () -> {}, this);
-    }
-
-    public Command stgScore() {
-        return new StartEndCommand(() -> stgShot(), () -> {}, this);
+    public Command stageShot() {
+        this.mode = ShooterMode.StageShot;
+        return new StartEndCommand(() -> RunPair(ShooterConstants.stgSpeed, mtController, mbController), () -> {}, this);
     }
 
     public Command ampScore() {
-        return new StartEndCommand(() -> ampShot(), () -> {}, this);
+        this.mode = ShooterMode.AmpShot;
+        return new StartEndCommand(() -> RunPair(ShooterConstants.ampSpeed, mtController, mbController), () -> {}, this);
     } 
 
     public Command mainReverse() {
-        return new StartEndCommand(() -> mainIn(), () -> {}, this);
+        this.mode = ShooterMode.MainIn;
+        return new StartEndCommand(() -> RunPair(ShooterConstants.inSpeed, mtController, mbController), () -> {}, this);
     } 
 
     public Command distantReverse() {
-        return new StartEndCommand(() -> distantIn(), () -> {}, this);
+        this.mode = ShooterMode.DistantIn;
+        return new StartEndCommand(() -> RunPair(ShooterConstants.inSpeed, dtController, dbController), () -> {}, this);
     } 
-
-
 
 }
