@@ -55,7 +55,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
-    NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(intake, shooter, pivot));
+    NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(shooter, intake, pivot));
     NamedCommands.registerCommand("DistantSpeakerScore", shooter.speakerDistantShot());
     NamedCommands.registerCommand("GrabNote", new IntakeNote(intake, pivot));
 
