@@ -30,6 +30,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "speakerCenter"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "DistantSpeakerScore"

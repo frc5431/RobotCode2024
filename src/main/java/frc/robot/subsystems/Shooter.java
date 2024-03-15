@@ -34,7 +34,6 @@ public class Shooter extends SubsystemBase {
     private final double[] pid = new double[] {ShooterConstants.p, ShooterConstants.i, ShooterConstants.d};
 
     public ShooterMode mode;
-    public boolean useSmartStow;
 
     public Shooter(CANSparkFlex mainTop, CANSparkFlex mainBot, CANSparkFlex distantTop, CANSparkFlex distantBot) {
         this.mainTop = mainTop;
@@ -84,6 +83,7 @@ public class Shooter extends SubsystemBase {
         controller.setI(pid[1]);
         controller.setD(pid[2]);
         controller.setIZone(2);
+        controller.setOutputRange(-1,1);
     }
 
     public void RunPair(double percentage, SparkPIDController top, SparkPIDController bot) {
@@ -102,12 +102,16 @@ public class Shooter extends SubsystemBase {
         this.mode = ShooterMode.NONE;
     }
 
+    public ShooterMode getMode() {
+        return this.mode;  
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumberArray("Main Set", new Double[]{mainTopRel.getVelocity(), mainBotRel.getVelocity()});
         SmartDashboard.putNumberArray("Distant Set", new Double[]{distantTopRel.getVelocity(), distantBotRel.getVelocity()});
+        SmartDashboard.putString("Shooter Mode", this.mode.toString());
     }
-
 
     public Command speakerShot() {
         this.mode = ShooterMode.SpeakerShot;
@@ -138,10 +142,6 @@ public class Shooter extends SubsystemBase {
     public Command distantReverse() {
         this.mode = ShooterMode.DistantIn;
         return new StartEndCommand(() -> RunPair(ShooterConstants.inSpeed, dtController, dbController), () -> stopNeutral(), this);
-    }
-
-    public ShooterMode getMode() {
-        return this.mode;  
     }
 
 }

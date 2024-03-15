@@ -109,20 +109,13 @@ public class Angler extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber(getName() + " setpoint deg", setpoint.getDegrees());
-    SmartDashboard.putNumber(getName() + " setpoint radians", setpoint.getRadians());
     SmartDashboard.putNumber(getName() + " encoder deg",
         Units.rotationsToDegrees(absoluteEncoder.getPosition() / absoluteEncoder.getPositionConversionFactor()));
-    SmartDashboard.putNumber(getName() + " output", motor.getAppliedOutput());
-
-    // var retractedAngle = constants.minAngle;
-    // var deployedAngle = constants.maxAngle;
 
     double anglerCosMultiplierNoCOMM = massKg * 9.81;
     double cosMult = anglerCosMultiplierNoCOMM * constants.lengthMeters;
     double arbFF = (cosMult * getAngleToGround().getCos()) / constants.stalltorque;
-    // SmartDashboard.putNumber(getName() + " arbFF", arbFF);
-    // SmartDashboard.putNumber(getName().substring(0, 1) + "2g",
-    // getAngleToGround().getDegrees());
+
     controller.setReference(
         setpoint.getRotations() * absoluteEncoder.getPositionConversionFactor(), // MathUtil.clamp(setpoint.getRadians(),
                                                                                  // retractedAngle, deployedAngle),

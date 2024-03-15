@@ -36,7 +36,6 @@ public class Systems {
   private CANSparkMax rightIntakeMotor;
   private CANSparkMax intakeAnglerMotor;
 
-
   private MotorType brushless =  MotorType.kBrushless;
   public Drivebase pheonixdrivebase;
 
@@ -56,8 +55,8 @@ public class Systems {
     climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
     climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
   
-    leftIntakeMotor.setSmartCurrentLimit(40);
-    rightIntakeMotor.setSmartCurrentLimit(40);
+    leftIntakeMotor.setSmartCurrentLimit(30);
+    rightIntakeMotor.setSmartCurrentLimit(30);
     rightIntakeMotor.burnFlash();
     leftIntakeMotor.burnFlash();
     intakeAnglerMotor.burnFlash();

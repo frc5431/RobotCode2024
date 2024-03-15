@@ -13,7 +13,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.TunerConstatns;
@@ -26,9 +28,7 @@ import frc.robot.commands.RunManipulatorCommand.IntakeModes;
 import frc.robot.commands.auton.AmpScore;
 import frc.robot.commands.auton.IntakeNote;
 import frc.robot.commands.auton.SimpleSpeaker;
-import frc.robot.controllers.DriverController;
-import frc.robot.controllers.DriverSkyflyController;
-import frc.robot.controllers.DriverXboxController;
+import frc.robot.commands.auton.SmartIntakeNote;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivebase;
@@ -102,9 +102,9 @@ public class RobotContainer {
       } else {
         pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
     }
+    SmartDashboard.putString("Current Command", CommandScheduler.getInstance().toString());
+    
   }
-
-
 
   Translation2d ellipticalDiscToSquare(double u, double v) {
     double u2 = u * u;
@@ -180,6 +180,10 @@ public class RobotContainer {
     operator.b().whileTrue(Commands.parallel(shooter.mainReverse(), shooter.distantReverse()));
     operator.y().whileTrue(shooter.stageShot());
     operator.start().whileTrue(shooter.ampScore());
+
+    //Testing
+    operator.povDown().onTrue(new SmartIntakeNote(intake, pivot));
+    operator.povLeft().onTrue(new IntakeNote(intake, pivot));
 
     // Intake
     operator.leftTrigger().whileTrue(RunManipulatorCommand.withPower(intake, 1));

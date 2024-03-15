@@ -41,7 +41,7 @@ public class DriveLockedRotCommand extends Command {
 
   @Override
   public void execute() {
-    double rot = MathUtil.clamp(rotController.calculate(m_drivetrainSubsystem.getPigeon2().getRotation2d().getDegrees()), -Constants.DrivebaseConstant.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, Constants.DrivebaseConstant.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+    double rot = MathUtil.clamp(rotController.calculate(m_drivetrainSubsystem.getPigeon2().getRotation2d().getDegrees()), -Constants.TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, Constants.TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
     // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of
     // field-oriented movement

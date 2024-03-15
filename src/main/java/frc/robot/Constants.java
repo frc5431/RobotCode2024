@@ -117,7 +117,6 @@ public final class Constants {
 
     public static double[] ampRatio = new double[]{0.65, 1};
 
-
     public static final double p = 0.3;
     public static final double i = 0.0;
     public static final double d = 0.01;
@@ -199,80 +198,6 @@ public final class Constants {
     }
   }
 
-  public static class DrivebaseConstant {
-
-    public static final int ID_PIGEON2 = 13;
-    public static final int ID_PHUB = 1;
-
-    public static final String CANBUS_DRIVETRAIN = "Omnivore2024"; // "omnivore"
-    public static final String CANBUS_SUBSYSTEM = "";
-
-    /**
-     * The left-to-right distance between the drivetrain wheels
-     *
-     * Should be measured from center to center.
-     */
-    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.5842;
-    /**
-     * The front-to-back distance between the drivetrain wheels.
-     *
-     * Should be measured from center to center.
-     */
-    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.5334;
-
-    public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 7;
-    public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 8;
-    public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 12;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0).getRadians();
-    // -Rotation2d.fromRotations(0.428223).plus(Rotation2d.fromDegrees(180)).getRadians();
-
-    public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 1;
-    public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 2;
-    public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 9;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0).getRadians();
-    // -Rotation2d.fromRotations(0.413818).plus(Rotation2d.fromDegrees(180)).getRadians();
-
-    public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 5;
-    public static final int BACK_LEFT_MODULE_STEER_MOTOR = 6;
-    public static final int BACK_LEFT_MODULE_STEER_ENCODER = 11;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0).getRadians();
-    // -Rotation2d.fromRotations(0.071533).plus(Rotation2d.fromDegrees(-180)).getRadians();
-
-    public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 3;
-    public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 4;
-    public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 10;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Rotation2d.fromRotations(0).getRadians();
-    // -Rotation2d.fromRotations(0.059326).plus(Rotation2d.fromDegrees(180)).getRadians();;
-
-    public static final double MAX_VOLTAGE = 12.0;
-
-    public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0)
-        * SdsModuleConfigurations.MK4_L2.getDriveReduction() * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
-        * Math.PI;
-
-    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND
-        / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
-
-    public static final double MIN_ANGULAR_VELOCITY = 0.5;
-    // Max input acceleration (ChassisSpeeds meters per second per second) for x/y
-    // movement
-    public static final double SLEW_RATE_LIMIT_TRANSLATION = MAX_VELOCITY_METERS_PER_SECOND * 2;
-    // Max input acceleration (ChassisSpeeds radians per second per second) for
-    // rotational movement
-    public static final double SLEW_RATE_LIMIT_ROTATION = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 10;
-
-    public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
-        // Front left
-        new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
-        // Front right
-        new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
-        // Back left
-        new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
-        // Back right
-        new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0));
-
-  }
-
   public static class VisionConstants {
     public static final Resolution ARDUCAM_CAMERA_RESOLUTION = Resolution.RES_640_480;
 
@@ -310,10 +235,10 @@ public final class Constants {
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
-    private static final ClosedLoopOutputType steerClosedLoopOutput = ClosedLoopOutputType.Voltage;
+    private static final ClosedLoopOutputType steerClosedLoopOutput = ClosedLoopOutputType.TorqueCurrentFOC;
     // The closed-loop output type to use for the drive motors;
     // This affects the PID/FF gains for the drive motors
-    private static final ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.Voltage;
+    private static final ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.TorqueCurrentFOC;
 
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
@@ -321,17 +246,20 @@ public final class Constants {
 
     // Theoretical free speed (m/s) at 12v applied output;
     // This needs to be tuned to your individual robot
-    // public static final double kSpeedAt12VoltsMps = (6380.0 / 60.0) *
-    // SdsModuleConfigurations.MK4_L2.getDriveReduction() *
-    // SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
-    public static final double kSpeedAt12VoltsMps = 10;
+    public static final double kSpeedAt12VoltsMps = (5800.0 / 60.0) *
+    SdsModuleConfigurations.MK4_L2.getDriveReduction() *
+    SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
 
+    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.5842;
+    
+    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.5334;
+   
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = kSpeedAt12VoltsMps / Math.hypot(
-        DrivebaseConstant.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DrivebaseConstant.DRIVETRAIN_WHEELBASE_METERS / 2.0);
-
+        DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
+  
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
-    private static final double kCoupleRatio = 3.5714285714285716;
+    private static final double kCoupleRatio = 3.5714285714285714285714285714286;
 
     private static final double kDriveGearRatio = 6.746031746031747;
     private static final double kSteerGearRatio = 12.8;

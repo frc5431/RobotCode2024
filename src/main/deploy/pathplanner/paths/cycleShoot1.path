@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "grabthenshoot",
-      "waypointRelativePos": 0.35,
+      "waypointRelativePos": 0.65,
       "command": {
         "type": "sequential",
         "data": {

@@ -29,6 +29,7 @@ public class Intake extends SubsystemBase {
   private ManipulatorConstants constants;
 
   private BooleanSupplier gamePieceDetector;
+  private IntakeModes mode;
 
   public Intake(CANSparkBase upper, CANSparkBase lower, ManipulatorConstants constants) {
     this(upper, lower, constants, () -> false);
@@ -82,9 +83,8 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("shup RPM", this.upperRelativeEncoder.getVelocity());
-    SmartDashboard.putNumber("shlo RPM", this.lowerRelativeEncoder.getVelocity());
-
+    SmartDashboard.putNumber("Intake Rpm", this.upperRelativeEncoder.getVelocity());
+    SmartDashboard.putString(getName() + " mode", this.mode.toString());
   }
 
   public double[] getRPM() {
@@ -96,8 +96,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void run(IntakeModes mode) {
-    SmartDashboard.putString(getName() + " mode", mode.toString());
-
+    this.mode = mode;
     if (mode == IntakeModes.OUTAKE) {
       runWithPower(constants.outakeSpeed);
     } else if (mode == IntakeModes.INTAKE) {

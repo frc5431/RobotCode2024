@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
@@ -57,7 +58,6 @@ public class Drivebase extends SwerveDrivetrain implements Subsystem {
                 this // Reference to this subsystem to set requirements
         );
         
-
     }
 
     public Pose2d getPose(){
@@ -89,17 +89,19 @@ public class Drivebase extends SwerveDrivetrain implements Subsystem {
         resetPose(getPose());
     }
 
-    
     public void zeroGyro() {
         getPigeon2().reset();
         resetPose(getPose());
     }
 
-
     Field2d undertale = new Field2d();
 
     @Override
     public void periodic() {
+        
+        SmartDashboard.putNumber("X Speed", this.getRobotRelativeSpeeds().vxMetersPerSecond);
+        SmartDashboard.putNumber("Y Speed", this.getRobotRelativeSpeeds().vyMetersPerSecond);
+
         m_odometry.update(m_fieldRelativeOffset, m_modulePositions);
         // Get estimated poses from VisionSubsystem
         var visionEstimatedRobotPoses = LasaVision.getInstance().getEstimatedGlobalPoses();
