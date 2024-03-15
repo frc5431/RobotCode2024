@@ -31,7 +31,7 @@ public final class Constants {
   public static class idsorsmth {
 
     public static final int idorsmth = 0;
-    public static final boolean isTauseefCool = false;
+    public static final boolean isTauseefCool = true;
   }
 
   public static class ApriltagConstants {
