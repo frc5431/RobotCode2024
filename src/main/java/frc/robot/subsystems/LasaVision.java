@@ -140,8 +140,14 @@ public class LasaVision extends SubsystemBase implements AutoCloseable {
         new AprilTagCamera(
             "shooter_camera",
             Constants.VisionConstants.SHOOTER_CAMERA_POSE,
-            Constants.VisionConstants.SHOOTER_CAMERA_RESOLUTION,
-            Constants.VisionConstants.SHOOTER_CAMERA_FOV));
+            Constants.VisionConstants.ARDUCAM_CAMERA_RESOLUTION,
+            Constants.VisionConstants.SHOOTER_CAMERA_FOV),
+        new AprilTagCamera(
+            "intake_camera",
+            Constants.VisionConstants.INTAKE_CAMERA_POSE,
+            Constants.VisionConstants.ARDUCAM_CAMERA_RESOLUTION,
+            Constants.VisionConstants.SHOOTER_CAMERA_FOV) // temporary, until i can set it to the real value
+        );
 
     return visionHardware;
   }

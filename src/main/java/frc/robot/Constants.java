@@ -274,10 +274,11 @@ public final class Constants {
   }
 
   public static class VisionConstants {
+    public static final Resolution ARDUCAM_CAMERA_RESOLUTION = Resolution.RES_640_480;
+
     public static final Transform3d SHOOTER_CAMERA_POSE = new Transform3d(
         new Translation3d(Units.inchesToMeters(-13.5), Units.inchesToMeters(5), Units.inchesToMeters(8 + 1.87)),
         new Rotation3d(0, Units.degreesToRadians(-32.5), Units.degreesToRadians(180))); // 32.5
-    public static final Resolution SHOOTER_CAMERA_RESOLUTION = Resolution.RES_640_480;
     public static final Rotation2d SHOOTER_CAMERA_FOV = Rotation2d.fromDegrees(76.2);
 
     public static final Transform3d INTAKE_CAMERA_POSE = new Transform3d(
