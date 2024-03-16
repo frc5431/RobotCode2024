@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.function.BooleanSupplier;
-
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.RelativeEncoder;
@@ -21,7 +19,6 @@ public class Intake extends SubsystemBase {
   private DigitalInput beamBreak;
 
   protected boolean containedGamePiece;
-  private boolean hasNote;
   protected MotorRatio ratio;
 
   public RelativeEncoder upperRelativeEncoder;
@@ -33,7 +30,6 @@ public class Intake extends SubsystemBase {
   public Intake(CANSparkBase upper, CANSparkBase lower, ManipulatorConstants constants) {
     this.upper = upper;
     this.lower = lower;
-    this.hasNote = false;
     this.mode = IntakeModes.STOPPED;
     this.constants = constants;
     this.beamBreak = new DigitalInput(9);
@@ -117,14 +113,6 @@ public class Intake extends SubsystemBase {
  
   public void setRatio(MotorRatio ratio) {
     this.ratio = ratio;
-  }
-
-  public boolean getNoteState() {
-    return this.hasNote;
-  }
-
-  public void setNoteState(boolean state) {
-    this.hasNote = state;
   }
 
   /**
