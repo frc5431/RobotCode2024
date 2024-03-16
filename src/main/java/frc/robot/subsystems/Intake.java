@@ -34,6 +34,7 @@ public class Intake extends SubsystemBase {
     this.upper = upper;
     this.lower = lower;
     this.hasNote = false;
+    this.mode = IntakeModes.STOPPED;
     this.constants = constants;
     this.beamBreak = new DigitalInput(9);
 

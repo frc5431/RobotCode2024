@@ -99,8 +99,8 @@ public class Drivebase extends SwerveDrivetrain implements Subsystem {
     @Override
     public void periodic() {
         
-        SmartDashboard.putNumber("X Speed", this.getRobotRelativeSpeeds().vxMetersPerSecond);
-        SmartDashboard.putNumber("Y Speed", this.getRobotRelativeSpeeds().vyMetersPerSecond);
+        // SmartDashboard.putNumber("X Speed", this.getRobotRelativeSpeeds().vxMetersPerSecond);
+        // SmartDashboard.putNumber("Y Speed", this.getRobotRelativeSpeeds().vyMetersPerSecond);
 
         m_odometry.update(m_fieldRelativeOffset, m_modulePositions);
         // Get estimated poses from VisionSubsystem

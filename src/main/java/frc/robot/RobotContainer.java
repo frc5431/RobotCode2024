@@ -182,7 +182,7 @@ public class RobotContainer {
 
     // Shooter
     operator.rightTrigger().whileTrue(shooter.speakerShot());
-    operator.b().whileTrue(Commands.parallel(shooter.mainReverse(), shooter.distantReverse()));
+    operator.b().whileTrue(shooter.runReverse());
     operator.y().whileTrue(shooter.stageShot());
     operator.start().whileTrue(shooter.ampScore());
 
