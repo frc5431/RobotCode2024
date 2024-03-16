@@ -9,6 +9,7 @@ import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
@@ -48,8 +49,8 @@ public class Shooter extends SubsystemBase {
 
         this.mtController = mainTop.getPIDController();
         this.mbController = mainBot.getPIDController();
-        this.dtController = mainTop.getPIDController();
-        this.dbController = mainBot.getPIDController();
+        this.dtController = distantTop.getPIDController();
+        this.dbController = distantBot.getPIDController();
 
         setGains(mtController);
         setGains(mbController);
@@ -60,16 +61,16 @@ public class Shooter extends SubsystemBase {
         mbController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
         dtController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
         dbController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
+        
+        mainTop.setIdleMode(IdleMode.kCoast);
+        mainBot.setIdleMode(IdleMode.kCoast);
+        distantTop.setIdleMode(IdleMode.kCoast);
+        distantBot.setIdleMode(IdleMode.kCoast);
 
         mtController.setFeedbackDevice(mainTopRel);
         mbController.setFeedbackDevice(mainBotRel);
         dtController.setFeedbackDevice(distantTopRel);
         dbController.setFeedbackDevice(distantBotRel);
-        
-        mainTop.setIdleMode(IdleMode.kCoast);
-        mainBot.setIdleMode(IdleMode.kCoast);
-        distantTop.setIdleMode(IdleMode.kCoast);
-        distantTop.setIdleMode(IdleMode.kCoast);
 
         this.mainTop.burnFlash();
         this.mainBot.burnFlash();
@@ -91,9 +92,23 @@ public class Shooter extends SubsystemBase {
         bot.setReference(percentage, ControlType.kDutyCycle);
     }
 
+    public void RunPair(double percentage, SparkPIDController top, SparkPIDController bot,  SparkPIDController dtop, SparkPIDController dbot) {
+        top.setReference(percentage, ControlType.kDutyCycle);
+        bot.setReference(percentage, ControlType.kDutyCycle);
+        dtop.setReference(percentage, ControlType.kDutyCycle);
+        dbot.setReference(percentage, ControlType.kDutyCycle);
+    }
+
+    public void RunPair(double percentage,  double[] ratio, SparkPIDController top, SparkPIDController bot,  SparkPIDController dtop, SparkPIDController dbot) {
+        top.setReference(percentage * ratio[0], ControlType.kDutyCycle);
+        bot.setReference(percentage * ratio[1], ControlType.kDutyCycle);
+        dtop.setReference(percentage * ratio[0], ControlType.kDutyCycle);
+        dbot.setReference(percentage * ratio[1], ControlType.kDutyCycle);
+    }
+
     public void RunPair(double percentage, double[] ratio, SparkPIDController top, SparkPIDController bot) {
-        top.setReference(percentage * ratio[0], ControlType.kVelocity);
-        bot.setReference(percentage * ratio[1], ControlType.kVelocity);
+        top.setReference(percentage * ratio[0], ControlType.kDutyCycle);
+        bot.setReference(percentage * ratio[1], ControlType.kDutyCycle);
     }
 
     public void stopNeutral() {
@@ -134,14 +149,10 @@ public class Shooter extends SubsystemBase {
         () -> stopNeutral(), this);
     } 
 
-    public Command mainReverse() {
-        this.mode = ShooterMode.MainIn;
-        return new StartEndCommand(() -> RunPair(ShooterConstants.inSpeed, mtController, mbController), () -> stopNeutral(), this);
-    } 
-
-    public Command distantReverse() {
-        this.mode = ShooterMode.DistantIn;
-        return new StartEndCommand(() -> RunPair(ShooterConstants.inSpeed, dtController, dbController), () -> stopNeutral(), this);
+    public Command runReverse() {
+        return new StartEndCommand(() -> RunPair(ShooterConstants.inSpeed, mtController, mbController, dtController, dtController), () -> stopNeutral(), this);
     }
+   
+   
 
 }
