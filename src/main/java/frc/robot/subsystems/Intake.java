@@ -28,14 +28,9 @@ public class Intake extends SubsystemBase {
   public RelativeEncoder lowerRelativeEncoder;
   private ManipulatorConstants constants;
 
-  private BooleanSupplier gamePieceDetector;
   private IntakeModes mode;
 
   public Intake(CANSparkBase upper, CANSparkBase lower, ManipulatorConstants constants) {
-    this(upper, lower, constants, () -> false);
-  }
-
-  public Intake(CANSparkBase upper, CANSparkBase lower, ManipulatorConstants constants, BooleanSupplier gamePieceDetector) {
     this.upper = upper;
     this.lower = lower;
     this.hasNote = false;
@@ -52,7 +47,6 @@ public class Intake extends SubsystemBase {
 
     this.ratio = constants.defaultRatio;
 
-    this.gamePieceDetector = gamePieceDetector;
   }
 
   public ManipulatorConstants geConstants() {
@@ -92,7 +86,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean checkGamePieceStatus() {
-    return gamePieceDetector.getAsBoolean();
+    return beamBreak.get();
   }
 
   public void run(IntakeModes mode) {

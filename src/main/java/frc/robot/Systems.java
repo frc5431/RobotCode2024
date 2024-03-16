@@ -68,6 +68,8 @@ public class Systems {
     climber = new Climber(climberLeft, climberRight);
     instance = this;
 
+    LasaVision.getInstance().setPoseSupplier(() -> pheonixdrivebase.getPose());
+
   }
 
   public Drivebase getDrivebase() {

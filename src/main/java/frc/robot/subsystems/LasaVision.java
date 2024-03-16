@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -19,6 +20,11 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -261,20 +267,20 @@ public class LasaVision extends SubsystemBase implements AutoCloseable {
      * 
      * @return The position of the object, relative to the field
      */
-    // public Optional<Translation2d> getObjectLocation() {
-    //   Optional<Measure<Angle>> yaw = m_objectCamera.getYaw();
-    //   Optional<Measure<Distance>> distance = m_objectCamera.getDistance();
-    //   Pose2d pose = m_poseSupplier.get();
-    //   if (yaw.isEmpty() || distance.isEmpty() || pose == null)
-    //     return Optional.empty();
+    public Optional<Translation2d> getObjectLocation() {
+      Optional<Measure<Angle>> yaw = m_objectCamera.getYaw();
+      Optional<Measure<edu.wpi.first.units.Distance>> distance = m_objectCamera.getDistance();
+      Pose2d pose = m_poseSupplier.get();
+      if (yaw.isEmpty() || distance.isEmpty() || pose == null)
+        return Optional.empty();
 
-    //   // Logger.recordOutput(getName() + OBJECT_DISTANCE_LOG_ENTRY, distance.get());
-    //   // Logger.recordOutput(getName() + OBJECT_HEADING_LOG_ENTRY, yaw.get());
-    //   return Optional.of(pose.getTranslation().plus(
-    //       new Translation2d(
-    //           distance.get().in(Units.Meters),
-    //           Rotation2d.fromRadians(pose.getRotation().getRadians() + yaw.get().in(Units.Radians)))));
-    // }
+      // Logger.recordOutput(getName() + OBJECT_DISTANCE_LOG_ENTRY, distance.get());
+      // Logger.recordOutput(getName() + OBJECT_HEADING_LOG_ENTRY, yaw.get());
+      return Optional.of(pose.getTranslation().plus(
+          new Translation2d(
+              distance.get().in(edu.wpi.first.units.Units.Meters),
+              Rotation2d.fromRadians(pose.getRotation().getRadians() + yaw.get().in(edu.wpi.first.units.Units.Radians)))));
+    }
 
   @Override
   public void close() {
