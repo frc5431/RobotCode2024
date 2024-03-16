@@ -36,7 +36,7 @@ public final class Constants {
 
   public static class ApriltagConstants {
 
-    public enum zone {
+    public enum AprilTagZone {
       SOURCE,
       AMP,
       SPEAKER,

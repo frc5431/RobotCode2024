@@ -33,6 +33,7 @@ import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LasaVision;
 import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
 
@@ -61,7 +62,7 @@ public class RobotContainer {
 
     autonMagic = new AutonMagic(systems);
 
-    drivebase.seedFieldRelative();
+    //drivebase.seedFieldRelative();
     configureBindings();
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
@@ -163,9 +164,13 @@ public class RobotContainer {
                   modifyAxis(driver.getLeftY() + (driver.povUp().getAsBoolean() ? 0.1 : 0))
                       * TunerConstatns.kSpeedAt12VoltsMps)
               .withVelocityY(modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps)
-              .withRotationalRate(
-                  -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+              .withRotationalRate((driver.leftTrigger().getAsBoolean()) ?
+              Math.atan2(LasaVision.getInstance().getTargetYaw(0),drivebase.getGyro().getYaw().getValueAsDouble()):
+              -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+
+
         }));
+
 
     driver.y().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
     driver.leftTrigger().whileTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));

@@ -4,6 +4,7 @@ import java.util.ConcurrentModificationException;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -79,10 +80,9 @@ public class Drivebase extends SwerveDrivetrain implements Subsystem {
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
-    // public void resetOdometry() {
-    //     m_odometry.resetPosition(getPigeon2().getRotation2d(), m_modulePositions, getState().Pose);
-
-    // }
+    public Pigeon2 getGyro() {
+        return this.m_pigeon2;
+    }
 
     public void set(double angle) {
         getPigeon2().setYaw(angle);

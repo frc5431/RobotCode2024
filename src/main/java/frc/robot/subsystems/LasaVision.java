@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -240,6 +241,10 @@ public class LasaVision extends SubsystemBase implements AutoCloseable {
    */
   public List<EstimatedRobotPose> getEstimatedGlobalPoses() {
     return m_estimatedRobotPoses.getAndSet(Collections.emptyList());
+  }
+
+  public double getTargetYaw(int index) {
+    return m_apriltagCameras[index].trackedTargetYaw();
   }
 
   /**

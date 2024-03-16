@@ -9,6 +9,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -108,6 +109,13 @@ public class AprilTagCamera implements Runnable, AutoCloseable {
    */
   public EstimatedRobotPose getLatestEstimatedPose() {
     return m_atomicEstimatedRobotPose.getAndSet(null);
+  }
+
+  public double trackedTargetYaw() {
+    var results = m_camera.getLatestResult();
+    results.hasTargets();
+    PhotonTrackedTarget result = results.getBestTarget();
+    return result.getYaw();
   }
 
   /**
