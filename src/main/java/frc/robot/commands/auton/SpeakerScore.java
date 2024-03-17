@@ -13,10 +13,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants.IntakeModes;
 import frc.robot.commands.DriveLockedRotCommand;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
-import frc.robot.commands.RunManipulatorCommand.IntakeModes;
 import frc.robot.commands.RunAnglerCommand.TerminationCondition;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
@@ -50,7 +50,7 @@ public class SpeakerScore extends SequentialCommandGroup {
 
             addCommands(
                     Commands.parallel(
-                            new RunAnglerCommand(
+                              new RunAnglerCommand(
                                     () -> Rotation2d.fromDegrees(angle.get()),
                                     angler, TerminationCondition.SETPOINT_REACHED),
                             new DriveLockedRotCommand(drivebase, drivebaseAngle, () -> false)),

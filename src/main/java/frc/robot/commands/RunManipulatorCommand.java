@@ -1,14 +1,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.IntakeConstants.IntakeModes;
 import frc.robot.subsystems.Intake;
 
+
 public class RunManipulatorCommand extends Command {
-  public enum IntakeModes {
-    OUTAKE,
-    INTAKE,
-    STOPPED,
-  }
 
   // Subsystems
   private Intake manipulator;

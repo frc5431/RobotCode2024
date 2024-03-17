@@ -55,8 +55,8 @@ public class Systems {
     climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
     climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
   
-    leftIntakeMotor.setSmartCurrentLimit(30);
-    rightIntakeMotor.setSmartCurrentLimit(30);
+    leftIntakeMotor.setSmartCurrentLimit(30,25);
+    rightIntakeMotor.setSmartCurrentLimit(30,25);
     rightIntakeMotor.burnFlash();
     leftIntakeMotor.burnFlash();
     intakeAnglerMotor.burnFlash();

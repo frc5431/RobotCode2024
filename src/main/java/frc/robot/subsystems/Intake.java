@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Constants.ManipulatorConstants;
-import frc.robot.commands.RunManipulatorCommand.IntakeModes;
 
 public class Intake extends SubsystemBase {
 

@@ -1,9 +1,20 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "SPARK MAX [14]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
       "/Shuffleboard/Vision/Field": "Field2d",
-      "/SmartDashboard/Gyro": "Gyro"
+      "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Gyro": "Gyro",
+      "/SmartDashboard/VisionSystemSim-LasaVision/Sim Field": "Field2d"
     }
   },
   "NetworkTables": {

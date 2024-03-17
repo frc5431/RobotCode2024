@@ -2,7 +2,7 @@ package frc.robot.commands.auton;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.commands.RunManipulatorCommand.IntakeModes;
+import frc.robot.Constants.IntakeConstants.IntakeModes;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Intake;
 
@@ -20,7 +20,7 @@ public class SmartIntakeNote extends Command {
     public void initialize() {
         pivot.setRotation(IntakeConstants.anglerConstants.minAngle);
     }
-
+   
     @Override
     public void execute() {
         intake.run(IntakeModes.INTAKE);

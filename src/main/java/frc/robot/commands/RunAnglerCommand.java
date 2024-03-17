@@ -14,7 +14,6 @@ public class RunAnglerCommand extends Command {
   public enum AnglerModes {
     STOW,
     DEPLOY,
-    SMARTSTOW,
     CUSTOM
   }
 

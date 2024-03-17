@@ -18,12 +18,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.TunerConstatns;
-import frc.robot.Constants.ShooterConstants.ShooterMode;
+import frc.robot.Constants.IntakeConstants.IntakeModes;
+import frc.robot.Constants.ShooterConstants.ShooterModes;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunClimberCommand;
 import frc.robot.commands.RunManipulatorCommand;
+import frc.robot.commands.RunShooterCommand;
 import frc.robot.commands.RunAnglerCommand.TerminationCondition;
-import frc.robot.commands.RunManipulatorCommand.IntakeModes;
 import frc.robot.commands.auton.AmpScore;
 import frc.robot.commands.auton.IntakeNote;
 import frc.robot.commands.auton.SimpleSpeaker;
@@ -56,12 +57,12 @@ public class RobotContainer {
   public RobotContainer() {
     NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
     NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(shooter, intake, pivot));
-    NamedCommands.registerCommand("DistantSpeakerScore", shooter.speakerDistantShot());
+    NamedCommands.registerCommand("DistantSpeakerScore", new RunShooterCommand(shooter, ShooterModes.SpeakerDistant));
     NamedCommands.registerCommand("GrabNote", new IntakeNote(intake, pivot));
 
     autonMagic = new AutonMagic(systems);
 
-    //drivebase.seedFieldRelative();
+    // drivebase.seedFieldRelative();
     configureBindings();
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
@@ -94,16 +95,9 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    if (shooter.getMode() == ShooterMode.AmpShot || shooter.getMode() == ShooterMode.SpeakerShot ||
-        shooter.getMode() == ShooterMode.StageShot) {
-        pivot.setpoint = Constants.IntakeConstants.mainStowAngle;
-      } else if (shooter.getMode() == ShooterMode.SpeakerDistant) {
-        pivot.setpoint = Constants.IntakeConstants.anglerConstants.maxAngle;
-      } else {
-        pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
-    }
+
     SmartDashboard.putString("Current Command", CommandScheduler.getInstance().toString());
-    
+
   }
 
   Translation2d ellipticalDiscToSquare(double u, double v) {
@@ -156,56 +150,50 @@ public class RobotContainer {
 
     drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
         drivebase.applyRequest(() -> {
-          // var axis = FGSquircularMap(driver.getLeftX() * .89, driver.getLeftY() *
-          // 0.89);
           return driveFC
               .withVelocityX(
                   modifyAxis(driver.getLeftY() + (driver.povUp().getAsBoolean() ? 0.1 : 0))
                       * TunerConstatns.kSpeedAt12VoltsMps)
               .withVelocityY(modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps)
-              .withRotationalRate((driver.leftTrigger().getAsBoolean()) ?
-              Math.atan2(LasaVision.getInstance().getTargetYaw(0),drivebase.getGyro().getYaw().getValueAsDouble()):
-              -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
-
-
+              .withRotationalRate((driver.leftTrigger().getAsBoolean())
+                  ? Math.atan2(LasaVision.getInstance().getTargetYaw(0),
+                      drivebase.getGyro().getYaw().getValueAsDouble())
+                  : -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
         }));
-
 
     driver.y().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
     driver.leftTrigger().whileTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
-    driver.rightBumper()
+    driver.a()
         .onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
+    driver.rightTrigger().whileTrue(climber.increment(1));
     driver.leftBumper()
         .onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
-    
 
     // Shooter
-    operator.rightTrigger().whileTrue(shooter.speakerShot());
-    operator.b().whileTrue(shooter.runReverse());
-    operator.y().whileTrue(shooter.stageShot());
-    operator.start().whileTrue(shooter.ampScore());
+    operator.rightTrigger().whileTrue(new RunShooterCommand(shooter, ShooterModes.SpeakerShot));
+    operator.b().whileTrue(new RunShooterCommand(shooter, ShooterModes.REVERSE));
+    operator.y().whileTrue(new RunShooterCommand(shooter, ShooterModes.StageShot));
+    operator.start().whileTrue(new RunShooterCommand(shooter, ShooterModes.AmpShot));
 
-    //Testing
+    // Testing
     operator.povDown().onTrue(new SmartIntakeNote(intake, pivot));
     operator.povLeft().onTrue(new IntakeNote(intake, pivot));
 
     // Intake
-    operator.leftTrigger().whileTrue(RunManipulatorCommand.withPower(intake, 1));
+    operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.INTAKE));
     operator.x().whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE));
 
     // Intake Angler
     operator.axisGreaterThan(1, 0.15).whileTrue(new RunAnglerCommand(
-      () -> pivot.setpoint.plus(Rotation2d.fromDegrees(-operator.getLeftY())), pivot));
-    operator.axisLessThan(1, -0.15)
-        .whileTrue(new RunAnglerCommand(() -> pivot.setpoint.minus(Rotation2d.fromDegrees(2)), pivot));
+        () -> pivot.setpoint.plus(Rotation2d.fromDegrees(-operator.getLeftY())), pivot).repeatedly());
+    operator.axisLessThan(1, -0.15).whileTrue(new RunAnglerCommand(
+        () -> pivot.setpoint.minus(Rotation2d.fromDegrees(operator.getLeftY())), pivot).repeatedly());
 
     operator.back()
         .onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));
     operator.rightBumper()
-        .onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot,
-            TerminationCondition.SETPOINT_REACHED)
-            .andThen(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot)));
+        .onTrue((new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot)));
     operator.leftStick().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
 
   }
@@ -215,8 +203,8 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
-      pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
-    
+    pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
+
   }
 
 }

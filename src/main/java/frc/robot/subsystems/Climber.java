@@ -5,6 +5,8 @@ import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
@@ -47,9 +49,9 @@ public class Climber extends SubsystemBase {
     this.mode = (angle <= 0) ? ClimberModes.DOWN : ClimberModes.UP;
   }
 
-  public void incrementPosition(double amt) {
-    this.setpoint += amt;
-    this.mode = (amt < 0) ? ClimberModes.DOWN : ClimberModes.UP;
+  public void incrementPosition(double rate) {
+    this.setpoint += rate;
+    this.mode = (rate < 0) ? ClimberModes.DOWN : ClimberModes.UP;
   }
 
   public double getposition() {
@@ -66,6 +68,10 @@ public class Climber extends SubsystemBase {
       0
     );
   
+  }
+
+  public Command increment(double rate) {
+    return new StartEndCommand(() -> incrementPosition(rate), () -> {}, this);
   }
 
 }

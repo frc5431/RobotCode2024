@@ -66,6 +66,13 @@ public final class Constants {
     public static Rotation2d ampAngle = Rotation2d.fromDegrees(119.7); // and we do it, we do it all again
     public static Rotation2d mainStowAngle = Rotation2d.fromDegrees(179.5);
 
+   public enum IntakeModes {
+      INTAKE,
+      OUTAKE,
+      STOPPED
+    }
+
+
     public static AnglerConstants anglerConstants = new AnglerConstants(
         /* Min Angle */Rotation2d.fromDegrees(2), // change again
         /* Max Angle */Rotation2d.fromDegrees(190), // change
@@ -73,9 +80,9 @@ public final class Constants {
         /* Weight Kilos */Units.lbsToKilograms(5.625), // temp
         /* Parallel To Ground Angle */Rotation2d.fromRadians(0),
         /* PID */new MotionMagic(0.3, 0.0, 0.01, -1),
-        /* Stall Torque (Nm) */ neoStallTorque * (15),
+        /* Stall Torque (Nm) */ neoStallTorque,
         /* Enable FF */ true,
-        /* Gear Ratio */2,
+        /* Gear Ratio */16/22,
         0.8);
 
     public static ManipulatorConstants manipulatorConstants = new ManipulatorConstants(
@@ -119,13 +126,12 @@ public final class Constants {
     public static final double i = 0.0;
     public static final double d = 0.01;
 
-    public enum ShooterMode {
+    public enum ShooterModes {
       SpeakerShot,
       AmpShot,
       StageShot,
-      MainIn,
       SpeakerDistant,
-      DistantIn,
+      REVERSE,
       NONE
     }
 
@@ -138,7 +144,7 @@ public final class Constants {
         /* Is Inverted */ true,
         /* Default Ratio */ shooterRatio,
         /* Forward Speed */ normalPower,
-        /* Reverse Speed */ normalPower / 4,
+        /* Reverse Speed */ normalPower,
         /* estimatedImpulseForceMetersPerSecond */ 1);
   }
 
