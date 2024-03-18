@@ -135,7 +135,7 @@ public class Shooter extends SubsystemBase {
         if(mode.ratio.isPresent()) {
             ratio = mode.ratio.get();
         }else {
-            ratio = Pair.of(1., 1.);
+            ratio = Pair.of(ShooterConstants.shooterRatio.upperPercent(), ShooterConstants.shooterRatio.lowerPercent());
         }
 
         if(mode.usesMain && mode.usesDistant) {
