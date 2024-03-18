@@ -16,7 +16,7 @@ public class RunShooterCommand extends Command {
 
   @Override
   public void initialize() {
-    shooter.RunShooter(mode);
+    shooter.runShooter(mode);
   }
 
   @Override
