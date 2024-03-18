@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.ConcurrentModificationException;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;

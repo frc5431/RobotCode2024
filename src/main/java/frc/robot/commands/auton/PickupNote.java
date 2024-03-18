@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.DriveLockedRotCommand;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
-import frc.robot.commands.RunShooterCommand;
 import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
