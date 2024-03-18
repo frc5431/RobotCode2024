@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.DriveLockedRotCommand;
-import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.commands.RunShooterCommand;
 import frc.robot.subsystems.Angler;
@@ -33,7 +32,7 @@ public PickupNote(Drivebase drivebase, Intake intake, Angler angler) {
 
         addCommands(
                 new ParallelCommandGroup(
-                        new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, angler)
+                        angler.runToMinimum()
                                 .andThen(RunManipulatorCommand.withPower(intake, -1)),
                         new ProxyCommand(() -> {
                             Optional<Translation2d> location = vision.getObjectLocation();

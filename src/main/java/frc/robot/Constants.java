@@ -10,6 +10,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackTy
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -72,8 +74,8 @@ public final class Constants {
     }
 
     public static AnglerConstants anglerConstants = new AnglerConstants(
-        /* Min Angle */Units.degreesToRadians(2), // change again
-        /* Max Angle */Units.degreesToRadians(190), // change
+        /* Min Angle */edu.wpi.first.units.Units.Degrees.of(2), // change again
+        /* Max Angle */edu.wpi.first.units.Units.Degrees.of(190), // change
         /* Length Meters */Units.inchesToMeters(12),
         /* Weight Kilos */Units.lbsToKilograms(5.625), // temp
         /* Parallel To Ground Angle */Units.degreesToRadians(0),
@@ -148,8 +150,8 @@ public final class Constants {
 
   public static class AnglerConstants {
 
-    public final double minAngle;
-    public final double maxAngle;
+    public final Measure<Angle> minAngle;
+    public final Measure<Angle> maxAngle;
     public final double lengthMeters;
     public final double weight;
     public final double parallelToGroundAngle;
@@ -160,8 +162,8 @@ public final class Constants {
     public final double speedLimit;
 
     public AnglerConstants(
-        double minAngle,
-        double maxAngle,
+        Measure<Angle> minAngle,
+        Measure<Angle> maxAngle,
         double lengthMeters,
         double weight,
         double parallelToGroundAngle,

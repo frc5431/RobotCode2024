@@ -19,7 +19,7 @@ public class SmartIntakeNote extends Command {
 
     @Override
     public void initialize() {
-        pivot.setRotation(IntakeConstants.anglerConstants.minAngle);
+        pivot.runToMinimum();
     }
    
     @Override
