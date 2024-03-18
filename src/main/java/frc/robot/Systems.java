@@ -99,5 +99,5 @@ public class Systems {
   public RelativeAngler getShooterAngler() {
     return shooterAngler;
   }
-  
+
 }

@@ -155,7 +155,7 @@ public class Shooter extends SubsystemBase {
         }
     }
 
-    public Command runGuper(ShooterModes mode) {
+    public Command runShooterCommand(ShooterModes mode) {
         return new StartEndCommand(() -> runShooter(mode), () -> stopNeutral(), this);
     }
 

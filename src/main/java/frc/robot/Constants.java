@@ -138,6 +138,7 @@ public final class Constants {
       ShooterModes(double speed) {
         this.speed = speed;
       }
+      
     }
 
     public static MotorRatio shooterRatio = new MotorRatio(1, 0.95);

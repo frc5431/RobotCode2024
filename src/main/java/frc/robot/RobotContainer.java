@@ -157,7 +157,7 @@ public class RobotContainer {
                   modifyAxis(driver.getLeftY() + (driver.povUp().getAsBoolean() ? 0.1 : 0))
                       * TunerConstatns.kSpeedAt12VoltsMps)
               .withVelocityY(modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps)
-              .withRotationalRate((driver.leftTrigger().getAsBoolean())
+              .withRotationalRate((driver.rightTrigger().getAsBoolean())
                   ? Math.atan2(LasaVision.getInstance().getTargetYaw(0),
                       drivebase.getGyro().getYaw().getValueAsDouble())
                   : -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
@@ -167,16 +167,15 @@ public class RobotContainer {
     driver.leftTrigger().whileTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
     driver.a()
         .onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
-    driver.rightTrigger().whileTrue(climber.increment(1));
+    driver.rightTrigger().whileTrue(climber.increment(driver.getRightTriggerAxis() * 0.1));
     driver.leftBumper()
         .onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
 
     // Shooter
-    operator.rightTrigger().whileTrue(new RunShooterCommand(shooter, ShooterModes.SpeakerShot));
-    operator.b().whileTrue(new RunShooterCommand(shooter, ShooterModes.REVERSE));
-    operator.y().whileTrue(new RunShooterCommand(shooter, ShooterModes.StageShot));
-    operator.start().whileTrue(new RunShooterCommand(shooter, ShooterModes.AmpShot));
-    operator.povRight().whileTrue(shooter.runGuper(ShooterModes.AmpShot));
+    operator.rightTrigger().whileTrue(shooter.runShooterCommand(ShooterModes.SpeakerShot));
+    operator.b().whileTrue(shooter.runShooterCommand(ShooterModes.REVERSE));
+    operator.y().whileTrue(shooter.runShooterCommand(ShooterModes.StageShot));
+    operator.start().whileTrue(shooter.runShooterCommand(ShooterModes.AmpShot));
 
     // Testing
     operator.povDown().onTrue(new SmartIntakeNote(intake, pivot));
@@ -191,7 +190,6 @@ public class RobotContainer {
         .whileTrue(new StartEndCommand(() -> pivot.increment(-operator.getLeftY() * 0.1), () -> {} , pivot).repeatedly());
     operator.axisLessThan(1, -0.15)
     .whileTrue(new StartEndCommand(() -> pivot.increment(operator.getLeftY() * 0.1), () -> {}, pivot).repeatedly());
-
     operator.back()
         .onTrue(new InstantCommand(() -> pivot.setRotation(Constants.IntakeConstants.ampAngle), pivot));
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));
