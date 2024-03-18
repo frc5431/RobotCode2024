@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -10,6 +11,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackTy
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -66,7 +68,7 @@ public final class Constants {
     public static double ampAngle = Units.degreesToRadians(119.7); 
     public static double mainStowAngle = Units.degreesToRadians(179.5);
 
-   public enum IntakeModes {
+    public enum IntakeModes {
       INTAKE,
       OUTAKE,
       STOPPED
@@ -119,7 +121,7 @@ public final class Constants {
     public static double mainAngle = 55;
     public static double secondaryAngle = 35;// ?
 
-    public static double[] ampRatio = new double[]{0.65, 1};
+    public static Pair<Double, Double> ampRatio = Pair.of(0.65, 1.);
 
     public static final double p = 0.3;
     public static final double i = 0.0;
@@ -127,16 +129,23 @@ public final class Constants {
 
     public enum ShooterModes {
       SpeakerShot(ShooterConstants.spkSpeed),
-      AmpShot(ShooterConstants.spkSpeed),
-      StageShot(ShooterConstants.stgSpeed),
+      AmpShot(ShooterConstants.spkSpeed, ampRatio), // has ratio
+      StageShot(ShooterConstants.stgSpeed), // has ratio
       SpeakerDistant(ShooterConstants.ampSpeed),
       REVERSE(ShooterConstants.inSpeed),
       NONE(0);
 
       public double speed;
+      public Optional<Pair<Double, Double>> ratio;
       
       ShooterModes(double speed) {
         this.speed = speed;
+        this.ratio = Optional.empty();
+      }
+
+      ShooterModes(double speed, Pair<Double, Double> ratio) {
+        this.speed = speed;
+        this.ratio = Optional.of(ratio);
       }
       
     }

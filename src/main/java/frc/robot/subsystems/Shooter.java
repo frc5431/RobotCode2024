@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -35,6 +36,7 @@ public class Shooter extends SubsystemBase {
     private final double[] pid = new double[] { ShooterConstants.p, ShooterConstants.i, ShooterConstants.d };
 
     public ShooterModes mode;
+    public Pair<Double, Double> ratio;
 
     public Shooter(CANSparkFlex mainTop, CANSparkFlex mainBot, CANSparkFlex distantTop, CANSparkFlex distantBot) {
         this.mainTop = mainTop;
@@ -88,30 +90,17 @@ public class Shooter extends SubsystemBase {
         controller.setOutputRange(-1, 1);
     }
 
-    public void RunPair(double percentage, SparkPIDController top, SparkPIDController bot) {
-        top.setReference(percentage, ControlType.kDutyCycle);
-        bot.setReference(percentage, ControlType.kDutyCycle);
-    }
-
-    public void RunPair(double percentage, SparkPIDController top, SparkPIDController bot, SparkPIDController dtop,
-            SparkPIDController dbot) {
-        top.setReference(percentage, ControlType.kDutyCycle);
-        bot.setReference(percentage, ControlType.kDutyCycle);
-        dtop.setReference(percentage, ControlType.kDutyCycle);
-        dbot.setReference(percentage, ControlType.kDutyCycle);
-    }
-
-    public void RunPair(double percentage, double[] ratio, SparkPIDController top, SparkPIDController bot,
+    public void RunPair(double percentage, SparkPIDController top, SparkPIDController bot,
             SparkPIDController dtop, SparkPIDController dbot) {
-        top.setReference(percentage * ratio[0], ControlType.kDutyCycle);
-        bot.setReference(percentage * ratio[1], ControlType.kDutyCycle);
-        dtop.setReference(percentage * ratio[0], ControlType.kDutyCycle);
-        dbot.setReference(percentage * ratio[1], ControlType.kDutyCycle);
+        top.setReference(percentage * ratio.getFirst(), ControlType.kDutyCycle);
+        bot.setReference(percentage * ratio.getSecond(), ControlType.kDutyCycle);
+        dtop.setReference(percentage * ratio.getFirst(), ControlType.kDutyCycle);
+        dbot.setReference(percentage * ratio.getSecond(), ControlType.kDutyCycle);
     }
 
-    public void RunPair(double percentage, double[] ratio, SparkPIDController top, SparkPIDController bot) {
-        top.setReference(percentage * ratio[0], ControlType.kDutyCycle);
-        bot.setReference(percentage * ratio[1], ControlType.kDutyCycle);
+    public void RunPair(double percentage, SparkPIDController top, SparkPIDController bot) {
+        top.setReference(percentage * ratio.getFirst(), ControlType.kDutyCycle);
+        bot.setReference(percentage * ratio.getSecond(), ControlType.kDutyCycle);
     }
 
     public void stopNeutral() {
@@ -143,10 +132,15 @@ public class Shooter extends SubsystemBase {
     public void runShooter(ShooterModes mode) {
         this.mode = mode;
 
+        if(mode.ratio.isPresent()) {
+            ratio = mode.ratio.get();
+        }else {
+            ratio = Pair.of(1., 1.);
+        }
+
         if (mode == ShooterModes.NONE) {
             stopNeutral();
         } else if(mode == ShooterModes.REVERSE) {
-
             RunPair(mode.speed, mtController, mbController, dtController, dbController);
         } else if(mode == ShooterModes.SpeakerDistant) {
             RunPair(mode.speed, dtController, dbController);
