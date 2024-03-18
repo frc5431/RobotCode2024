@@ -37,7 +37,7 @@ public class Climber extends SubsystemBase {
     left.follow(right, true);
     this.left.burnFlash();
     this.right.burnFlash();
-    this.relativeEncoder = left.getEncoder();
+    this.relativeEncoder = right.getEncoder();
     controller.setFeedbackDevice(relativeEncoder);
     this.mode = ClimberModes.STOPPED;
   }
