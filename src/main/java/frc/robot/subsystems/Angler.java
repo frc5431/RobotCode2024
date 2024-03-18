@@ -10,6 +10,7 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.AnglerConstants;
 import frc.robot.commands.RunAnglerCommand.AnglerModes;
 
@@ -84,7 +85,8 @@ public class Angler extends SubsystemBase {
    * @return
    */
   public boolean isFinished() {
-    return Math.abs(setpoint.minus(Units.Radians.of(absoluteEncoder.getPosition())).magnitude()) < 0.3;
+    return Math.abs(setpoint.minus(Units.Radians.of(absoluteEncoder.getPosition())).magnitude()) < 
+      Units.Radians.of(Constants.IntakeConstants.radianTolerance).magnitude();
   }
 
   /*
@@ -122,8 +124,8 @@ public class Angler extends SubsystemBase {
   @Override
   public void periodic() {
 
-    SmartDashboard.putNumber(getName() + " setpoint deg", setpoint.magnitude());
-    SmartDashboard.putNumber(getName() + " encoder deg", absoluteEncoder.getPosition());
+    SmartDashboard.putNumber(getName() + " setpoint deg", setpoint.in(Units.Degrees));
+    SmartDashboard.putNumber(getName() + " encoder deg", absoluteEncoder.getPosition() * 180/Math.PI);
     SmartDashboard.putString("Pivot Mode", this.mode.toString());
 
     double anglerCosMultiplierNoCOMM = massKg * 9.81;
@@ -131,7 +133,7 @@ public class Angler extends SubsystemBase {
     double arbFF = (cosMult * 1) / constants.stalltorque;
 
     controller.setReference(
-        setpoint.magnitude() *  absoluteEncoder.getPositionConversionFactor(), // MathUtil.clamp(setpoint.getRadians(),
+        setpoint.in(Units.Radians) *  absoluteEncoder.getPositionConversionFactor(), // MathUtil.clamp(setpoint.getRadians(),
                                                                                  // retractedAngle, deployedAngle),
         CANSparkBase.ControlType.kPosition,
         0,
