@@ -125,12 +125,18 @@ public final class Constants {
     public static final double d = 0.01;
 
     public enum ShooterModes {
-      SpeakerShot,
-      AmpShot,
-      StageShot,
-      SpeakerDistant,
-      REVERSE,
-      NONE
+      SpeakerShot(ShooterConstants.spkSpeed),
+      AmpShot(ShooterConstants.spkSpeed),
+      StageShot(ShooterConstants.stgSpeed),
+      SpeakerDistant(ShooterConstants.ampSpeed),
+      REVERSE(ShooterConstants.inSpeed),
+      NONE(0);
+
+      public double speed;
+      
+      ShooterModes(double speed) {
+        this.speed = speed;
+      }
     }
 
     public static MotorRatio shooterRatio = new MotorRatio(1, 0.95);

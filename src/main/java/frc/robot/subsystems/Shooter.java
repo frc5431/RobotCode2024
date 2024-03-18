@@ -3,6 +3,9 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.SparkPIDController.AccelStrategy;
+
+import java.util.HashMap;
+
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -139,20 +142,13 @@ public class Shooter extends SubsystemBase {
                 () -> stopNeutral(), this);
     }
 
-    public void RunShooter(ShooterModes mode) {
+    public void runShooter(ShooterModes mode) {
         this.mode = mode;
-        if (mode == ShooterModes.SpeakerDistant) {
-            RunPair(ShooterConstants.spkSpeed, dtController, dbController);
-        } else if (mode == ShooterModes.SpeakerShot) {
-            RunPair(ShooterConstants.spkSpeed, mtController, mbController);
-        } else if (mode == ShooterModes.StageShot) {
-            RunPair(ShooterConstants.stgSpeed, mtController, mbController);
-        } else if (mode == ShooterModes.StageShot) {
-            RunPair(ShooterConstants.ampSpeed, ShooterConstants.ampRatio, mtController, mbController);
-        } else if (mode == ShooterModes.REVERSE) {
-            RunPair(ShooterConstants.inSpeed, mtController, mbController, dtController, dtController);
-        } else if (mode == ShooterModes.NONE) {
+
+        if (mode == ShooterModes.NONE) {
             stopNeutral();
+        }else {
+            RunPair(mode.speed, dtController, dbController);
         }
     }
 
