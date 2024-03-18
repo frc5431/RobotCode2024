@@ -15,7 +15,6 @@ public class Climber extends SubsystemBase {
   private CANSparkFlex left;
   private CANSparkFlex right;
   private RelativeEncoder relativeEncoder;
-
   public SparkPIDController controller;
   public double setpoint;
   public double downForce = 0.1;
@@ -34,25 +33,21 @@ public class Climber extends SubsystemBase {
     this.controller.setP(0.5);
     this.controller.setI(0);
     this.controller.setD(0.1);
-    this.controller.setOutputRange(-0.2, 0.2);
-
-    relativeEncoder = right.getEncoder();
-
+    this.controller.setOutputRange(-0.6, 0.6);
     left.follow(right, true);
     this.left.burnFlash();
     this.right.burnFlash();
+    this.relativeEncoder = right.getEncoder();
     controller.setFeedbackDevice(relativeEncoder);
     this.mode = ClimberModes.STOPPED;
   }
 
   public void setPosition(double angle) {
     this.setpoint = angle;
-    this.mode = (angle <= 0) ? ClimberModes.DOWN : ClimberModes.UP;
   }
 
   public void incrementPosition(double rate) {
     this.setpoint += rate;
-    this.mode = (rate < 0) ? ClimberModes.DOWN : ClimberModes.UP;
   }
 
   public double getposition() {
@@ -60,15 +55,16 @@ public class Climber extends SubsystemBase {
   }
 
   @Override public void periodic() {
+    //this.mode = (this.setpoint < relativeEncoder.getPosition()) ? ClimberModes.DOWN : ClimberModes//
     SmartDashboard.putNumber("Climber Setpoint", setpoint);
     SmartDashboard.putNumber("Climber Encoder", relativeEncoder.getPosition());
     SmartDashboard.putString("Climber Mode", mode.toString());
-   controller.setReference(
+    controller.setReference(
       setpoint,
       CANSparkBase.ControlType.kPosition,
       0
     );
-  
+
   }
 
   public Command increment(double rate) {

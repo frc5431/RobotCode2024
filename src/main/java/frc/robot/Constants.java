@@ -62,6 +62,7 @@ public final class Constants {
     public static int anglerId = 14;
     public static int leftIntakeId = 15;
     public static int rightIntakeId = 16;
+    public static double radianTolerance = 0.03;
     public static double ampAngle = Units.degreesToRadians(119.7); 
     public static double mainStowAngle = Units.degreesToRadians(179.5);
 

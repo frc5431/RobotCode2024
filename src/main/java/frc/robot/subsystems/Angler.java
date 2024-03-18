@@ -19,7 +19,6 @@ public class Angler extends SubsystemBase {
   public CANSparkBase motor;
   public SparkPIDController controller;
   public AbsoluteEncoder absoluteEncoder;
- // public Rotation2d setpoint = new Rotation2d(); 
   public Measure<Angle> setpoint;
   public AnglerModes mode;
   public double massKg;
@@ -34,8 +33,6 @@ public class Angler extends SubsystemBase {
     this.controller.setI(constants.pid.i());
     this.controller.setD(constants.pid.d());
 
-
-    // motor.setSmartCurrentLimit(60, 35);
     controller.setOutputRange(-0.8, 0.8);
     double convFact = 2 * Math.PI;
     this.setName(name);
@@ -49,7 +46,6 @@ public class Angler extends SubsystemBase {
     motor.setSoftLimit(SoftLimitDirection.kForward, ((float)constants.maxAngle));
     motor.setSoftLimit(SoftLimitDirection.kForward, ((float)constants.minAngle));
 
-
     motor.burnFlash();
     this.constants = constants;
     this.setpoint = Units.Radians.of(absoluteEncoder.getPosition());
@@ -61,28 +57,40 @@ public class Angler extends SubsystemBase {
     return setpoint.minus(Units.Radian.of(constants.parallelToGroundAngle));
   }
 
+  /**
+   * @param measure of angle in degrees
+   */
   public void setRotation(double measure) {
     setpoint = Units.Degree.of(measure);
   }
 
+  /**
+   * Runs to minimum defined angle in AnglerConstants
+   */
   public void runToMax() {
     setRotation(constants.maxAngle);
     mode = AnglerModes.STOW;
   }
 
-  public void increment(double rate) {
-    setpoint.plus(Units.Degree.of(rate));
-    mode = AnglerModes.CUSTOM;
-  }
-
+  /**
+   * Runs to minimum defined angle in AnglerConstants
+   */
   public void runToMin() {
     setRotation(constants.minAngle);
     mode = AnglerModes.DEPLOY;
   }
 
   /**
+   * @param rate, in degrees
+   */
+  public void increment(double rate) {
+    setpoint.plus(Units.Degree.of(rate));
+    mode = AnglerModes.CUSTOM;
+  }
+
+  /**
    * @param tolerance radians
-   * @return
+   * @return if current angle is within setpoint tolerance
    */
   public boolean isFinished() {
     return Math.abs(setpoint.minus(Units.Radians.of(absoluteEncoder.getPosition())).magnitude()) < 
@@ -133,8 +141,7 @@ public class Angler extends SubsystemBase {
     double arbFF = (cosMult * 1) / constants.stalltorque;
 
     controller.setReference(
-        setpoint.in(Units.Radians) *  absoluteEncoder.getPositionConversionFactor(), // MathUtil.clamp(setpoint.getRadians(),
-                                                                                 // retractedAngle, deployedAngle),
+        setpoint.in(Units.Radians) *  absoluteEncoder.getPositionConversionFactor(), 
         CANSparkBase.ControlType.kPosition,
         0,
         constants.enableFF ? arbFF : 0,

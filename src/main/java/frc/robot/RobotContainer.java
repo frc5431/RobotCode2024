@@ -176,6 +176,7 @@ public class RobotContainer {
     operator.b().whileTrue(new RunShooterCommand(shooter, ShooterModes.REVERSE));
     operator.y().whileTrue(new RunShooterCommand(shooter, ShooterModes.StageShot));
     operator.start().whileTrue(new RunShooterCommand(shooter, ShooterModes.AmpShot));
+    operator.povRight().whileTrue(shooter.runGuper(ShooterModes.AmpShot));
 
     // Testing
     operator.povDown().onTrue(new SmartIntakeNote(intake, pivot));

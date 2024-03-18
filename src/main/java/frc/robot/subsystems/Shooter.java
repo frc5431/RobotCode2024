@@ -78,7 +78,6 @@ public class Shooter extends SubsystemBase {
         this.distantBot.burnFlash();
 
         this.mode = ShooterModes.NONE;
-
     }
 
     public void setGains(SparkPIDController controller) {
@@ -127,7 +126,8 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumberArray("Main Set", new Double[] { mainTopRel.getVelocity(), mainBotRel.getVelocity() });
+        SmartDashboard.putNumberArray("Main Set", 
+                new Double[] { mainTopRel.getVelocity(), mainBotRel.getVelocity() });
         SmartDashboard.putNumberArray("Distant Set",
                 new Double[] { distantTopRel.getVelocity(), distantBotRel.getVelocity() });
         SmartDashboard.putString("Shooter Mode", getMode().toString());
@@ -145,9 +145,18 @@ public class Shooter extends SubsystemBase {
 
         if (mode == ShooterModes.NONE) {
             stopNeutral();
-        }else {
+        } else if(mode == ShooterModes.REVERSE) {
+
+            RunPair(mode.speed, mtController, mbController, dtController, dbController);
+        } else if(mode == ShooterModes.SpeakerDistant) {
             RunPair(mode.speed, dtController, dbController);
+        } else {
+            RunPair(mode.speed, mtController, mbController);
         }
+    }
+
+    public Command runGuper(ShooterModes mode) {
+        return new StartEndCommand(() -> runShooter(mode), () -> stopNeutral(), this);
     }
 
 }
