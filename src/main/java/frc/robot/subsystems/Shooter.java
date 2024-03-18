@@ -28,10 +28,10 @@ public class Shooter extends SubsystemBase {
     private final RelativeEncoder distantTopRel;
     private final RelativeEncoder distantBotRel;
 
-    private final SparkPIDController mtController;
-    private final SparkPIDController mbController;
-    private final SparkPIDController dtController;
-    private final SparkPIDController dbController;
+    private final SparkPIDController mainTopController;
+    private final SparkPIDController mainBottomController;
+    private final SparkPIDController distantTopController;
+    private final SparkPIDController distantBottomController;
 
     private final double[] pid = new double[] { ShooterConstants.p, ShooterConstants.i, ShooterConstants.d };
 
@@ -49,30 +49,30 @@ public class Shooter extends SubsystemBase {
         this.distantTopRel = distantTop.getEncoder();
         this.distantBotRel = distantBot.getEncoder();
 
-        this.mtController = mainTop.getPIDController();
-        this.mbController = mainBot.getPIDController();
-        this.dtController = distantTop.getPIDController();
-        this.dbController = distantBot.getPIDController();
+        this.mainTopController = mainTop.getPIDController();
+        this.mainBottomController = mainBot.getPIDController();
+        this.distantTopController = distantTop.getPIDController();
+        this.distantBottomController = distantBot.getPIDController();
 
-        setGains(mtController);
-        setGains(mbController);
-        setGains(dtController);
-        setGains(dbController);
+        setGains(mainTopController);
+        setGains(mainBottomController);
+        setGains(distantTopController);
+        setGains(distantBottomController);
 
-        mtController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
-        mbController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
-        dtController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
-        dbController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
+        mainTopController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
+        mainBottomController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
+        distantTopController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
+        distantBottomController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
 
         mainTop.setIdleMode(IdleMode.kCoast);
         mainBot.setIdleMode(IdleMode.kCoast);
         distantTop.setIdleMode(IdleMode.kCoast);
         distantBot.setIdleMode(IdleMode.kCoast);
 
-        mtController.setFeedbackDevice(mainTopRel);
-        mbController.setFeedbackDevice(mainBotRel);
-        dtController.setFeedbackDevice(distantTopRel);
-        dbController.setFeedbackDevice(distantBotRel);
+        mainTopController.setFeedbackDevice(mainTopRel);
+        mainBottomController.setFeedbackDevice(mainBotRel);
+        distantTopController.setFeedbackDevice(distantTopRel);
+        distantBottomController.setFeedbackDevice(distantBotRel);
 
         this.mainTop.burnFlash();
         this.mainBot.burnFlash();
@@ -105,8 +105,8 @@ public class Shooter extends SubsystemBase {
 
     public void stopNeutral() {
         mode = ShooterModes.NONE;
-        RunPair(0, dtController, dbController);
-        RunPair(0, mtController, mbController);
+        RunPair(0, distantTopController, distantBottomController);
+        RunPair(0, mainTopController, mainBottomController);
     }
 
     public ShooterModes getMode() {
@@ -125,7 +125,7 @@ public class Shooter extends SubsystemBase {
 
     public Command runReverse() {
         return new StartEndCommand(
-                () -> RunPair(ShooterConstants.inSpeed, mtController, mbController, dtController, dtController),
+                () -> RunPair(ShooterConstants.inSpeed, mainTopController, mainBottomController, distantTopController, distantTopController),
                 () -> stopNeutral(), this);
     }
 
@@ -138,14 +138,14 @@ public class Shooter extends SubsystemBase {
             ratio = Pair.of(1., 1.);
         }
 
-        if (mode == ShooterModes.NONE) {
+        if(mode.usesMain && mode.usesDistant) {
+            RunPair(mode.speed, mainTopController, mainBottomController, distantTopController, distantBottomController);
+        } else if(mode.usesMain) {
+            RunPair(mode.speed, mainTopController, mainBottomController);
+        } else if(mode.usesDistant) {
+            RunPair(mode.speed, distantTopController, distantBottomController);
+        }else {
             stopNeutral();
-        } else if(mode == ShooterModes.REVERSE) {
-            RunPair(mode.speed, mtController, mbController, dtController, dbController);
-        } else if(mode == ShooterModes.SpeakerDistant) {
-            RunPair(mode.speed, dtController, dbController);
-        } else {
-            RunPair(mode.speed, mtController, mbController);
         }
     }
 

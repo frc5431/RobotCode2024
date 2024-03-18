@@ -131,19 +131,29 @@ public final class Constants {
       SpeakerShot(ShooterConstants.spkSpeed),
       AmpShot(ShooterConstants.spkSpeed, ampRatio), // has ratio
       StageShot(ShooterConstants.stgSpeed), // has ratio
-      SpeakerDistant(ShooterConstants.ampSpeed),
-      REVERSE(ShooterConstants.inSpeed),
+      SpeakerDistant(ShooterConstants.ampSpeed, false, true),
+      REVERSE(ShooterConstants.inSpeed, true, true),
       NONE(0);
 
       public double speed;
       public Optional<Pair<Double, Double>> ratio;
-      
+      public boolean usesMain;
+      public boolean usesDistant;
+
       ShooterModes(double speed) {
+        this(speed, true, false);
+      }
+      
+      ShooterModes(double speed, boolean usesMain, boolean usesDistant) {
         this.speed = speed;
         this.ratio = Optional.empty();
       }
 
       ShooterModes(double speed, Pair<Double, Double> ratio) {
+        this(speed, ratio, true, false);
+      }
+
+      ShooterModes(double speed, Pair<Double, Double> ratio, boolean usesMain, boolean usesDistant) {
         this.speed = speed;
         this.ratio = Optional.of(ratio);
       }
