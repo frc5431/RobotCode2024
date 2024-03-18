@@ -9,12 +9,11 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
 import frc.robot.AprilTagCamera.Resolution;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.MotorRatio;
@@ -63,8 +62,8 @@ public final class Constants {
     public static int anglerId = 14;
     public static int leftIntakeId = 15;
     public static int rightIntakeId = 16;
-    public static Rotation2d ampAngle = Rotation2d.fromDegrees(119.7); // and we do it, we do it all again
-    public static Rotation2d mainStowAngle = Rotation2d.fromDegrees(179.5);
+    public static double ampAngle = Units.degreesToRadians(119.7); 
+    public static double mainStowAngle = Units.degreesToRadians(179.5);
 
    public enum IntakeModes {
       INTAKE,
@@ -72,13 +71,12 @@ public final class Constants {
       STOPPED
     }
 
-
     public static AnglerConstants anglerConstants = new AnglerConstants(
-        /* Min Angle */Rotation2d.fromDegrees(2), // change again
-        /* Max Angle */Rotation2d.fromDegrees(190), // change
+        /* Min Angle */Units.degreesToRadians(2), // change again
+        /* Max Angle */Units.degreesToRadians(190), // change
         /* Length Meters */Units.inchesToMeters(12),
         /* Weight Kilos */Units.lbsToKilograms(5.625), // temp
-        /* Parallel To Ground Angle */Rotation2d.fromRadians(0),
+        /* Parallel To Ground Angle */Units.degreesToRadians(0),
         /* PID */new MotionMagic(0.3, 0.0, 0.01, -1),
         /* Stall Torque (Nm) */ neoStallTorque,
         /* Enable FF */ true,
@@ -150,11 +148,11 @@ public final class Constants {
 
   public static class AnglerConstants {
 
-    public final Rotation2d minAngle;
-    public final Rotation2d maxAngle;
+    public final double minAngle;
+    public final double maxAngle;
     public final double lengthMeters;
     public final double weight;
-    public final Rotation2d parallelToGroundAngle;
+    public final double parallelToGroundAngle;
     public final MotionMagic pid;
     public final double stalltorque;
     public final boolean enableFF;
@@ -162,11 +160,11 @@ public final class Constants {
     public final double speedLimit;
 
     public AnglerConstants(
-        Rotation2d minAngle,
-        Rotation2d maxAngle,
+        double minAngle,
+        double maxAngle,
         double lengthMeters,
         double weight,
-        Rotation2d parallelToGroundAngle,
+        double parallelToGroundAngle,
         MotionMagic pid,
         double stallTorque,
         boolean enableFF,

@@ -5,6 +5,9 @@
 package frc.robot;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+
+import java.time.Instant;
+
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -17,6 +20,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Units;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Constants.ShooterConstants.ShooterModes;
@@ -184,13 +192,13 @@ public class RobotContainer {
     operator.x().whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE));
 
     // Intake Angler
-    operator.axisGreaterThan(1, 0.15).whileTrue(new RunAnglerCommand(
-        () -> pivot.setpoint.plus(Rotation2d.fromDegrees(-operator.getLeftY())), pivot).repeatedly());
-    operator.axisLessThan(1, -0.15).whileTrue(new RunAnglerCommand(
-        () -> pivot.setpoint.minus(Rotation2d.fromDegrees(operator.getLeftY())), pivot).repeatedly());
+    operator.axisGreaterThan(1, 0.15)
+        .whileTrue(new StartEndCommand(() -> pivot.increment(-operator.getLeftY() * 0.1), () -> {} , pivot).repeatedly());
+    operator.axisLessThan(1, -0.15)
+    .whileTrue(new StartEndCommand(() -> pivot.increment(operator.getLeftY() * 0.1), () -> {}, pivot).repeatedly());
 
     operator.back()
-        .onTrue(new RunAnglerCommand(() -> pivot.setpoint = (Constants.IntakeConstants.ampAngle), pivot));
+        .onTrue(new InstantCommand(() -> pivot.setRotation(Constants.IntakeConstants.ampAngle), pivot));
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));
     operator.rightBumper()
         .onTrue((new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot)));
@@ -203,7 +211,7 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
-    pivot.setpoint = Rotation2d.fromRadians(pivot.absoluteEncoder.getPosition());
+    pivot.setpoint = Units.Degree.of(pivot.absoluteEncoder.getPosition());
 
   }
 

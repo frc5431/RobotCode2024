@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Angler;
 import java.util.function.Supplier;
@@ -9,7 +11,7 @@ public class RunAnglerCommand extends Command {
 
   final AnglerModes mode;
   final Angler angler;
-  Supplier<Rotation2d> rotation;
+  Supplier<Double> rotation;
 
   public enum AnglerModes {
     STOW,
@@ -28,7 +30,7 @@ public class RunAnglerCommand extends Command {
     this(mode, angler, TerminationCondition.IMMEDIATE);
   }
 
-  public RunAnglerCommand(Supplier<Rotation2d> rotation, Angler angler) {
+  public RunAnglerCommand(Supplier<Double> rotation, Angler angler) {
     this(rotation, angler, TerminationCondition.IMMEDIATE);
   }
 
@@ -39,7 +41,7 @@ public class RunAnglerCommand extends Command {
     this.terminationCondition = terminationCondition;
   }
 
-  public RunAnglerCommand(Supplier<Rotation2d> rotation, Angler angler, TerminationCondition terminationCondition) {
+  public RunAnglerCommand(Supplier<Double> rotation, Angler angler, TerminationCondition terminationCondition) {
     this.mode = AnglerModes.CUSTOM;
     this.angler = angler;
     this.rotation = rotation;
@@ -67,6 +69,6 @@ public class RunAnglerCommand extends Command {
       return true;
     }
 
-    return angler.isFinished(0.3);
+    return angler.isFinished();
   }
 }

@@ -1,16 +1,13 @@
 package frc.robot.subsystems;
 
-import java.util.Optional;
-
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
-import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AnglerConstants;
@@ -21,8 +18,8 @@ public class Angler extends SubsystemBase {
   public CANSparkBase motor;
   public SparkPIDController controller;
   public AbsoluteEncoder absoluteEncoder;
-  public Rotation2d setpoint = new Rotation2d();
-  public Rotation2d stowAngle = new Rotation2d();
+ // public Rotation2d setpoint = new Rotation2d(); 
+  public Measure<Angle> setpoint;
   public AnglerModes mode;
   public double massKg;
   protected AnglerConstants constants;
@@ -36,7 +33,6 @@ public class Angler extends SubsystemBase {
     this.controller.setI(constants.pid.i());
     this.controller.setD(constants.pid.d());
 
-    controller.setFeedbackDevice(absoluteEncoder);
 
     // motor.setSmartCurrentLimit(60, 35);
     controller.setOutputRange(-0.8, 0.8);
@@ -48,22 +44,24 @@ public class Angler extends SubsystemBase {
     absoluteEncoder.setPositionConversionFactor(convFact);
     absoluteEncoder.setVelocityConversionFactor(convFact);
     controller.setPositionPIDWrappingMaxInput(convFact);
+    controller.setFeedbackDevice(absoluteEncoder);
+    motor.setSoftLimit(SoftLimitDirection.kForward, ((float)constants.maxAngle));
+    motor.setSoftLimit(SoftLimitDirection.kForward, ((float)constants.minAngle));
+
 
     motor.burnFlash();
     this.constants = constants;
-    this.stowAngle = constants.maxAngle;
-    this.setpoint = Rotation2d.fromRadians(absoluteEncoder.getPosition());
+    this.setpoint = Units.Radians.of(absoluteEncoder.getPosition());
     this.mode = AnglerModes.CUSTOM;
     // calvin commit of the year
   } // 4esahtf v bbbbbbbbbbbbbbbbbbbbbbbbbbb -p[[;lm ]]
-
-  public Rotation2d getAngleToGround() {
-    return setpoint.minus(constants.parallelToGroundAngle);
+ 
+  public Measure<Angle> getAngleToGround() {
+    return setpoint.minus(Units.Radian.of(constants.parallelToGroundAngle));
   }
 
-  public void setRotation(Rotation2d angle) {
-    setpoint = angle;
-    mode = AnglerModes.CUSTOM;
+  public void setRotation(double measure) {
+    setpoint = Units.Degree.of(measure);
   }
 
   public void runToMax() {
@@ -71,12 +69,8 @@ public class Angler extends SubsystemBase {
     mode = AnglerModes.STOW;
   }
 
-  public void setStow(Rotation2d angle) {
-    stowAngle = angle;
-  }
-
-  public void increment(Rotation2d rate) {
-    setpoint.plus(rate);
+  public void increment(double rate) {
+    setpoint.plus(Units.Degree.of(rate));
     mode = AnglerModes.CUSTOM;
   }
 
@@ -89,11 +83,11 @@ public class Angler extends SubsystemBase {
    * @param tolerance radians
    * @return
    */
-  public boolean isFinished(double tolerance) {
-    return Math.abs(setpoint.getRadians() - absoluteEncoder.getPosition()) < tolerance;
+  public boolean isFinished() {
+    return Math.abs(setpoint.minus(Units.Radians.of(absoluteEncoder.getPosition())).magnitude()) < 0.3;
   }
 
-  
+  /*
   record Angle(Rotation2d angle, Translation2d error) {
     double getSimpleError() {
       return Math.sqrt(error.getX() * error.getX() + error.getY() * error.getY());
@@ -123,30 +117,21 @@ public class Angler extends SubsystemBase {
 
     return Optional.empty(); // No suitable angle found
   }
- 
+  */
+
   @Override
   public void periodic() {
-    SmartDashboard.putNumber(getName() + " setpoint deg", setpoint.getDegrees());
-    SmartDashboard.putNumber(getName() + " encoder deg rad",
-        absoluteEncoder.getPosition()                                                                             );
 
-    // switch (mode) {
-    //   case STOW:
-    //     setpoint = stowAngle;
-    //     System.out.println("here");
-    //     break;
-    //   case CUSTOM:
-    //     break;
-    //   case DEPLOY:
-    //     break;
-    // }
+    SmartDashboard.putNumber(getName() + " setpoint deg", setpoint.magnitude());
+    SmartDashboard.putNumber(getName() + " encoder deg", absoluteEncoder.getPosition());
+    SmartDashboard.putString("Pivot Mode", this.mode.toString());
 
     double anglerCosMultiplierNoCOMM = massKg * 9.81;
     double cosMult = anglerCosMultiplierNoCOMM * constants.lengthMeters;
-    double arbFF = (cosMult * getAngleToGround().getCos()) / constants.stalltorque;
+    double arbFF = (cosMult * 1) / constants.stalltorque;
 
     controller.setReference(
-        setpoint.getRotations() *  absoluteEncoder.getPositionConversionFactor(), // MathUtil.clamp(setpoint.getRadians(),
+        setpoint.magnitude() *  absoluteEncoder.getPositionConversionFactor(), // MathUtil.clamp(setpoint.getRadians(),
                                                                                  // retractedAngle, deployedAngle),
         CANSparkBase.ControlType.kPosition,
         0,
