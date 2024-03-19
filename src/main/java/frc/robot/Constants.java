@@ -115,10 +115,10 @@ public final class Constants {
     public static int distantTopId = 18;
     public static int distantBotId = 17;
 
-    public static double spkSpeed = 1;
-    public static double ampSpeed = 0.4;
-    public static double stgSpeed = 0.7;
-    public static double inSpeed = -0.2;
+    public static double spkSpeed = 1 * 6784;
+    public static double ampSpeed = 0.4 * 6784;
+    public static double stgSpeed = 0.7 * 6784;
+    public static double inSpeed = -0.2 * 6784;
 
     public static double mainAngle = 55;
     public static double secondaryAngle = 35;// ?

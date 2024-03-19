@@ -14,12 +14,6 @@
         {
           "type": "named",
           "data": {
-            "name": "ZeroGyro"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "SpeakerScore"
           }
         },

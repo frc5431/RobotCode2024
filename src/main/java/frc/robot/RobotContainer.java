@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.units.Units;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TunerConstatns;
@@ -62,7 +61,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
     NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(shooter, intake, pivot));
     NamedCommands.registerCommand("DistantSpeakerScore", new DistantSpeakerScore(shooter, intake, pivot));
-    NamedCommands.registerCommand("GrabNote", new IntakeNote(intake, pivot));
+    NamedCommands.registerCommand("GrabNote", new SmartIntakeNote(intake, pivot));
 
     autonMagic = new AutonMagic(systems);
 

@@ -110,7 +110,6 @@ public class Intake extends SubsystemBase {
     return new StartEndCommand(() -> run(mode), () -> runWithPower(0), this);
   }
 
- 
   public void setRatio(MotorRatio ratio) {
     this.ratio = ratio;
   }

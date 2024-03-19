@@ -123,11 +123,6 @@ public class Shooter extends SubsystemBase {
 
     }
 
-    public Command runReverse() {
-        return new StartEndCommand(
-                () -> RunPair(ShooterConstants.inSpeed, mainTopController, mainBottomController, distantTopController, distantTopController),
-                () -> stopNeutral(), this);
-    }
 
     public void runShooter(ShooterModes mode) {
         this.mode = mode;
@@ -145,6 +140,12 @@ public class Shooter extends SubsystemBase {
         } else if(mode.usesDistant) {
             RunPair(mode.speed, distantTopController, distantBottomController);
         }
+    }
+
+    public Command runReverse() {
+        return new StartEndCommand(
+                () -> RunPair(ShooterConstants.inSpeed, mainTopController, mainBottomController, distantTopController, distantTopController),
+                () -> stopNeutral(), this);
     }
 
     public Command runShooterCommand(ShooterModes mode) {

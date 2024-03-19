@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkBase;
-import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
 import edu.wpi.first.units.Angle;
