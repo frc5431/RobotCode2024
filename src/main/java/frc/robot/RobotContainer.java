@@ -18,16 +18,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.units.Units;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Constants.ShooterConstants.ShooterModes;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunClimberCommand;
 import frc.robot.commands.RunManipulatorCommand;
-import frc.robot.commands.RunShooterCommand;
 import frc.robot.commands.auton.AmpScore;
+import frc.robot.commands.auton.DistantSpeakerScore;
 import frc.robot.commands.auton.IntakeNote;
 import frc.robot.commands.auton.SimpleSpeaker;
 import frc.robot.commands.auton.SmartIntakeNote;
@@ -59,7 +61,7 @@ public class RobotContainer {
   public RobotContainer() {
     NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
     NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(shooter, intake, pivot));
-    NamedCommands.registerCommand("DistantSpeakerScore", new RunShooterCommand(shooter, ShooterModes.SpeakerDistant));
+    NamedCommands.registerCommand("DistantSpeakerScore", new DistantSpeakerScore(shooter, intake, pivot));
     NamedCommands.registerCommand("GrabNote", new IntakeNote(intake, pivot));
 
     autonMagic = new AutonMagic(systems);
@@ -99,7 +101,13 @@ public class RobotContainer {
   public void periodic() {
 
     SmartDashboard.putString("Current Command", CommandScheduler.getInstance().toString());
-
+    if(shooter.mode == ShooterModes.NONE) {
+      pivot.setpoint = pivot.setpoint;
+    } else if(shooter.mode.usesDistant){
+      pivot.setpoint = IntakeConstants.distantStowAngle;
+    }  else if(shooter.mode.usesMain) {
+      pivot.setpoint = IntakeConstants.anglerConstants.mainAngle;
+    }
   }
 
   Translation2d ellipticalDiscToSquare(double u, double v) {
@@ -174,6 +182,7 @@ public class RobotContainer {
     // Shooter
     operator.rightTrigger().whileTrue(shooter.runShooterCommand(ShooterModes.SpeakerShot));
     operator.b().whileTrue(shooter.runShooterCommand(ShooterModes.REVERSE));
+    operator.a().whileTrue(shooter.runShooterCommand(ShooterModes.SpeakerDistant));
     operator.y().whileTrue(shooter.runShooterCommand(ShooterModes.StageShot));
     operator.start().whileTrue(shooter.runShooterCommand(ShooterModes.AmpShot));
 
@@ -184,12 +193,13 @@ public class RobotContainer {
     // Intake
     operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.INTAKE));
     operator.x().whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE));
-
+    
     // Intake Angler
     operator.axisGreaterThan(1, 0.15)
-        .whileTrue(new StartEndCommand(() -> pivot.increment(-operator.getLeftY() * 0.1), () -> {} , pivot).repeatedly());
+        .whileTrue(new RunCommand(() -> pivot.increment(-operator.getLeftY() * 0.1), pivot).repeatedly());
     operator.axisLessThan(1, -0.15)
-    .whileTrue(new StartEndCommand(() -> pivot.increment(operator.getLeftY() * 0.1), () -> {}, pivot).repeatedly());
+        .whileTrue(new RunCommand(() -> pivot.increment(-operator.getLeftY() * 0.1), pivot).repeatedly());
+
     operator.back()
         .onTrue(new InstantCommand(() -> pivot.setRotation(Constants.IntakeConstants.ampAngle), pivot));
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));

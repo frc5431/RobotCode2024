@@ -11,6 +11,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackTy
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -65,8 +67,8 @@ public final class Constants {
     public static int leftIntakeId = 15;
     public static int rightIntakeId = 16;
     public static double radianTolerance = 0.03;
-    public static double ampAngle = Units.degreesToRadians(119.7); 
-    public static double mainStowAngle = Units.degreesToRadians(179.5);
+    public static Measure<Angle> ampAngle = edu.wpi.first.units.Units.Degree.of(103);
+    public static Measure<Angle> distantStowAngle = edu.wpi.first.units.Units.Degree.of(190);
 
     public enum IntakeModes {
       INTAKE,
@@ -75,11 +77,11 @@ public final class Constants {
     }
 
     public static AnglerConstants anglerConstants = new AnglerConstants(
-        /* Min Angle */Units.degreesToRadians(2), // change again
-        /* Max Angle */Units.degreesToRadians(190), // change
+        /* Min Angle */edu.wpi.first.units.Units.Degree.of(2), // change again
+        /* Main Angle */edu.wpi.first.units.Units.Degree.of(179.5), // change
         /* Length Meters */Units.inchesToMeters(12),
         /* Weight Kilos */Units.lbsToKilograms(5.625), // temp
-        /* Parallel To Ground Angle */Units.degreesToRadians(0),
+        /* Parallel To Ground Angle */edu.wpi.first.units.Units.Degree.of(0),
         /* PID */new MotionMagic(0.3, 0.0, 0.01, -1),
         /* Stall Torque (Nm) */ neoStallTorque,
         /* Enable FF */ true,
@@ -147,6 +149,8 @@ public final class Constants {
       ShooterModes(double speed, boolean usesMain, boolean usesDistant) {
         this.speed = speed;
         this.ratio = Optional.empty();
+        this.usesMain = usesMain;
+        this.usesDistant = usesDistant;
       }
 
       ShooterModes(double speed, Pair<Double, Double> ratio) {
@@ -156,6 +160,8 @@ public final class Constants {
       ShooterModes(double speed, Pair<Double, Double> ratio, boolean usesMain, boolean usesDistant) {
         this.speed = speed;
         this.ratio = Optional.of(ratio);
+        this.usesMain = usesMain;
+        this.usesDistant = usesDistant;
       }
       
     }
@@ -175,11 +181,11 @@ public final class Constants {
 
   public static class AnglerConstants {
 
-    public final double minAngle;
-    public final double maxAngle;
+    public final Measure<Angle> minAngle;
+    public final Measure<Angle> mainAngle;
     public final double lengthMeters;
     public final double weight;
-    public final double parallelToGroundAngle;
+    public final Measure<Angle> parallelToGroundAngle;
     public final MotionMagic pid;
     public final double stalltorque;
     public final boolean enableFF;
@@ -187,18 +193,18 @@ public final class Constants {
     public final double speedLimit;
 
     public AnglerConstants(
-        double minAngle,
-        double maxAngle,
+        Measure<Angle> minAngle,
+        Measure<Angle> mainAngle,
         double lengthMeters,
         double weight,
-        double parallelToGroundAngle,
+        Measure<Angle> parallelToGroundAngle,
         MotionMagic pid,
         double stallTorque,
         boolean enableFF,
         double gearRatio,
         double speedLimit) {
       this.minAngle = minAngle;
-      this.maxAngle = maxAngle;
+      this.mainAngle = mainAngle;
       this.lengthMeters = lengthMeters;
       this.weight = weight;
       this.parallelToGroundAngle = parallelToGroundAngle;

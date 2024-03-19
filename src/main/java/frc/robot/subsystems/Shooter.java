@@ -144,8 +144,6 @@ public class Shooter extends SubsystemBase {
             RunPair(mode.speed, mainTopController, mainBottomController);
         } else if(mode.usesDistant) {
             RunPair(mode.speed, distantTopController, distantBottomController);
-        }else {
-            stopNeutral();
         }
     }
 

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.AnglerConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.RunAnglerCommand.AnglerModes;
 
 public class Angler extends SubsystemBase {
@@ -43,8 +44,6 @@ public class Angler extends SubsystemBase {
     absoluteEncoder.setVelocityConversionFactor(convFact);
     controller.setPositionPIDWrappingMaxInput(convFact);
     controller.setFeedbackDevice(absoluteEncoder);
-    motor.setSoftLimit(SoftLimitDirection.kForward, ((float)constants.maxAngle));
-    motor.setSoftLimit(SoftLimitDirection.kForward, ((float)constants.minAngle));
 
     motor.burnFlash();
     this.constants = constants;
@@ -54,7 +53,7 @@ public class Angler extends SubsystemBase {
   } // 4esahtf v bbbbbbbbbbbbbbbbbbbbbbbbbbb -p[[;lm ]]
  
   public Measure<Angle> getAngleToGround() {
-    return setpoint.minus(Units.Radian.of(constants.parallelToGroundAngle));
+    return setpoint.minus(constants.parallelToGroundAngle);
   }
 
   /**
@@ -64,11 +63,16 @@ public class Angler extends SubsystemBase {
     setpoint = Units.Degree.of(measure);
   }
 
+    public void setRotation(Measure<Angle> measure) {
+    setpoint = measure;
+  }
+
+
   /**
    * Runs to minimum defined angle in AnglerConstants
    */
-  public void runToMax() {
-    setRotation(constants.maxAngle);
+  public void runToMain() {
+    setpoint = IntakeConstants.anglerConstants.mainAngle;
     mode = AnglerModes.STOW;
   }
 
@@ -76,7 +80,7 @@ public class Angler extends SubsystemBase {
    * Runs to minimum defined angle in AnglerConstants
    */
   public void runToMin() {
-    setRotation(constants.minAngle);
+    setpoint = IntakeConstants.anglerConstants.minAngle;
     mode = AnglerModes.DEPLOY;
   }
 
@@ -84,7 +88,7 @@ public class Angler extends SubsystemBase {
    * @param rate, in degrees
    */
   public void increment(double rate) {
-    setpoint.plus(Units.Degree.of(rate));
+    setpoint = setpoint.plus(Units.Degree.of(rate));
     mode = AnglerModes.CUSTOM;
   }
 
@@ -93,8 +97,7 @@ public class Angler extends SubsystemBase {
    * @return if current angle is within setpoint tolerance
    */
   public boolean isFinished() {
-    return Math.abs(setpoint.minus(Units.Radians.of(absoluteEncoder.getPosition())).magnitude()) < 
-      Units.Radians.of(Constants.IntakeConstants.radianTolerance).magnitude();
+    return setpoint.isNear(Units.Radians.of(absoluteEncoder.getPosition()), Constants.IntakeConstants.radianTolerance);
   }
 
   /*

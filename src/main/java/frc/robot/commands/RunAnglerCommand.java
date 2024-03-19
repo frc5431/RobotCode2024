@@ -54,7 +54,7 @@ public class RunAnglerCommand extends Command {
     if (AnglerModes.DEPLOY == mode) {
       angler.runToMin();
     } else if (AnglerModes.STOW == mode) {
-      angler.runToMax();
+      angler.runToMain();
     } else {
       angler.setRotation(this.rotation.get());
     }
