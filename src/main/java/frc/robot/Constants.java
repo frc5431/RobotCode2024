@@ -5,19 +5,20 @@ import java.util.Optional;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Measure;
+
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
 import frc.robot.AprilTagCamera.Resolution;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.MotorRatio;
@@ -302,7 +303,7 @@ public final class Constants {
 
     private static final boolean kSteerMotorReversed = false;
     private static final boolean kInvertLeftSide = false;
-    private static final boolean kInvertRightSide = true;
+    private static final boolean kInvertRightSide = false;
 
     private static final String kCANbusName = "Omnivore2024";
     private static final int kPigeonId = 13;
@@ -335,12 +336,25 @@ public final class Constants {
         .withFeedbackSource(SteerFeedbackType.FusedCANcoder)
         .withCouplingGearRatio(kCoupleRatio)
         .withSteerMotorInverted(kSteerMotorReversed);
+/**
+  How to re-align swerves & find offsets manually.
+  1. set all 'k[...]EncoderOffset' to '-(0)'
+  2. deploy
+  3. power cycle
+  4. drive forward
+  5. in pheonix tuner x select the CANCoder and get the "Absolute Position No Offset"
+  6. set the 'k[...]EncoderOffset' to '-(value)'
+  7. deploy
+  8. power cycle
+  9. profit
+
+ */
 
     // Front Left
     private static final int kFrontLeftDriveMotorId = 7;
     private static final int kFrontLeftSteerMotorId = 8;
     private static final int kFrontLeftEncoderId = 12;
-    private static final double kFrontLeftEncoderOffset = -(0.258545);
+    private static final double kFrontLeftEncoderOffset = -(-0.232422);
 
     private static final double kFrontLeftXPosInches = 10.25;
     private static final double kFrontLeftYPosInches = 11.75;
@@ -349,7 +363,7 @@ public final class Constants {
     private static final int kFrontRightDriveMotorId = 1;
     private static final int kFrontRightSteerMotorId = 2;
     private static final int kFrontRightEncoderId = 9;
-    private static final double kFrontRightEncoderOffset = -(-0.019043);
+    private static final double kFrontRightEncoderOffset = -(-0.025391);
 
     private static final double kFrontRightXPosInches = 10.25;
     private static final double kFrontRightYPosInches = -11.75;
@@ -358,7 +372,7 @@ public final class Constants {
     private static final int kBackLeftDriveMotorId = 5;
     private static final int kBackLeftSteerMotorId = 6;
     private static final int kBackLeftEncoderId = 11;
-    private static final double kBackLeftEncoderOffset = -(0.344727);
+    private static final double kBackLeftEncoderOffset = -(-0.190674);
 
     private static final double kBackLeftXPosInches = -10.25;
     private static final double kBackLeftYPosInches = 11.75;
@@ -367,23 +381,20 @@ public final class Constants {
     private static final int kBackRightDriveMotorId = 3;
     private static final int kBackRightSteerMotorId = 4;
     private static final int kBackRightEncoderId = 10;
-    private static final double kBackRightEncoderOffset = -(-0.193359);
+    private static final double kBackRightEncoderOffset = -(-0.190674);
 
     private static final double kBackRightXPosInches = -10.25;
     private static final double kBackRightYPosInches = -11.75;
 
-    public static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
-        kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, kFrontLeftEncoderOffset,
-        Units.inchesToMeters(kFrontLeftXPosInches), Units.inchesToMeters(kFrontLeftYPosInches), kInvertLeftSide);
+        public static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
+            kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, kFrontLeftEncoderOffset, Units.inchesToMeters(kFrontLeftXPosInches), Units.inchesToMeters(kFrontLeftYPosInches), kInvertLeftSide);
     public static final SwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
-        kFrontRightSteerMotorId, kFrontRightDriveMotorId, kFrontRightEncoderId, kFrontRightEncoderOffset,
-        Units.inchesToMeters(kFrontRightXPosInches), Units.inchesToMeters(kFrontRightYPosInches), kInvertRightSide);
+            kFrontRightSteerMotorId, kFrontRightDriveMotorId, kFrontRightEncoderId, kFrontRightEncoderOffset, Units.inchesToMeters(kFrontRightXPosInches), Units.inchesToMeters(kFrontRightYPosInches), kInvertRightSide);
     public static final SwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
-        kBackLeftSteerMotorId, kBackLeftDriveMotorId, kBackLeftEncoderId, kBackLeftEncoderOffset,
-        Units.inchesToMeters(kBackLeftXPosInches), Units.inchesToMeters(kBackLeftYPosInches), kInvertLeftSide);
+            kBackLeftSteerMotorId, kBackLeftDriveMotorId, kBackLeftEncoderId, kBackLeftEncoderOffset, Units.inchesToMeters(kBackLeftXPosInches), Units.inchesToMeters(kBackLeftYPosInches), kInvertLeftSide);
     public static final SwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(
-        kBackRightSteerMotorId, kBackRightDriveMotorId, kBackRightEncoderId, kBackRightEncoderOffset,
-        Units.inchesToMeters(kBackRightXPosInches), Units.inchesToMeters(kBackRightYPosInches), kInvertRightSide);
+            kBackRightSteerMotorId, kBackRightDriveMotorId, kBackRightEncoderId, kBackRightEncoderOffset, Units.inchesToMeters(kBackRightXPosInches), Units.inchesToMeters(kBackRightYPosInches), kInvertRightSide);
+
 
   }
 }
