@@ -125,7 +125,6 @@ public final class Constants {
     public static double secondaryAngle = 35;// ?
 
     public static Pair<Double, Double> ampRatio = Pair.of(0.65, 1.);
-
     public static Pair<Double, Double> mainRatio = Pair.of(0.9, 1.);
 
 

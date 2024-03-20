@@ -2,11 +2,10 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.SparkPIDController.AccelStrategy;
-
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.SparkPIDController.AccelStrategy;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -135,6 +134,8 @@ public class Shooter extends SubsystemBase {
 
     }
 
+
+
     public void runShooter(ShooterModes mode) {
         this.mode = mode;
 
@@ -151,6 +152,10 @@ public class Shooter extends SubsystemBase {
         } else if(mode.usesDistant) {
             RunPair(mode.speed, distantTopController, distantBottomController);
         }
+
+  
+
+
     }
 
     public Command runReverse() {
