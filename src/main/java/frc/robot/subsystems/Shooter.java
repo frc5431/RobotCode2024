@@ -32,6 +32,7 @@ public class Shooter extends SubsystemBase {
     private final SparkPIDController mainBottomController;
     private final SparkPIDController distantTopController;
     private final SparkPIDController distantBottomController;
+    private final ControlType controlType = ControlType.kVelocity;
 
     private final double[] pid = new double[] { ShooterConstants.p, ShooterConstants.i, ShooterConstants.d };
 
@@ -54,10 +55,29 @@ public class Shooter extends SubsystemBase {
         this.distantTopController = distantTop.getPIDController();
         this.distantBottomController = distantBot.getPIDController();
 
-        setGains(mainTopController);
-        setGains(mainBottomController);
-        setGains(distantTopController);
-        setGains(distantBottomController);
+        mainTopController.setP(pid[0]);
+        mainTopController.setI(pid[1]);
+        mainTopController.setD(pid[2]);
+        mainTopController.setIZone(2);
+        mainTopController.setOutputRange(-1, 1);
+
+        mainBottomController.setP(pid[0]);
+        mainBottomController.setI(pid[1]);
+        mainBottomController.setD(pid[2]);
+        mainBottomController.setIZone(2);
+        mainBottomController.setOutputRange(-1, 1);
+
+        distantTopController.setP(pid[0]);
+        distantTopController.setI(pid[1]);
+        distantTopController.setD(pid[2]);
+        distantTopController.setIZone(2);
+        distantTopController.setOutputRange(-1, 1);
+
+        distantBottomController.setP(pid[0]);
+        distantBottomController.setI(pid[1]);
+        distantBottomController.setD(pid[2]);
+        distantBottomController.setIZone(2);
+        distantBottomController.setOutputRange(-1, 1);
 
         mainTopController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
         mainBottomController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
@@ -82,32 +102,24 @@ public class Shooter extends SubsystemBase {
         this.mode = ShooterModes.NONE;
     }
 
-    public void setGains(SparkPIDController controller) {
-        controller.setP(pid[0]);
-        controller.setI(pid[1]);
-        controller.setD(pid[2]);
-        controller.setIZone(2);
-        controller.setOutputRange(-1, 1);
-    }
-
     public void RunPair(double percentage, SparkPIDController top, SparkPIDController bot,
             SparkPIDController dtop, SparkPIDController dbot) {
-        top.setReference(percentage * ratio.getFirst(), ControlType.kDutyCycle);
-        bot.setReference(percentage * ratio.getSecond(), ControlType.kDutyCycle);
-        dtop.setReference(percentage * ratio.getFirst(), ControlType.kDutyCycle);
-        dbot.setReference(percentage * ratio.getSecond(), ControlType.kDutyCycle);
+        top.setReference(percentage * ratio.getFirst(), controlType);
+        bot.setReference(percentage * ratio.getSecond(), controlType);
+        dtop.setReference(percentage * ratio.getFirst(), controlType);
+        dbot.setReference(percentage * ratio.getSecond(), controlType);
     }
 
     public void RunPair(double percentage, SparkPIDController top, SparkPIDController bot) {
-        top.setReference(percentage * ratio.getFirst(), ControlType.kDutyCycle);
-        bot.setReference(percentage * ratio.getSecond(), ControlType.kDutyCycle);
+        top.setReference(percentage * ratio.getFirst(), controlType);
+        bot.setReference(percentage * ratio.getSecond(), controlType);
     }
 
     public void stopNeutral() {
         mode = ShooterModes.NONE;
         RunPair(0, distantTopController, distantBottomController);
         RunPair(0, mainTopController, mainBottomController);
-    }
+    }      
 
     public ShooterModes getMode() {
         return mode;
@@ -122,7 +134,6 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putString("Shooter Mode", getMode().toString());
 
     }
-
 
     public void runShooter(ShooterModes mode) {
         this.mode = mode;

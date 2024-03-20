@@ -51,17 +51,8 @@ public class Intake extends SubsystemBase {
   }
 
   public void runNeutral() {
-    this.upper.setIdleMode(IdleMode.kCoast);
-    this.upper.burnFlash();
-    this.lower.setIdleMode(IdleMode.kCoast);
-    this.lower.burnFlash();
-  }
-
-  public void stopNeutral() {
-    this.upper.setIdleMode(IdleMode.kBrake);
-    this.upper.burnFlash();
-    this.lower.setIdleMode(IdleMode.kBrake);
-    this.lower.burnFlash();
+    this.upper.set(0);;
+    this.lower.set(0);
   }
 
   public double getAverageAppliedOutput() {
@@ -76,6 +67,7 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Intake Rpm", this.upperRelativeEncoder.getVelocity());
     SmartDashboard.putString(getName() + " mode", this.mode.toString());
+    SmartDashboard.putBoolean("beambreak", beamBreak.get());
   }
 
   public double[] getRPM() {

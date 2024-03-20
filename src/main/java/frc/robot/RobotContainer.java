@@ -204,7 +204,6 @@ public class RobotContainer {
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));
     operator.rightBumper()
         .onTrue((new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot)));
-    operator.leftStick().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
 
   }
 

@@ -33,8 +33,8 @@ public class SmartIntakeNote extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        intake.runPower(0);
         pivot.setRotation(IntakeConstants.anglerConstants.mainAngle);
+        intake.runPower(0);
 
     }
 

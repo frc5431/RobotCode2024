@@ -85,7 +85,7 @@ public final class Constants {
         /* PID */new MotionMagic(0.3, 0.0, 0.01, -1),
         /* Stall Torque (Nm) */ neoStallTorque,
         /* Enable FF */ true,
-        /* Gear Ratio */16/22,
+        /* Gear Ratio */16 / 22,
         0.8);
 
     public static ManipulatorConstants manipulatorConstants = new ManipulatorConstants(
@@ -145,7 +145,7 @@ public final class Constants {
       ShooterModes(double speed) {
         this(speed, true, false);
       }
-      
+
       ShooterModes(double speed, boolean usesMain, boolean usesDistant) {
         this.speed = speed;
         this.ratio = Optional.empty();
@@ -163,7 +163,7 @@ public final class Constants {
         this.usesMain = usesMain;
         this.usesDistant = usesDistant;
       }
-      
+
     }
 
     public static MotorRatio shooterRatio = new MotorRatio(1, 0.95);
@@ -282,16 +282,16 @@ public final class Constants {
     // Theoretical free speed (m/s) at 12v applied output;
     // This needs to be tuned to your individual robot
     public static final double kSpeedAt12VoltsMps = (5800.0 / 60.0) *
-    SdsModuleConfigurations.MK4_L2.getDriveReduction() *
-    SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+        SdsModuleConfigurations.MK4_L2.getDriveReduction() *
+        SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
 
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.5842;
-    
+
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.5334;
-   
+
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = kSpeedAt12VoltsMps / Math.hypot(
         DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
-  
+
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
     private static final double kCoupleRatio = 3.5714285714285714285714285714286;

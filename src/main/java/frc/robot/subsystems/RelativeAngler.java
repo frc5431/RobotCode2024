@@ -100,7 +100,7 @@ public class RelativeAngler extends SubsystemBase {
         );
         
         rightPID.setReference(
-            setpoint,
+            this.setpoint,
             ControlType.kPosition,
             0
         );
