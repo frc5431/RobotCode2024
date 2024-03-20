@@ -79,11 +79,11 @@ public final class Constants {
 
     public static AnglerConstants anglerConstants = new AnglerConstants(
         /* Min Angle */edu.wpi.first.units.Units.Degree.of(0), // change again
-        /* Main Angle */edu.wpi.first.units.Units.Degree.of(169.27), // change
+        /* Main Angle */edu.wpi.first.units.Units.Degree.of(161.2534338054083), // change
         /* Length Meters */Units.inchesToMeters(12),
         /* Weight Kilos */Units.lbsToKilograms(5.625), // temp
         /* Parallel To Ground Angle */edu.wpi.first.units.Units.Degree.of(0),
-        /* PID */new MotionMagic(0.3, 0.0, 0.01, -1),
+        /* PID */new MotionMagic(0.3, 0.0, 0.03, -1),
         /* Stall Torque (Nm) */ neoStallTorque,
         /* Enable FF */ true,
         /* Gear Ratio */16 / 22,
@@ -116,25 +116,28 @@ public final class Constants {
     public static int distantTopId = 18;
     public static int distantBotId = 17;
 
-    public static double spkSpeed = 1 * 6784;
-    public static double ampSpeed = 0.4 * 6784;
-    public static double stgSpeed = 0.7 * 6784;
-    public static double inSpeed = -0.2 * 6784;
+    public static double spkSpeed = -1;
+    public static double ampSpeed = -0.4;
+    public static double stgSpeed = -0.7;
+    public static double inSpeed = 0.2;
 
     public static double mainAngle = 55;
     public static double secondaryAngle = 35;// ?
 
     public static Pair<Double, Double> ampRatio = Pair.of(0.65, 1.);
 
+    public static Pair<Double, Double> mainRatio = Pair.of(0.9, 1.);
+
+
     public static final double p = 0.3;
     public static final double i = 0.0;
     public static final double d = 0.01;
 
     public enum ShooterModes {
-      SpeakerShot(ShooterConstants.spkSpeed),
+      SpeakerShot(ShooterConstants.spkSpeed, mainRatio),
       AmpShot(ShooterConstants.spkSpeed, ampRatio), // has ratio
       StageShot(ShooterConstants.stgSpeed), // has ratio
-      SpeakerDistant(ShooterConstants.ampSpeed, false, true),
+      SpeakerDistant(ShooterConstants.spkSpeed, false, true),
       REVERSE(ShooterConstants.inSpeed, true, true),
       NONE(0);
 
@@ -261,7 +264,7 @@ public final class Constants {
     // the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs steerGains = new Slot0Configs()
-        .withKP(100).withKI(0).withKD(0.2)
+        .withKP(100).withKI(0).withKD(0.3)
         .withKS(0).withKV(1.5).withKA(0);
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
@@ -282,7 +285,7 @@ public final class Constants {
 
     // Theoretical free speed (m/s) at 12v applied output;
     // This needs to be tuned to your individual robot
-    public static final double kSpeedAt12VoltsMps = (5800.0 / 60.0) *
+    public static final double kSpeedAt12VoltsMps = (6000 / 60.0) *
         SdsModuleConfigurations.MK4_L2.getDriveReduction() *
         SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
 
@@ -372,7 +375,7 @@ public final class Constants {
     private static final int kBackLeftDriveMotorId = 5;
     private static final int kBackLeftSteerMotorId = 6;
     private static final int kBackLeftEncoderId = 11;
-    private static final double kBackLeftEncoderOffset = -(-0.190674);
+    private static final double kBackLeftEncoderOffset = -(-0.154785);
 
     private static final double kBackLeftXPosInches = -10.25;
     private static final double kBackLeftYPosInches = 11.75;
@@ -381,7 +384,7 @@ public final class Constants {
     private static final int kBackRightDriveMotorId = 3;
     private static final int kBackRightSteerMotorId = 4;
     private static final int kBackRightEncoderId = 10;
-    private static final double kBackRightEncoderOffset = -(-0.190674);
+    private static final double kBackRightEncoderOffset = -(-0.189941);
 
     private static final double kBackRightXPosInches = -10.25;
     private static final double kBackRightYPosInches = -11.75;

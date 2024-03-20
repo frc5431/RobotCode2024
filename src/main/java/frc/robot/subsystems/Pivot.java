@@ -33,7 +33,7 @@ public class Pivot extends SubsystemBase {
     this.controller.setI(constants.pid.i());
     this.controller.setD(constants.pid.d());
 
-    controller.setOutputRange(-0.8, 0.8);
+    controller.setOutputRange(-0.3, 0.3);
     double convFact = 2 * Math.PI;
     this.setName(name);
     controller.setPositionPIDWrappingEnabled(true);
@@ -47,6 +47,7 @@ public class Pivot extends SubsystemBase {
     motor.burnFlash();
     this.constants = constants;
     this.setpoint = Units.Radians.of(absoluteEncoder.getPosition());
+
     this.mode = AnglerModes.CUSTOM;
     // calvin commit of the year
   } // 4esahtf v bbbbbbbbbbbbbbbbbbbbbbbbbbb -p[[;lm ]]
@@ -143,7 +144,7 @@ public class Pivot extends SubsystemBase {
     double arbFF = (cosMult * 1) / constants.stalltorque;
 
     controller.setReference(
-        setpoint.in(Units.Radians) *  absoluteEncoder.getPositionConversionFactor(), 
+        setpoint.in(Units.Radians), 
         CANSparkBase.ControlType.kPosition,
         0,
         constants.enableFF ? arbFF : 0,

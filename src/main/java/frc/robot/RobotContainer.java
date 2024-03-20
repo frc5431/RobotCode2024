@@ -99,7 +99,6 @@ public class RobotContainer {
 
   public void periodic() {
 
-    SmartDashboard.putString("Current Command", CommandScheduler.getInstance().toString());
     if(shooter.mode == ShooterModes.NONE) {
       pivot.setpoint = pivot.setpoint;
     } else if(shooter.mode.usesDistant){
@@ -164,10 +163,7 @@ public class RobotContainer {
                   modifyAxis(driver.getLeftY() + (driver.povUp().getAsBoolean() ? 0.1 : 0))
                       * TunerConstatns.kSpeedAt12VoltsMps)
               .withVelocityY(modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps)
-              .withRotationalRate((driver.rightTrigger().getAsBoolean())
-                  ? Math.atan2(LasaVision.getInstance().getTargetYaw(0),
-                      drivebase.getGyro().getYaw().getValueAsDouble())
-                  : -modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+              .withRotationalRate(modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
         }));
 
     driver.y().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
@@ -212,7 +208,7 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
-    pivot.setpoint = Units.Degree.of(pivot.absoluteEncoder.getPosition());
+    pivot.setpoint = Units.Radians.of(pivot.absoluteEncoder.getPosition());
 
   }
 
