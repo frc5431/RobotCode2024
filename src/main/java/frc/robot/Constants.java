@@ -68,7 +68,7 @@ public final class Constants {
     public static int rightIntakeId = 16;
     public static double radianTolerance = 0.03;
     public static Measure<Angle> ampAngle = edu.wpi.first.units.Units.Degree.of(103);
-    public static Measure<Angle> distantStowAngle = edu.wpi.first.units.Units.Degree.of(190);
+    public static Measure<Angle> distantStowAngle = edu.wpi.first.units.Units.Degree.of(193.87);
 
     public enum IntakeModes {
       INTAKE,
@@ -77,8 +77,8 @@ public final class Constants {
     }
 
     public static AnglerConstants anglerConstants = new AnglerConstants(
-        /* Min Angle */edu.wpi.first.units.Units.Degree.of(2), // change again
-        /* Main Angle */edu.wpi.first.units.Units.Degree.of(179.5), // change
+        /* Min Angle */edu.wpi.first.units.Units.Degree.of(0), // change again
+        /* Main Angle */edu.wpi.first.units.Units.Degree.of(169.27), // change
         /* Length Meters */Units.inchesToMeters(12),
         /* Weight Kilos */Units.lbsToKilograms(5.625), // temp
         /* Parallel To Ground Angle */edu.wpi.first.units.Units.Degree.of(0),
@@ -270,10 +270,10 @@ public final class Constants {
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
-    private static final ClosedLoopOutputType steerClosedLoopOutput = ClosedLoopOutputType.TorqueCurrentFOC;
+    private static final ClosedLoopOutputType steerClosedLoopOutput = ClosedLoopOutputType.Voltage;
     // The closed-loop output type to use for the drive motors;
     // This affects the PID/FF gains for the drive motors
-    private static final ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.TorqueCurrentFOC;
+    private static final ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.Voltage;
 
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot

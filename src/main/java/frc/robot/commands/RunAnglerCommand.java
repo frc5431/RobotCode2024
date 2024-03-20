@@ -1,13 +1,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Angler;
+import frc.robot.subsystems.Pivot;
 import java.util.function.Supplier;
 
 public class RunAnglerCommand extends Command {
 
   final AnglerModes mode;
-  final Angler angler;
+  final Pivot angler;
   Supplier<Double> rotation;
 
   public enum AnglerModes {
@@ -23,22 +23,22 @@ public class RunAnglerCommand extends Command {
 
   final TerminationCondition terminationCondition;
 
-  public RunAnglerCommand(AnglerModes mode, Angler angler) {
+  public RunAnglerCommand(AnglerModes mode, Pivot angler) {
     this(mode, angler, TerminationCondition.IMMEDIATE);
   }
 
-  public RunAnglerCommand(Supplier<Double> rotation, Angler angler) {
+  public RunAnglerCommand(Supplier<Double> rotation, Pivot angler) {
     this(rotation, angler, TerminationCondition.IMMEDIATE);
   }
 
-  public RunAnglerCommand(AnglerModes mode, Angler angler, TerminationCondition terminationCondition) {
+  public RunAnglerCommand(AnglerModes mode, Pivot angler, TerminationCondition terminationCondition) {
     this.mode = mode;
     this.angler = angler;
     rotation = null;
     this.terminationCondition = terminationCondition;
   }
 
-  public RunAnglerCommand(Supplier<Double> rotation, Angler angler, TerminationCondition terminationCondition) {
+  public RunAnglerCommand(Supplier<Double> rotation, Pivot angler, TerminationCondition terminationCondition) {
     this.mode = AnglerModes.CUSTOM;
     this.angler = angler;
     this.rotation = rotation;

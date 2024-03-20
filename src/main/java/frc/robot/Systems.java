@@ -7,19 +7,17 @@ import com.revrobotics.CANSparkMax;
 import frc.robot.Constants.AnglerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TunerConstatns;
-import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LasaVision;
+import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.RelativeAngler;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Drivebase;
 
 public class Systems {
   public static Systems instance;
   private Intake intake;
-  private Angler pivot;
-  private RelativeAngler shooterAngler;
+  private Pivot pivot;
   private Shooter shooter;
   private Climber climber;
 
@@ -64,11 +62,11 @@ public class Systems {
     pheonixdrivebase = new Drivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
     shooter = new Shooter(shooterMainTop, shooterMainBot, shooterDistantTop, shooterDistantBot);
     intake = new Intake(leftIntakeMotor, rightIntakeMotor, IntakeConstants.manipulatorConstants);
-    pivot = new Angler(intakeAnglerMotor, intakeAnglerConst, "pivot");
+    pivot = new Pivot(intakeAnglerMotor, intakeAnglerConst, "pivot");
     climber = new Climber(climberLeft, climberRight);
     instance = this;
 
-    LasaVision.getInstance().setPoseSupplier(() -> pheonixdrivebase.getPose());
+    // LasaVision.getInstance().setPoseSupplier(() -> pheonixdrivebase.getPose());
 
   }
 
@@ -92,12 +90,8 @@ public class Systems {
     return climber;
   }
 
-  public Angler getPivot() {
+  public Pivot getPivot() {
     return pivot;
-  }
-
-  public RelativeAngler getShooterAngler() {
-    return shooterAngler;
   }
 
 }

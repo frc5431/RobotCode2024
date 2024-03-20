@@ -32,7 +32,7 @@ import frc.robot.commands.auton.DistantSpeakerScore;
 import frc.robot.commands.auton.IntakeNote;
 import frc.robot.commands.auton.SimpleSpeaker;
 import frc.robot.commands.auton.SmartIntakeNote;
-import frc.robot.subsystems.Angler;
+import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
@@ -47,7 +47,7 @@ public class RobotContainer {
   private final Systems systems = new Systems();
   private final Drivebase drivebase = systems.getDrivebase();
 
-  private final Angler pivot = systems.getPivot();
+  private final Pivot pivot = systems.getPivot();
   private final Climber climber = systems.getClimber();
 
   private final Intake intake = systems.getIntake();

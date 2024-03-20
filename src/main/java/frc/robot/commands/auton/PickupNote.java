@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.DriveLockedRotCommand;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
-import frc.robot.subsystems.Angler;
+import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LasaVision;
@@ -26,7 +26,7 @@ public class PickupNote extends ParallelCommandGroup {
          * Autonomus Note collection, rather than the Teleop Command SmartIntakeNote,
          * this command guides the chassis twoards the note during autonomus
          */
-public PickupNote(Drivebase drivebase, Intake intake, Angler angler) {
+public PickupNote(Drivebase drivebase, Intake intake, Pivot angler) {
         LasaVision vision = LasaVision.getInstance();
         final DigitalInput beamBreak = intake.getBeamBreakStatus();
 

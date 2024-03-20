@@ -3,15 +3,15 @@ package frc.robot.commands.auton;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.IntakeModes;
-import frc.robot.subsystems.Angler;
+import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Intake;
 
 public class SmartIntakeNote extends Command {
 
-    private Angler pivot;
+    private Pivot pivot;
     private Intake intake;
     
-    public SmartIntakeNote(Intake intake, Angler pivot) {
+    public SmartIntakeNote(Intake intake, Pivot pivot) {
         this.intake = intake;
         this.pivot = pivot;
     }

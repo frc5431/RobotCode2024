@@ -32,7 +32,7 @@ public class Shooter extends SubsystemBase {
     private final SparkPIDController mainBottomController;
     private final SparkPIDController distantTopController;
     private final SparkPIDController distantBottomController;
-    private final ControlType controlType = ControlType.kVelocity;
+    private final ControlType controlType = ControlType.kDutyCycle;
 
     private final double[] pid = new double[] { ShooterConstants.p, ShooterConstants.i, ShooterConstants.d };
 

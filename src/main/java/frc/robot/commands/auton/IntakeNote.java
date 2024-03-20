@@ -10,12 +10,12 @@ import frc.robot.Constants.IntakeConstants.IntakeModes;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunAnglerCommand.AnglerModes;
 import frc.robot.commands.RunAnglerCommand.TerminationCondition;
-import frc.robot.subsystems.Angler;
+import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Intake;
 
 public class IntakeNote extends SequentialCommandGroup {
 
-  public IntakeNote(Intake intake, Angler pivot) {
+  public IntakeNote(Intake intake, Pivot pivot) {
     DigitalInput beambreak = intake.getBeamBreakStatus();
     addCommands(
       Commands.race(

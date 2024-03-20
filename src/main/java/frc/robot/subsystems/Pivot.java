@@ -14,7 +14,7 @@ import frc.robot.Constants.AnglerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.RunAnglerCommand.AnglerModes;
 
-public class Angler extends SubsystemBase {
+public class Pivot extends SubsystemBase {
 
   public CANSparkBase motor;
   public SparkPIDController controller;
@@ -25,7 +25,7 @@ public class Angler extends SubsystemBase {
   protected AnglerConstants constants;
   public boolean isShooter;
 
-  public Angler(CANSparkBase motor, AnglerConstants constants, String name) {
+  public Pivot(CANSparkBase motor, AnglerConstants constants, String name) {
     this.motor = motor;
     this.controller = motor.getPIDController();
     this.absoluteEncoder = motor.getAbsoluteEncoder();
