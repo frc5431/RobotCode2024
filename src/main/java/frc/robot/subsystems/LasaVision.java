@@ -24,10 +24,12 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AprilTagCamera;
 import frc.robot.Constants;
 import frc.robot.ObjectCamera;
+import frc.robot.Systems;
 
 public class LasaVision extends SubsystemBase implements AutoCloseable {
   public static class Hardware {
@@ -117,16 +119,21 @@ public class LasaVision extends SubsystemBase implements AutoCloseable {
     m_cameraNotifier.setName(getName());
     m_cameraNotifier.startPeriodic(0.2);
 
-    // var tab = Shuffleboard.getTab("Vision");
+    var tab = Shuffleboard.getTab("Vision");
 
-    // tab.addDoubleArray(
-    //     "RobotPose",
-    //     () -> pose3dToDoubleArray(new Pose3d(Systems.instance.getDrivebase().getOdometry().getEstimatedPosition())));
-    // tab.addDoubleArray(
-    //     "Right Cam",
-    //     () -> pose3dToDoubleArray(
-    //         new Pose3d(Systems.instance.getDrivebase().getOdometry().getEstimatedPosition())
-    //             .transformBy(Constants.VisionConstants.SHOOTER_CAMERA_POSE)));
+    tab.addDoubleArray(
+        "RobotPose",
+        () -> pose3dToDoubleArray(new Pose3d(Systems.instance.getDrivebase().getOdometry().getEstimatedPosition())));
+    tab.addDoubleArray(
+        "Shooter Camera",
+        () -> pose3dToDoubleArray(
+            new Pose3d(Systems.instance.getDrivebase().getOdometry().getEstimatedPosition())
+                .transformBy(Constants.VisionConstants.SHOOTER_CAMERA_POSE)));
+    tab.addDoubleArray(
+    "Intake Camera",
+    () -> pose3dToDoubleArray(
+        new Pose3d(Systems.instance.getDrivebase().getOdometry().getEstimatedPosition())
+            .transformBy(Constants.VisionConstants.INTAKE_CAMERA_POSE)));
   }
 
   /**
@@ -145,12 +152,12 @@ public class LasaVision extends SubsystemBase implements AutoCloseable {
             "shooter_camera",
             Constants.VisionConstants.SHOOTER_CAMERA_POSE,
             Constants.VisionConstants.ARDUCAM_CAMERA_RESOLUTION,
-            Constants.VisionConstants.SHOOTER_CAMERA_FOV),
-        new AprilTagCamera(
-            "intake_camera",
-            Constants.VisionConstants.INTAKE_CAMERA_POSE,
-            Constants.VisionConstants.ARDUCAM_CAMERA_RESOLUTION,
-            Constants.VisionConstants.SHOOTER_CAMERA_FOV) // temporary, until i can set it to the real value
+            Constants.VisionConstants.SHOOTER_CAMERA_FOV)
+        // new AprilTagCamera(
+        //     "intake_camera",
+        //     Constants.VisionConstants.INTAKE_CAMERA_POSE,
+        //     Constants.VisionConstants.ARDUCAM_CAMERA_RESOLUTION,
+        //     Constants.VisionConstants.SHOOTER_CAMERA_FOV) // temporary, until i can set it to the real value
         );
 
     return visionHardware;
@@ -246,8 +253,8 @@ public class LasaVision extends SubsystemBase implements AutoCloseable {
     return m_estimatedRobotPoses.getAndSet(Collections.emptyList());
   }
 
-  public double getTargetYaw(int index) {
-    return m_apriltagCameras[index].trackedTargetYaw();
+  public AprilTagCamera getCam(int index) {
+    return m_apriltagCameras[index];
   }
 
   /**

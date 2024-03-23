@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.89,
+      "y": 6.56
+    },
+    "rotation": -121.20210654089895
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -8,25 +14,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ampPreload"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 3.0
+            "pathName": "speakerAmpSide"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AmpScore"
+            "name": "DistantSpeakerScore"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "generalMovement"
+            "pathName": "cyclePreloadSource"
           }
         }
       ]

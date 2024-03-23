@@ -13,6 +13,7 @@
       "/FMSInfo": "FMSInfo",
       "/Shuffleboard/Vision/Field": "Field2d",
       "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Gyro": "Gyro",
       "/SmartDashboard/VisionSystemSim-LasaVision/Sim Field": "Field2d"
     }

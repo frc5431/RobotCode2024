@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3,
-      "y": 5.3
+      "x": 0.8446614424093046,
+      "y": 6.629350542651702
     },
-    "rotation": 0
+    "rotation": -119.12405349477747
   },
   "command": {
     "type": "sequential",
@@ -20,7 +20,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "saftey "
+            "pathName": "speakerAmpSide"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DistantSpeakerScore"
           }
         }
       ]

@@ -14,6 +14,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -25,13 +26,14 @@ import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunClimberCommand;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.commands.auton.AmpScore;
+import frc.robot.commands.auton.AutoIntakeNote;
 import frc.robot.commands.auton.DistantSpeakerScore;
 import frc.robot.commands.auton.IntakeNote;
 import frc.robot.commands.auton.SimpleSpeaker;
-import frc.robot.commands.auton.SmartIntakeNote;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LasaVision;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
@@ -49,15 +51,23 @@ public class RobotContainer {
   private final Intake intake = systems.getIntake();
   private final Shooter shooter = systems.getShooter();
   private final AutonMagic autonMagic;
+  private double vibrateTime = 0;
+  private boolean shouldBeVibrating = false;
+  private boolean oldBeamBreakStatus = true;
+  double unchangedBeamBreakTime = 0;
+  double myTime = 0;
+
+  IntakeNote intakeNote = new IntakeNote(intake, pivot);
+
 
   private SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   public RobotContainer() {
-    NamedCommands.registerCommand("AmpScore", new AmpScore(intake, pivot));
-    NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(shooter, intake, pivot));
-    NamedCommands.registerCommand("DistantSpeakerScore", new DistantSpeakerScore(shooter, intake, pivot));
-    NamedCommands.registerCommand("GrabNote", new SmartIntakeNote(intake, pivot));
+    NamedCommands.registerCommand("AmpScore", new AmpScore(shooter, intake));
+    NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(shooter, intake));
+    NamedCommands.registerCommand("DistantSpeakerScore", new DistantSpeakerScore(shooter, intake));
+    NamedCommands.registerCommand("GrabNote", new AutoIntakeNote(intake, pivot));
 
     autonMagic = new AutonMagic(systems);
 
@@ -82,6 +92,11 @@ public class RobotContainer {
 
   private static double modifyAxis(double value) {
     // Deadband
+    //var alliance = DriverStation.getAlliance();
+    // if(alliance.get() == DriverStation.Alliance.Red) {
+    //   value = -value;
+    // }
+
     value = deadband(value, 0.15);
 
     // More sensitive at smaller speeds
@@ -93,17 +108,47 @@ public class RobotContainer {
     return newValue;
   }
 
+
   public void periodic() {
 
     if(shooter.mode == ShooterModes.NONE) {
       pivot.setpoint = pivot.setpoint;
     } else if(shooter.mode.usesDistant){
-      pivot.setpoint = IntakeConstants.distantStowAngle;
-    }  else if(shooter.mode.usesMain) {
+      var encoderPos = edu.wpi.first.math.util.Units.radiansToDegrees(pivot.absoluteEncoder.getPosition());
+      if(encoderPos >= 200) {
+        pivot.setpoint = Constants.IntakeConstants.ampAngle;
+        return;
+      }
+    pivot.setpoint = IntakeConstants.distantStowAngle;
+      intakeNote.cancel();
+    }  else if (shooter.mode.usesMain) {
       pivot.setpoint = IntakeConstants.anglerConstants.mainAngle;
+      intakeNote.cancel();
     }
 
-    driver.getHID().setRumble(RumbleType.kLeftRumble, (!intake.getBeamBreakStatus().get()) ? 0.25 : 0);
+    boolean beamBreakStatus = intake.getBeamBreakStatus().get();
+    unchangedBeamBreakTime += 0.02;
+    if(beamBreakStatus != oldBeamBreakStatus) {
+      unchangedBeamBreakTime = 0;
+    }
+
+    if(!beamBreakStatus && unchangedBeamBreakTime == 0.1) {
+      shouldBeVibrating = true;
+      vibrateTime = 1;
+    }
+    if(shouldBeVibrating) {
+      driver.getHID().setRumble(RumbleType.kLeftRumble, 0.25);
+      vibrateTime -= 0.02;
+      if(vibrateTime <= 0) {
+        shouldBeVibrating = false;
+      }
+    } else {
+      driver.getHID().setRumble(RumbleType.kLeftRumble, 0);
+    }
+
+    oldBeamBreakStatus = beamBreakStatus;
+    
+    operator.getHID().setRumble(RumbleType.kLeftRumble, (shooter.isClose(200)) ? 0.5:0);
 
   }
 
@@ -165,13 +210,14 @@ public class RobotContainer {
               .withRotationalRate(modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
         }));
 
-    driver.y().onTrue(new InstantCommand(() -> drivebase.zeroGyro()));
-    driver.leftTrigger().whileTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
-    driver.a()
-        .onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
-    driver.rightTrigger().whileTrue(climber.increment(driver.getRightTriggerAxis() * 0.1));
-    driver.leftBumper()
-        .onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
+
+    driver.y().onTrue(new InstantCommand(() -> drivebase.resetGyro()));
+    driver.leftTrigger().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot).andThen(() -> intakeNote.cancel()));
+
+   //driver.a().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
+    //driver.rightTrigger().whileTrue(climber.increment(driver.getRightTriggerAxis() * 0.1));
+   //driver.leftBumper().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
+
 
     // Shooter
     operator.rightTrigger().whileTrue(shooter.runShooterCommand(ShooterModes.SpeakerShot));
@@ -179,10 +225,8 @@ public class RobotContainer {
     operator.a().whileTrue(shooter.runShooterCommand(ShooterModes.SpeakerDistant));
     operator.y().whileTrue(shooter.runShooterCommand(ShooterModes.StageShot));
     operator.start().whileTrue(shooter.runShooterCommand(ShooterModes.AmpShot));
-
-    // Testing
-    operator.povDown().onTrue(new SmartIntakeNote(intake, pivot));
-    operator.povLeft().onTrue(new IntakeNote(intake, pivot));
+    operator.povUp().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
+    operator.povDown().whileTrue(shooter.runShooterCommand(ShooterModes.DangerDistant));
 
     // Intake
     operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.INTAKE));
@@ -190,15 +234,14 @@ public class RobotContainer {
     
     // Intake Angler
     operator.axisGreaterThan(1, 0.15)
-        .whileTrue(new RunCommand(() -> pivot.increment(-operator.getLeftY() * 0.1), pivot).repeatedly());
+        .whileTrue(new RunCommand(() -> pivot.increment(-operator.getLeftY() * 1), pivot).repeatedly());
     operator.axisLessThan(1, -0.15)
-        .whileTrue(new RunCommand(() -> pivot.increment(-operator.getLeftY() * 0.1), pivot).repeatedly());
+        .whileTrue(new RunCommand(() -> pivot.increment(-operator.getLeftY() * 1), pivot).repeatedly());
 
     operator.back()
         .onTrue(new InstantCommand(() -> pivot.setRotation(Constants.IntakeConstants.ampAngle), pivot));
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));
-    operator.rightBumper()
-        .onTrue((new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot)));
+    operator.rightBumper().onTrue(intakeNote);
 
   }
 
@@ -207,6 +250,7 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
+    myTime = 0;
     pivot.setpoint = Units.Radians.of(pivot.absoluteEncoder.getPosition());
 
   }

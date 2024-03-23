@@ -2,49 +2,37 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.8,
-      "y": 7.28
+      "x": 0.79,
+      "y": 4.41
     },
-    "rotation": 90.0
+    "rotation": 119.4
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "SpeakerScore"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "ampPreload"
+            "pathName": "speakerSourceTravel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "endspeakerleft"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AmpScore"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "GrabNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "cycleShoot3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "cyclePreloadSource"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "setPositionSafe"
+            "name": "SpeakerScore"
           }
         }
       ]

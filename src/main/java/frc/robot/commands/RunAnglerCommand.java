@@ -1,6 +1,9 @@
 package frc.robot.commands;
 
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Pivot;
 import java.util.function.Supplier;
 
@@ -50,10 +53,19 @@ public class RunAnglerCommand extends Command {
     
   }
 
+  boolean isIntermediate = false;
+
   public void execute() {
     if (AnglerModes.DEPLOY == mode) {
+      if(angler.absoluteEncoder.getPosition() - Math.PI > 0) {
+        isIntermediate = true;
+        angler.setpoint = Constants.IntakeConstants.ampAngle;
+        return;
+      }
+      isIntermediate = false;
       angler.runToMin();
     } else if (AnglerModes.STOW == mode) {
+      isIntermediate = false;
       angler.runToMain();
     } else {
       angler.setRotation(this.rotation.get());
@@ -62,7 +74,7 @@ public class RunAnglerCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    if(terminationCondition == TerminationCondition.IMMEDIATE) {
+    if(terminationCondition == TerminationCondition.IMMEDIATE && !isIntermediate) {
       return true;
     }
 

@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.798251473046156,
+      "y": 4.448081982583718
+    },
+    "rotation": 120.17352002964428
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -14,19 +20,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "cycleShoot1"
+            "pathName": "speakerSourceSide"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "GrabNote"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SpeakerScore"
           }
         }
       ]

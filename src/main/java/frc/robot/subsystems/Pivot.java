@@ -33,7 +33,7 @@ public class Pivot extends SubsystemBase {
     this.controller.setI(constants.pid.i());
     this.controller.setD(constants.pid.d());
 
-    controller.setOutputRange(-0.3, 0.3);
+    controller.setOutputRange(-0.3, 0.8);
     double convFact = 2 * Math.PI;
     this.setName(name);
     controller.setPositionPIDWrappingEnabled(true);
@@ -139,9 +139,11 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putNumber(getName() + " encoder deg", absoluteEncoder.getPosition() * 180/Math.PI);
     SmartDashboard.putString("Pivot Mode", this.mode.toString());
 
-    double anglerCosMultiplierNoCOMM = massKg * 9.81;
+    double anglerCosMultiplierNoCOMM = constants.weight * 9.81;
     double cosMult = anglerCosMultiplierNoCOMM * constants.lengthMeters;
-    double arbFF = (cosMult * 1) / constants.stalltorque;
+    double arbFF = cosMult * Math.cos(getAngleToGround().in(Units.Radians)) / (constants.stalltorque * constants.gearRatio);
+    arbFF *= 0.3;
+    SmartDashboard.putNumber("Pivot arbFF", arbFF);
 
     controller.setReference(
         setpoint.in(Units.Radians), 

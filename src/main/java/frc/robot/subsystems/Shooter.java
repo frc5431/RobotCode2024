@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterConstants.ShooterModes;
+import frc.team5431.titan.core.misc.Calc;
 
 public class Shooter extends SubsystemBase {
 
@@ -78,11 +79,6 @@ public class Shooter extends SubsystemBase {
         distantBottomController.setIZone(2);
         distantBottomController.setOutputRange(-1, 1);
 
-        mainTopController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
-        mainBottomController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
-        distantTopController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
-        distantBottomController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
-
         mainTop.setIdleMode(IdleMode.kCoast);
         mainBot.setIdleMode(IdleMode.kCoast);
         distantTop.setIdleMode(IdleMode.kCoast);
@@ -97,7 +93,6 @@ public class Shooter extends SubsystemBase {
         this.mainBot.burnFlash();
         this.distantTop.burnFlash();
         this.distantBot.burnFlash();
-
         this.mode = ShooterModes.NONE;
     }
 
@@ -105,8 +100,8 @@ public class Shooter extends SubsystemBase {
             SparkPIDController dtop, SparkPIDController dbot) {
         top.setReference(percentage * ratio.getFirst(), controlType);
         bot.setReference(percentage * ratio.getSecond(), controlType);
-        dtop.setReference(percentage * ratio.getFirst(), controlType);
-        dbot.setReference(percentage * ratio.getSecond(), controlType);
+        dtop.setReference(-percentage * ratio.getFirst(), controlType);
+        dbot.setReference(-percentage * ratio.getSecond(), controlType);
     }
 
     public void RunPair(double percentage, SparkPIDController top, SparkPIDController bot) {
@@ -118,7 +113,7 @@ public class Shooter extends SubsystemBase {
         mode = ShooterModes.NONE;
         RunPair(0, distantTopController, distantBottomController);
         RunPair(0, mainTopController, mainBottomController);
-    }      
+    }
 
     public ShooterModes getMode() {
         return mode;
@@ -126,46 +121,65 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumberArray("Main Set", 
+        SmartDashboard.putNumberArray("Main Set",
                 new Double[] { mainTopRel.getVelocity(), mainBotRel.getVelocity() });
         SmartDashboard.putNumberArray("Distant Set",
                 new Double[] { distantTopRel.getVelocity(), distantBotRel.getVelocity() });
         SmartDashboard.putString("Shooter Mode", getMode().toString());
-
     }
-
-
 
     public void runShooter(ShooterModes mode) {
         this.mode = mode;
 
-        if(mode.ratio.isPresent()) {
+        if (mode.ratio.isPresent()) {
             ratio = mode.ratio.get();
-        }else {
+        } else {
             ratio = Pair.of(ShooterConstants.shooterRatio.upperPercent(), ShooterConstants.shooterRatio.lowerPercent());
         }
 
-        if(mode.usesMain && mode.usesDistant) {
+        if (mode.usesMain && mode.usesDistant) {
             RunPair(mode.speed, mainTopController, mainBottomController, distantTopController, distantBottomController);
-        } else if(mode.usesMain) {
+        } else if (mode.usesMain) {
             RunPair(mode.speed, mainTopController, mainBottomController);
-        } else if(mode.usesDistant) {
-            RunPair(mode.speed, distantTopController, distantBottomController);
+        } else if (mode.usesDistant) {
+            RunPair(-mode.speed, distantTopController, distantBottomController);
         }
-
-  
-
 
     }
 
     public Command runReverse() {
         return new StartEndCommand(
-                () -> RunPair(ShooterConstants.inSpeed, mainTopController, mainBottomController, distantTopController, distantTopController),
+                () -> RunPair(ShooterConstants.inSpeed, mainTopController, mainBottomController, distantTopController,
+                        distantTopController),
                 () -> stopNeutral(), this);
     }
 
     public Command runShooterCommand(ShooterModes mode) {
         return new StartEndCommand(() -> runShooter(mode), () -> stopNeutral(), this);
+    }
+
+    public boolean isClose(double tolerance) {
+        double first = tolerance + 1;
+        if (mode.usesMain) {
+            first = mainTopRel.getVelocity();
+        } else if (mode.usesDistant) {
+            first = distantTopRel.getVelocity();
+        }
+
+        double second = 0;
+        if (mode == ShooterModes.SpeakerShot) {
+            second = ShooterConstants.mainTopRpm;
+        } else if (mode == ShooterModes.SpeakerDistant) {
+            second = ShooterConstants.distTopRpm;
+        } else if (mode == ShooterModes.DangerDistant) {
+            second = ShooterConstants.distDangerRpm;
+        } else if (mode == ShooterModes.AmpShot) {
+            second = ShooterConstants.mainAmpRpm;
+        } else if (mode == ShooterModes.NONE) {
+            return false;
+        }
+
+        return Calc.approxEquals(Math.abs(first), Math.abs(second), tolerance) && mode.speed != 0;
     }
 
 }

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.15,
-      "y": 4.82
+      "x": 1.31,
+      "y": 5.469101308572988
     },
-    "rotation": -35.0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -20,36 +20,6 @@
         {
           "type": "path",
           "data": {
-            "pathName": "cycleShoot1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "GrabNote"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SpeakerScore"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "cycleShoot2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "GrabNote"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "speakerCenter"
           }
         },
@@ -57,6 +27,30 @@
           "type": "named",
           "data": {
             "name": "DistantSpeakerScore"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 4.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "to far place yeah yeah"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DistantSpeakerScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "saftey "
           }
         }
       ]

@@ -2,43 +2,43 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.5,
-      "y": 7.3
+      "x": 1.31,
+      "y": 5.57
     },
-    "rotation": -90.0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "SpeakerScore"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "ampPreload"
+            "pathName": "speakerCenter"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AmpScore"
+            "name": "DistantSpeakerScore"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "nearAmpNoLoad"
+            "pathName": "centToA"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AmpScore"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "generalMovement"
+            "name": "SpeakerScore"
           }
         }
       ]
