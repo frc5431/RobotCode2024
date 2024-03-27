@@ -49,7 +49,7 @@ public class TypedApriltag {
       }
     }
     // System.out.println("Error in getting alliance, robotTeam is not present, frc/robot/TypedApriltag.java");
-    return false;
+    return true;
   }
 
   /**

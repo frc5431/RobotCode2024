@@ -4,6 +4,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AprilTagCamera;
 import frc.robot.Constants;
@@ -24,20 +26,22 @@ public class SimpleVision extends SubsystemBase {
   public Optional<Rotation2d> getAngleTowardsStage() {
     Stream<TypedApriltag> targets = shooterCamera.getTargets();
 
-    targets = targets.sorted((a, b) -> (int) Math.round(a.trackedTarget.get().getPoseAmbiguity() * 1000) - (int) Math.round(b.trackedTarget.get().getPoseAmbiguity() * 1000));
-    targets = targets.filter(target -> target.isFriendlyApriltag() && target.isSpeaker() || target.isStage());
+    // targets = targets.sorted((a, b) -> (int) Math.round(a.trackedTarget.get().getPoseAmbiguity() * 1000) - (int) Math.round(b.trackedTarget.get().getPoseAmbiguity() * 1000));
+    targets = targets.filter(target -> (target.isSpeaker() || target.isStage()));
 
-    if(targets.count() == 0) {
+    Optional<TypedApriltag> finalTarget = targets.findFirst();
+
+    if(finalTarget.isEmpty()) {
       return Optional.empty();
     }
 
-    TypedApriltag finalTarget = targets.toList().get(0);
-
-    var cameraToTarget = finalTarget.trackedTarget.get().getBestCameraToTarget();
+    var cameraToTarget = finalTarget.get().trackedTarget.get().getBestCameraToTarget();
 
     var robotToTarget = cameraToTarget.plus(shooterCamera.getTransform());
 
+
+    var targetRads = Math.atan2(robotToTarget.getY(), robotToTarget.getX());
     
-    return Optional.of(Rotation2d.fromRadians(Math.atan2(robotToTarget.getY(), robotToTarget.getX())));
+    return Optional.of(Rotation2d.fromRadians(-targetRads));
   }
 }

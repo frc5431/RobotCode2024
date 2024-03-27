@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -13,6 +14,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -53,6 +55,9 @@ public class RobotContainer {
   public Rotation2d targetRotation;
 
   IntakeNote intakeNote = new IntakeNote(intake, pivot);
+  SwerveRequest.FieldCentricFacingAngle driveFacing = new SwerveRequest.FieldCentricFacingAngle()
+    .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+    ;
 
   private SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -66,6 +71,7 @@ public class RobotContainer {
     autonMagic = new AutonMagic();
 
     // drivebase.seedFieldRelative();
+    driveFacing.HeadingController = new PhoenixPIDController(0.12, 0.12, 0.012);
     configureBindings();
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
@@ -86,9 +92,9 @@ public class RobotContainer {
 
   private static double modifyAxis(double value) {
     // Deadband
-    //var alliance = DriverStation.getAlliance();
+    // var alliance = DriverStation.getAlliance();
     // if(alliance.get() == DriverStation.Alliance.Red) {
-    //   value = -value;
+    // value = -value;
     // }
 
     value = deadband(value, 0.15);
@@ -103,36 +109,37 @@ public class RobotContainer {
   }
 
   public void periodic() {
+    SmartDashboard.putNumber("Target", driveFacing.TargetDirection.getDegrees());
 
-    if(shooter.mode == ShooterModes.NONE) {
+    if (shooter.mode == ShooterModes.NONE) {
       pivot.setpoint = pivot.setpoint;
-    } else if(shooter.mode.usesDistant){
+    } else if (shooter.mode.usesDistant) {
       var encoderPos = edu.wpi.first.math.util.Units.radiansToDegrees(pivot.absoluteEncoder.getPosition());
-      if(encoderPos >= 200) {
+      if (encoderPos >= 200) {
         pivot.setpoint = Constants.IntakeConstants.ampAngle;
         return;
       }
-    pivot.setpoint = IntakeConstants.distantStowAngle;
+      pivot.setpoint = IntakeConstants.distantStowAngle;
       intakeNote.cancel();
-    }  else if (shooter.mode.usesMain) {
+    } else if (shooter.mode.usesMain) {
       pivot.setpoint = IntakeConstants.anglerConstants.mainAngle;
       intakeNote.cancel();
     }
 
     boolean beamBreakStatus = intake.getBeamBreakStatus().get();
     unchangedBeamBreakTime += 0.02;
-    if(beamBreakStatus != oldBeamBreakStatus) {
+    if (beamBreakStatus != oldBeamBreakStatus) {
       unchangedBeamBreakTime = 0;
     }
 
-    if(!beamBreakStatus && unchangedBeamBreakTime == 0.1) {
+    if (!beamBreakStatus && unchangedBeamBreakTime == 0.1) {
       shouldBeVibrating = true;
       vibrateTime = 1;
     }
-    if(shouldBeVibrating) {
+    if (shouldBeVibrating) {
       driver.getHID().setRumble(RumbleType.kLeftRumble, 0.25);
       vibrateTime -= 0.02;
-      if(vibrateTime <= 0) {
+      if (vibrateTime <= 0) {
         shouldBeVibrating = false;
       }
     } else {
@@ -140,57 +147,61 @@ public class RobotContainer {
     }
 
     oldBeamBreakStatus = beamBreakStatus;
-    
-    operator.getHID().setRumble(RumbleType.kLeftRumble, (shooter.isClose(200)) ? 0.5:0);
+
+    operator.getHID().setRumble(RumbleType.kLeftRumble, (shooter.isClose(200)) ? 0.5 : 0);
   }
 
   private void configureBindings() {
 
- 
     drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
         drivebase.applyRequest(() -> {
           double u = driver.getLeftX();
           double v = driver.getLeftY();
 
           double root2 = Math.sqrt(2);
-          double magnitude = Math.sqrt(u*u+v*v);
-          double x2 = Math.signum(u) * Math.min(Math.abs(u*root2), magnitude);
-          double y2 = Math.signum(v) * Math.min(Math.abs(v*root2), magnitude);
-          // if(driver.b().getAsBoolean()) {
-          //   var angle = systems.getSimpleVision().getAngleTowardsStage();
-          //   if(angle.isEmpty()) {
-          //     return new SwerveRequest.FieldCentricFacingAngle()
-          //       .withTargetDirection(angle.get())
-          //       .withVelocityX(
-          //             modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
-          //                 * TunerConstatns.kSpeedAt12VoltsMps)
-          //       .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
-          //   }
-          // } else if (driver.a().getAsBoolean()) {
-          //   return new SwerveRequest.FieldCentricFacingAngle()
-          //       .withTargetDirection(Rotation2d.fromDegrees(38.88))
-          //       .withVelocityX(
-          //             modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
-          //                 * TunerConstatns.kSpeedAt12VoltsMps)
-          //       .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
-            
-         // }
+          double magnitude = Math.sqrt(u * u + v * v);
+          double x2 = Math.signum(u) * Math.min(Math.abs(u * root2), magnitude);
+          double y2 = Math.signum(v) * Math.min(Math.abs(v * root2), magnitude);
+          if (driver.b().getAsBoolean()) {
+            var angle = systems.getSimpleVision().getAngleTowardsStage();
+            if (angle.isPresent()) {
+              return driveFacing
+                  .withTargetDirection(angle.get().plus(Rotation2d.fromDegrees(drivebase.getGyro().getAngle())))
+                  .withVelocityX(
+                      modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
+                          * TunerConstatns.kSpeedAt12VoltsMps)
+                  .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
+            }
+          }
+          if (driver.a().getAsBoolean()) {
+            return driveFacing
+                .withVelocityX(
+                    modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
+                        * TunerConstatns.kSpeedAt12VoltsMps)
+                .withTargetDirection(Rotation2d.fromDegrees(218.88))
+                .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
+
+          }
 
           return driveFC
               .withVelocityX(
                   modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
                       * TunerConstatns.kSpeedAt12VoltsMps)
               .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps)
-              .withRotationalRate(modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+              .withRotationalRate(
+                  modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
         }));
 
-
     driver.y().onTrue(new InstantCommand(() -> drivebase.resetGyro()));
-    driver.leftTrigger().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot).andThen(() -> intakeNote.cancel()));
-   // driver.leftBumper().onTrue(drivebase.);
-    //driver.a().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
-    //driver.rightTrigger().whileTrue(climber.increment(driver.getRightTriggerAxis() * 0.1));
-    //driver.leftBumper().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
+    driver.leftTrigger()
+        .onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot).andThen(() -> intakeNote.cancel()));
+    // driver.leftBumper().onTrue(drivebase.);
+    // driver.a().onTrue(new RunClimberCommand(climber,
+    // RunClimberCommand.ClimberMode.EXTENDED));
+    // driver.rightTrigger().whileTrue(climber.increment(driver.getRightTriggerAxis()
+    // * 0.1));
+    // driver.leftBumper().onTrue(new RunClimberCommand(climber,
+    // RunClimberCommand.ClimberMode.RETRACTED));
 
     // Shooter
     operator.rightTrigger().whileTrue(shooter.runShooterCommand(ShooterModes.SpeakerShot));
@@ -204,7 +215,7 @@ public class RobotContainer {
     // Intake
     operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.INTAKE));
     operator.x().whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE));
-    
+
     // Intake Angler
     operator.axisGreaterThan(1, 0.15)
         .whileTrue(new RunCommand(() -> pivot.increment(-operator.getLeftY() * 1), pivot).repeatedly());
