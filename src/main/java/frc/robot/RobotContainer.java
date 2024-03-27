@@ -8,13 +8,11 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -23,7 +21,6 @@ import frc.robot.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Constants.ShooterConstants.ShooterModes;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.commands.RunAnglerCommand;
-import frc.robot.commands.RunClimberCommand;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.commands.auton.AmpScore;
 import frc.robot.commands.auton.AutoIntakeNote;
@@ -33,7 +30,6 @@ import frc.robot.commands.auton.SimpleSpeaker;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LasaVision;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
@@ -55,10 +51,9 @@ public class RobotContainer {
   private boolean shouldBeVibrating = false;
   private boolean oldBeamBreakStatus = true;
   double unchangedBeamBreakTime = 0;
-  double myTime = 0;
+  public Rotation2d targetRotation;
 
   IntakeNote intakeNote = new IntakeNote(intake, pivot);
-
 
   private SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -108,7 +103,6 @@ public class RobotContainer {
     return newValue;
   }
 
-
   public void periodic() {
 
     if(shooter.mode == ShooterModes.NONE) {
@@ -149,75 +143,55 @@ public class RobotContainer {
     oldBeamBreakStatus = beamBreakStatus;
     
     operator.getHID().setRumble(RumbleType.kLeftRumble, (shooter.isClose(200)) ? 0.5:0);
-
-  }
-
-  Translation2d ellipticalDiscToSquare(double u, double v) {
-    double u2 = u * u;
-    double v2 = v * v;
-    double twosqrt2 = 2.0 * Math.sqrt(2.0);
-    double subtermx = 2.0 + u2 - v2;
-    double subtermy = 2.0 - u2 + v2;
-    double termx1 = subtermx + u * twosqrt2;
-    double termx2 = subtermx - u * twosqrt2;
-    double termy1 = subtermy + v * twosqrt2;
-    double termy2 = subtermy - v * twosqrt2;
-
-    double x = MathUtil.clamp(0.5 * Math.sqrt(termx1) - 0.5 * Math.sqrt(termx2), -1, 1);
-    double y = MathUtil.clamp(0.5 * Math.sqrt(termy1) - 0.5 * Math.sqrt(termy2), -1, 1);
-
-    if (Math.abs(x) > 0.9 && Math.abs(y) < 0.2) {
-      x = Math.copySign(1, x);
-    }
-
-    if (Math.abs(y) > 0.9 && Math.abs(x) < 0.2) {
-      y = Math.copySign(1, y);
-    }
-    return new Translation2d(x, y);
-  }
-
-  Translation2d FGSquircularMap(double u, double v) {
-    double sgnuv = Math.signum(u * v);
-    double sqrt2 = Math.sqrt(2);
-    double root = Math
-        .sqrt((u * u) + (v * v) - Math.sqrt(((u * u) + (v * v)) * ((u * u) + (v * v) - 4 * (u * u) * (v * v))));
-
-    double x = (sgnuv / (v * sqrt2)) * (root);
-    double y = (sgnuv / (u * sqrt2)) * (root);
-
-    if (Math.abs(x) > 0.85 && Math.abs(y) < 0.2) {
-      x = Math.copySign(1, x);
-    }
-
-    if (Math.abs(y) > 0.85 && Math.abs(x) < 0.2) {
-      y = Math.copySign(1, y);
-    }
-
-    return new Translation2d(
-        x,
-        y);
   }
 
   private void configureBindings() {
 
+ 
     drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
         drivebase.applyRequest(() -> {
+          double u = driver.getLeftX();
+          double v = driver.getLeftY();
+
+          double root2 = Math.sqrt(2);
+          double magnitude = Math.sqrt(u*u+v*v);
+          double x2 = Math.signum(u) * Math.min(Math.abs(u*root2), magnitude);
+          double y2 = Math.signum(v) * Math.min(Math.abs(v*root2), magnitude);
+          // if(driver.b().getAsBoolean()) {
+          //   var angle = systems.getSimpleVision().getAngleTowardsStage();
+          //   if(angle.isEmpty()) {
+          //     return new SwerveRequest.FieldCentricFacingAngle()
+          //       .withTargetDirection(angle.get())
+          //       .withVelocityX(
+          //             modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
+          //                 * TunerConstatns.kSpeedAt12VoltsMps)
+          //       .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
+          //   }
+          // } else if (driver.a().getAsBoolean()) {
+          //   return new SwerveRequest.FieldCentricFacingAngle()
+          //       .withTargetDirection(Rotation2d.fromDegrees(38.88))
+          //       .withVelocityX(
+          //             modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
+          //                 * TunerConstatns.kSpeedAt12VoltsMps)
+          //       .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
+            
+         // }
+
           return driveFC
               .withVelocityX(
-                  modifyAxis(driver.getLeftY() + (driver.povUp().getAsBoolean() ? 0.1 : 0))
+                  modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
                       * TunerConstatns.kSpeedAt12VoltsMps)
-              .withVelocityY(modifyAxis(driver.getLeftX()) * TunerConstatns.kSpeedAt12VoltsMps)
+              .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps)
               .withRotationalRate(modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
         }));
 
 
     driver.y().onTrue(new InstantCommand(() -> drivebase.resetGyro()));
     driver.leftTrigger().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot).andThen(() -> intakeNote.cancel()));
-
-   //driver.a().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
+   // driver.leftBumper().onTrue(drivebase.);
+    //driver.a().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.EXTENDED));
     //driver.rightTrigger().whileTrue(climber.increment(driver.getRightTriggerAxis() * 0.1));
-   //driver.leftBumper().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
-
+    //driver.leftBumper().onTrue(new RunClimberCommand(climber, RunClimberCommand.ClimberMode.RETRACTED));
 
     // Shooter
     operator.rightTrigger().whileTrue(shooter.runShooterCommand(ShooterModes.SpeakerShot));
@@ -250,9 +224,7 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
-    myTime = 0;
     pivot.setpoint = Units.Radians.of(pivot.absoluteEncoder.getPosition());
-
   }
 
 }

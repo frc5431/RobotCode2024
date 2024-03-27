@@ -120,7 +120,6 @@ public final class Constants {
     public static double spkDist = -.91;
     public static double dangerDist = -.65;
     
-
     public static double ampSpeed = -0.4;
     public static double stgSpeed = -1.;
     public static double inSpeed = 0.2;
@@ -143,7 +142,7 @@ public final class Constants {
 
     public static double distantHeading = 326;
 
-    public static final double p = 3;
+    public static final double p = 1.75;
     public static final double i = 0.0;
     public static final double d = 0.07;
 

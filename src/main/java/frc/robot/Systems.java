@@ -12,6 +12,7 @@ import frc.robot.subsystems.LasaVision;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.SimpleVision;
 import frc.robot.subsystems.Drivebase;
 
 public class Systems {
@@ -20,6 +21,7 @@ public class Systems {
   private Pivot pivot;
   private Shooter shooter;
   private Climber climber;
+  private SimpleVision simpleVision;
 
   private AnglerConstants intakeAnglerConst;
 
@@ -64,6 +66,7 @@ public class Systems {
     intake = new Intake(leftIntakeMotor, rightIntakeMotor, IntakeConstants.manipulatorConstants);
     pivot = new Pivot(intakeAnglerMotor, intakeAnglerConst, "pivot");
     climber = new Climber(climberLeft, climberRight);
+    simpleVision = new SimpleVision();
     instance = this;
 
     // LasaVision.getInstance().setPoseSupplier(() -> pheonixdrivebase.getPose());
@@ -72,6 +75,10 @@ public class Systems {
 
   public Drivebase getDrivebase() {
     return pheonixdrivebase;
+  }
+
+  public SimpleVision getSimpleVision() {
+    return simpleVision;
   }
 
   public LasaVision getVision() {

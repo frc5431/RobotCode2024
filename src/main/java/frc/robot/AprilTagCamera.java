@@ -2,6 +2,7 @@ package frc.robot;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -121,6 +122,20 @@ public class AprilTagCamera implements Runnable, AutoCloseable {
         result = results.getTargets().get(1);
     }
     return result.getYaw();
+  }
+
+  public TypedApriltag getTarget() {
+    var results = m_camera.getLatestResult();
+    results.hasTargets();
+    PhotonTrackedTarget result = results.getBestTarget();
+    return new TypedApriltag(result.getFiducialId());
+  }
+
+  public Stream<TypedApriltag> getTargets() {
+    var results = m_camera.getLatestResult();
+    results.hasTargets();
+    var result = results.getTargets();
+    return result.stream().map(target -> new TypedApriltag(target.getFiducialId(), target));
   }
 
   /**

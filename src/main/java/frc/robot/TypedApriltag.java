@@ -1,5 +1,9 @@
 package frc.robot;
 
+import java.util.Optional;
+
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.ApriltagConstants.AprilTagZone;
@@ -7,9 +11,15 @@ import frc.robot.Constants.ApriltagConstants.AprilTagZone;
 public class TypedApriltag {
 
   public final int id;
+  public Optional<PhotonTrackedTarget> trackedTarget = Optional.empty(); 
 
   public TypedApriltag(int id) {
     this.id = id;
+  }
+
+  public TypedApriltag(int id, PhotonTrackedTarget target) {
+    this(id);
+    this.trackedTarget = Optional.of(target);
   }
 
   /**

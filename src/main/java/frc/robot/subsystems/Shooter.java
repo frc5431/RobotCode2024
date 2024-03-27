@@ -34,6 +34,8 @@ public class Shooter extends SubsystemBase {
     private final SparkPIDController distantBottomController;
     private final ControlType controlType = ControlType.kDutyCycle;
 
+    private double iZone = 0.1;
+
     private final double[] pid = new double[] { ShooterConstants.p, ShooterConstants.i, ShooterConstants.d };
 
     public ShooterModes mode;
@@ -58,25 +60,25 @@ public class Shooter extends SubsystemBase {
         mainTopController.setP(pid[0]);
         mainTopController.setI(pid[1]);
         mainTopController.setD(pid[2]);
-        mainTopController.setIZone(2);
+        mainTopController.setIZone(iZone);
         mainTopController.setOutputRange(-1, 1);
 
         mainBottomController.setP(pid[0]);
         mainBottomController.setI(pid[1]);
         mainBottomController.setD(pid[2]);
-        mainBottomController.setIZone(2);
+        mainBottomController.setIZone(iZone);
         mainBottomController.setOutputRange(-1, 1);
 
         distantTopController.setP(pid[0]);
         distantTopController.setI(pid[1]);
         distantTopController.setD(pid[2]);
-        distantTopController.setIZone(2);
+        distantTopController.setIZone(iZone);
         distantTopController.setOutputRange(-1, 1);
 
         distantBottomController.setP(pid[0]);
         distantBottomController.setI(pid[1]);
         distantBottomController.setD(pid[2]);
-        distantBottomController.setIZone(2);
+        distantBottomController.setIZone(iZone);
         distantBottomController.setOutputRange(-1, 1);
 
         mainTop.setIdleMode(IdleMode.kCoast);
@@ -144,7 +146,6 @@ public class Shooter extends SubsystemBase {
         } else if (mode.usesDistant) {
             RunPair(-mode.speed, distantTopController, distantBottomController);
         }
-
     }
 
     public Command runReverse() {

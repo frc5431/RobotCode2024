@@ -1,0 +1,67 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7518415036830074,
+      "y": 6.638632536524332
+    },
+    "rotation": 60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "SpeakerScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "spkCenterToAmpNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DistantSpeakerScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ampNoteDown"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "speakerCenter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DistantSpeakerScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "centerNoteDown"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DistantSpeakerScore"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
