@@ -5,7 +5,6 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
-import com.revrobotics.SparkPIDController.AccelStrategy;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
