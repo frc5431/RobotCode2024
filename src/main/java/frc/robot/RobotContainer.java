@@ -14,7 +14,6 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -23,17 +22,14 @@ import frc.robot.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Constants.ShooterConstants.ShooterModes;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.commands.RunAnglerCommand;
-import frc.robot.commands.RunClimberCommand;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.commands.auton.AmpScore;
 import frc.robot.commands.auton.AutoIntakeNote;
 import frc.robot.commands.auton.DistantSpeakerScore;
 import frc.robot.commands.auton.IntakeNote;
 import frc.robot.commands.auton.SimpleSpeaker;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LasaVision;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
@@ -46,7 +42,7 @@ public class RobotContainer {
   private final Drivebase drivebase = systems.getDrivebase();
 
   private final Pivot pivot = systems.getPivot();
-  private final Climber climber = systems.getClimber();
+  // private final Climber climber = systems.getClimber();
 
   private final Intake intake = systems.getIntake();
   private final Shooter shooter = systems.getShooter();
@@ -69,7 +65,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("DistantSpeakerScore", new DistantSpeakerScore(shooter, intake));
     NamedCommands.registerCommand("GrabNote", new AutoIntakeNote(intake, pivot));
 
-    autonMagic = new AutonMagic(systems);
+    autonMagic = new AutonMagic();
 
     // drivebase.seedFieldRelative();
     configureBindings();
