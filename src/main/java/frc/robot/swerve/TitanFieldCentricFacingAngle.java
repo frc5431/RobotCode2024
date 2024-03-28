@@ -18,14 +18,14 @@ public class TitanFieldCentricFacingAngle implements SwerveRequest {
     public double velocityX;
     public double velocityY;
     public double targetHeading = 0;
-    public PIDController pid;
+    public PIDController pid;   
     public Pigeon2 gyro;
 
     @Override
     public StatusCode apply(SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
-        double rotationRate = pid.calculate(edu.wpi.first.math.util.Units.degreesToRadians(gyro.getAngle()), targetHeading);
+        double rotationRate = pid.calculate(edu.wpi.first.math.util.Units.degreesToRadians(gyro.getYaw().getValueAsDouble()), targetHeading);
 
-        SmartDashboard.putNumber("gyroRads", edu.wpi.first.math.util.Units.degreesToRadians(gyro.getAngle()));
+        SmartDashboard.putNumber("gyroRads", edu.wpi.first.math.util.Units.degreesToRadians(gyro.getYaw().getValueAsDouble()));
 
         double toApplyOmega = rotationRate;
 
@@ -58,6 +58,7 @@ public class TitanFieldCentricFacingAngle implements SwerveRequest {
 
     public TitanFieldCentricFacingAngle withPID(PIDController pid) {
         this.pid = pid;
+        pid.enableContinuousInput(-180, 180);
         return this;
     }
     

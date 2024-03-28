@@ -5,13 +5,11 @@
 package frc.robot;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -56,6 +54,7 @@ public class RobotContainer {
   private boolean oldBeamBreakStatus = true;
   double unchangedBeamBreakTime = 0;
   public Rotation2d targetRotation;
+  TitanFieldCentricFacingAngle facingRequest = new TitanFieldCentricFacingAngle();
 
   IntakeNote intakeNote = new IntakeNote(intake, pivot);
   SwerveRequest.FieldCentricFacingAngle driveFacing = new SwerveRequest.FieldCentricFacingAngle()
@@ -154,8 +153,6 @@ public class RobotContainer {
     operator.getHID().setRumble(RumbleType.kLeftRumble, (shooter.isClose(200)) ? 0.5 : 0);
   }
 
-  TitanFieldCentricFacingAngle facingRequest = new TitanFieldCentricFacingAngle();
-
   private void configureBindings() {
 
     drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -167,17 +164,6 @@ public class RobotContainer {
           double magnitude = Math.sqrt(u * u + v * v);
           double x2 = Math.signum(u) * Math.min(Math.abs(u * root2), magnitude);
           double y2 = Math.signum(v) * Math.min(Math.abs(v * root2), magnitude);
-          // if (driver.b().getAsBoolean()) {
-          //   var angle = systems.getSimpleVision().getAngleTowardsStage();
-          //   if (angle.isPresent()) {
-          //     return driveFacing
-          //         .withTargetDirection(angle.get().plus(Rotation2d.fromDegrees(drivebase.getGyro().getAngle())))
-          //         .withVelocityX(
-          //             modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
-          //                 * TunerConstatns.kSpeedAt12VoltsMps)
-          //         .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
-          //   }
-          // }
 
           return driveFC
               .withVelocityX(
@@ -204,7 +190,34 @@ public class RobotContainer {
                   * TunerConstatns.kSpeedAt12VoltsMps)
           .withHeading(edu.wpi.first.math.util.Units.degreesToRadians(-141.12))
           .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
-    }));
+    }).until(() -> Math.abs(driver.getRawAxis(4)) > 0.15));
+
+    driver.b().onTrue(new InstantCommand(() -> {
+      facingRequest.pid.reset();
+    })).toggleOnTrue(drivebase.applyRequest(() -> {
+      double u = driver.getLeftX();
+      double v = driver.getLeftY();
+
+      double root2 = Math.sqrt(2);
+      double magnitude = Math.sqrt(u * u + v * v);
+      double x2 = Math.signum(u) * Math.min(Math.abs(u * root2), magnitude);
+      double y2 = Math.signum(v) * Math.min(Math.abs(v * root2), magnitude);
+      var angle = systems.getSimpleVision().getAngleTowardsStage();
+      if (angle.isPresent()) {
+        return driveFacing
+            .withTargetDirection(angle.get().plus(Rotation2d.fromDegrees(drivebase.getGyro().getAngle())))
+            .withVelocityX(
+                modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
+                    * TunerConstatns.kSpeedAt12VoltsMps)
+            .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
+      }
+
+      return driveFacing
+          .withVelocityX(
+              modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
+                  * TunerConstatns.kSpeedAt12VoltsMps)
+          .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
+    }).until(() -> Math.abs(driver.getRawAxis(4)) > 0.15));
 
     driver.y().onTrue(new InstantCommand(() -> drivebase.resetGyro()));
     driver.leftTrigger()
