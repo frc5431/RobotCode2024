@@ -36,12 +36,14 @@ public class Pivot extends SubsystemBase {
     controller.setOutputRange(-0.3, 0.8);
     double convFact = 2 * Math.PI;
     this.setName(name);
-    controller.setPositionPIDWrappingEnabled(true);
+    if(constants.enableWrapping) {
+      controller.setPositionPIDWrappingEnabled(true);
+      controller.setPositionPIDWrappingMinInput(0);
+      controller.setPositionPIDWrappingMaxInput(convFact);
+    }
 
-    controller.setPositionPIDWrappingMinInput(0);
     absoluteEncoder.setPositionConversionFactor(convFact);
     absoluteEncoder.setVelocityConversionFactor(convFact);
-    controller.setPositionPIDWrappingMaxInput(convFact);
     controller.setFeedbackDevice(absoluteEncoder);
 
     motor.burnFlash();

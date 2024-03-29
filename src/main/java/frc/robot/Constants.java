@@ -87,7 +87,8 @@ public final class Constants {
         /* Stall Torque (Nm) */ neoStallTorque,
         /* Enable FF */ true,
         /* Gear Ratio */20.625,
-        0.8);
+        0.8,
+        true);
 
     public static ManipulatorConstants manipulatorConstants = new ManipulatorConstants(
         /* Is Inverted */ true,
@@ -121,7 +122,8 @@ public final class Constants {
         /* Stall Torque (Nm) */ neoStallTorque,
         /* Enable FF */ true,
         /* Gear Ratio */5,
-        0.8);
+        0.8,
+        false);
 
   }
 
@@ -228,6 +230,7 @@ public final class Constants {
     public final boolean enableFF;
     public final double gearRatio;
     public final double speedLimit;
+    public final boolean enableWrapping;
 
     public AnglerConstants(
         Measure<Angle> minAngle,
@@ -239,7 +242,8 @@ public final class Constants {
         double stallTorque,
         boolean enableFF,
         double gearRatio,
-        double speedLimit) {
+        double speedLimit,
+        boolean enableWrapping) {
       this.minAngle = minAngle;
       this.mainAngle = mainAngle;
       this.lengthMeters = lengthMeters;
@@ -250,6 +254,7 @@ public final class Constants {
       this.enableFF = enableFF;
       this.gearRatio = gearRatio;
       this.speedLimit = speedLimit;
+      this.enableWrapping = enableWrapping;
     }
   }
 

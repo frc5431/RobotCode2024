@@ -8,7 +8,6 @@ import frc.robot.Constants.AnglerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.subsystems.Amper;
-import frc.robot.subsystems.AmperPivot;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LasaVision;
 import frc.robot.subsystems.Pivot;
@@ -21,7 +20,7 @@ public class Systems {
   public static Systems instance;
   private Intake intake;
   private Amper amper;
-  private AmperPivot amperPivot;
+  private Pivot amperPivot;
   private Pivot pivot;
   private Shooter shooter;
   private Climber climber;
@@ -77,7 +76,7 @@ public class Systems {
     shooter = new Shooter(shooterMainTop, shooterMainBot, shooterDistantTop, shooterDistantBot);
     intake = new Intake(leftIntakeMotor, rightIntakeMotor, IntakeConstants.manipulatorConstants);
     amper = new Amper(amperMotor);
-    amperPivot = new AmperPivot(amperPivotMotor, amperPivotConst, "Amper");
+    amperPivot = new Pivot(amperPivotMotor, amperPivotConst, "amper");
     pivot = new Pivot(intakeAnglerMotor, intakeAnglerConst, "pivot");
     climber = new Climber(climberLeft, climberRight);
     simpleVision = new SimpleVision();
@@ -111,7 +110,7 @@ public class Systems {
     return amper;
   }
 
-  public AmperPivot getAmperPivot() {
+  public Pivot getAmperPivot() {
     return amperPivot;
   }
 

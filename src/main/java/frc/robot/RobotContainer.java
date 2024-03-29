@@ -22,6 +22,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Constants.ShooterConstants.ShooterModes;
 import frc.robot.Constants.TunerConstatns;
+import frc.robot.Constants.AmperConstants.AmperModes;
 import frc.robot.commands.HandoffCommand;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
@@ -31,7 +32,6 @@ import frc.robot.commands.auton.DistantSpeakerScore;
 import frc.robot.commands.auton.IntakeNote;
 import frc.robot.commands.auton.SimpleSpeaker;
 import frc.robot.subsystems.Amper;
-import frc.robot.subsystems.AmperPivot;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
@@ -47,7 +47,7 @@ public class RobotContainer {
   private final Drivebase drivebase = systems.getDrivebase();
 
   private final Pivot pivot = systems.getPivot();
-  private final AmperPivot amperPivot = systems.getAmperPivot();
+  private final Pivot amperPivot = systems.getAmperPivot();
   // private final Climber climber = systems.getClimber();
 
   private final Intake intake = systems.getIntake();
@@ -267,7 +267,7 @@ public class RobotContainer {
     operator.b().whileTrue(shooter.runShooterCommand(ShooterModes.REVERSE));
     operator.a().whileTrue(shooter.runShooterCommand(ShooterModes.SpeakerDistant));
     operator.y().whileTrue(shooter.runShooterCommand(ShooterModes.StageShot));
-    operator.start().whileTrue(shooter.runShooterCommand(ShooterModes.AmpShot));
+    // operator.start().whileTrue(shooter.runShooterCommand(ShooterModes.AmpShot));
     operator.povUp().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
     operator.povDown().whileTrue(shooter.runShooterCommand(ShooterModes.DangerDistant));
 
@@ -288,6 +288,12 @@ public class RobotContainer {
 
     operator.back()
         .onTrue(new HandoffCommand(intake, pivot, amperPivot, amper));
+    operator.start() // deploy
+        .onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, amperPivot));
+    operator.povUp()
+        .onTrue(amper.runMode(AmperModes.OUTAKE));
+    operator.povUp()
+      .onTrue(amper.runMode(AmperModes.INTAKE));
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));
     operator.rightBumper().onTrue(intakeNote);
 

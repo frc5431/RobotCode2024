@@ -44,6 +44,8 @@ public class RunAnglerCommand extends Command {
     this.angler = angler;
     this.rotation = rotation;
     this.terminationCondition = terminationCondition;
+
+    addRequirements(angler);
   }
 
   @Override
