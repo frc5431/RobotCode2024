@@ -22,6 +22,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Constants.ShooterConstants.ShooterModes;
 import frc.robot.Constants.TunerConstatns;
+import frc.robot.commands.HandoffCommand;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.commands.auton.AmpScore;
@@ -29,13 +30,14 @@ import frc.robot.commands.auton.AutoIntakeNote;
 import frc.robot.commands.auton.DistantSpeakerScore;
 import frc.robot.commands.auton.IntakeNote;
 import frc.robot.commands.auton.SimpleSpeaker;
+import frc.robot.subsystems.Amper;
+import frc.robot.subsystems.AmperPivot;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 import frc.robot.swerve.TitanFieldCentricFacingAngle;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
-import frc.team5431.titan.core.misc.Logger;
 
 public class RobotContainer {
 
@@ -45,9 +47,11 @@ public class RobotContainer {
   private final Drivebase drivebase = systems.getDrivebase();
 
   private final Pivot pivot = systems.getPivot();
+  private final AmperPivot amperPivot = systems.getAmperPivot();
   // private final Climber climber = systems.getClimber();
 
   private final Intake intake = systems.getIntake();
+  private final Amper amper = systems.getAmper();
   private final Shooter shooter = systems.getShooter();
   private final AutonMagic autonMagic;
   private double vibrateTime = 0;
@@ -77,7 +81,7 @@ public class RobotContainer {
 
     // drivebase.seedFieldRelative();
     facingRequest.withPID(new PIDController(6, 0.01, 0.008));
-    facingRequest.withDampening(new GeneralArtificalIntelModelFizzBuzzEnterpriseRLMachineLearnedMoneyNFTCryptoCoinZooEggController(35));
+    facingRequest.withDampening(new WeightedAverageController(35));
     facingRequest.gyro = drivebase.getGyro();
     configureBindings();
     DataLogManager.start();
@@ -277,8 +281,13 @@ public class RobotContainer {
     operator.axisLessThan(1, -0.15)
         .whileTrue(new RunCommand(() -> pivot.increment(-operator.getLeftY() * 1), pivot).repeatedly());
 
+      operator.axisGreaterThan(4, 0.15)
+        .whileTrue(new RunCommand(() -> pivot.increment(-operator.getRightY() * 1), pivot).repeatedly());
+    operator.axisLessThan(4, -0.15)
+        .whileTrue(new RunCommand(() -> pivot.increment(-operator.getRightY() * 1), pivot).repeatedly());
+
     operator.back()
-        .onTrue(new InstantCommand(() -> pivot.setRotation(Constants.IntakeConstants.ampAngle), pivot));
+        .onTrue(new HandoffCommand(intake, pivot, amperPivot, amper));
     operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));
     operator.rightBumper().onTrue(intakeNote);
 

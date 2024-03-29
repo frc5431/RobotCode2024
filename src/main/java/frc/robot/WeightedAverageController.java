@@ -2,11 +2,11 @@ package frc.robot;
 
 import java.util.ArrayList;
 
-public class GeneralArtificalIntelModelFizzBuzzEnterpriseRLMachineLearnedMoneyNFTCryptoCoinZooEggController {
+public class WeightedAverageController {
     public ArrayList<Double> memory = new ArrayList<>();
     public int memoryLength;
 
-    public GeneralArtificalIntelModelFizzBuzzEnterpriseRLMachineLearnedMoneyNFTCryptoCoinZooEggController(int memory_length) {
+    public WeightedAverageController(int memory_length) {
         this.memoryLength = memory_length;
     }
     

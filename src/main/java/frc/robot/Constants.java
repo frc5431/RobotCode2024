@@ -105,7 +105,7 @@ public final class Constants {
     public static int amperPivotId = 24;
     public static double radianTolerance = 0.03;
 
-    public enum IntakeModes {
+    public enum AmperModes {
       INTAKE,
       OUTAKE,
       STOPPED

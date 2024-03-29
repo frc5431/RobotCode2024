@@ -63,7 +63,7 @@ public class Pivot extends SubsystemBase {
     setpoint = Units.Degree.of(measure);
   }
 
-    public void setRotation(Measure<Angle> measure) {
+  public void setRotation(Measure<Angle> measure) {
     setpoint = measure;
   }
 
@@ -71,7 +71,7 @@ public class Pivot extends SubsystemBase {
   /**
    * Runs to minimum defined angle in AnglerConstants
    */
-  public void runToMain() {
+  public void runToMax() {
     setpoint = IntakeConstants.anglerConstants.mainAngle;
     mode = AnglerModes.STOW;
   }

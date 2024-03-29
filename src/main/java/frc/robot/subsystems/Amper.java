@@ -2,14 +2,15 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Constants.AmperConstants;
+import frc.robot.Constants.AmperConstants.AmperModes;
 
 public class Amper extends SubsystemBase {
 
@@ -20,16 +21,17 @@ public class Amper extends SubsystemBase {
 
   public RelativeEncoder upperRelativeEncoder;
 
-  private IntakeModes mode;
+  private AmperModes mode;
 
   public Amper(CANSparkBase motor) {
     this.motor = motor;
-    this.mode = IntakeModes.STOPPED;
+    this.mode = AmperModes.STOPPED;
     this.beamBreak = new DigitalInput(8);
 
     motor.setInverted(false);
 
     this.upperRelativeEncoder = motor.getEncoder();
+    motor.setIdleMode(IdleMode.kBrake);
 
     this.motor.burnFlash();
 
@@ -62,13 +64,13 @@ public class Amper extends SubsystemBase {
     return beamBreak.get();
   }
 
-  public void run(IntakeModes mode) {
+  public void run(AmperModes mode) {
     this.mode = mode;
-    if (mode == IntakeModes.OUTAKE) {
+    if (mode == AmperModes.OUTAKE) {
       runWithPower(AmperConstants.outtakePower);
-    } else if (mode == IntakeModes.INTAKE) {
+    } else if (mode == AmperModes.INTAKE) {
       runWithPower(AmperConstants.intakePower);
-    } else if (mode == IntakeModes.STOPPED) {
+    } else if (mode == AmperModes.STOPPED) {
       runWithPower(0);
     }
   }
@@ -81,7 +83,7 @@ public class Amper extends SubsystemBase {
     return new StartEndCommand(() -> runWithPower(power), () -> runWithPower(0), this);
   }
 
-  public Command runMode(IntakeModes mode) {
+  public Command runMode(AmperModes mode) {
     return new StartEndCommand(() -> run(mode), () -> runWithPower(0), this);
   }
 

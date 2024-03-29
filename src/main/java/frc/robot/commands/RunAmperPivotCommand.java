@@ -2,13 +2,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.AmperPivot;
 import java.util.function.Supplier;
 
-public class RunAnglerCommand extends Command {
+public class RunAmperPivotCommand extends Command {
 
   final AnglerModes mode;
-  final Pivot angler;
+  final AmperPivot angler;
   Supplier<Double> rotation;
 
   public enum AnglerModes {
@@ -24,22 +24,22 @@ public class RunAnglerCommand extends Command {
 
   final TerminationCondition terminationCondition;
 
-  public RunAnglerCommand(AnglerModes mode, Pivot angler) {
+  public RunAmperPivotCommand(AnglerModes mode, AmperPivot angler) {
     this(mode, angler, TerminationCondition.IMMEDIATE);
   }
 
-  public RunAnglerCommand(Supplier<Double> rotation, Pivot angler) {
+  public RunAmperPivotCommand(Supplier<Double> rotation, AmperPivot angler) {
     this(rotation, angler, TerminationCondition.IMMEDIATE);
   }
 
-  public RunAnglerCommand(AnglerModes mode, Pivot angler, TerminationCondition terminationCondition) {
+  public RunAmperPivotCommand(AnglerModes mode, AmperPivot angler, TerminationCondition terminationCondition) {
     this.mode = mode;
     this.angler = angler;
     rotation = null;
     this.terminationCondition = terminationCondition;
   }
 
-  public RunAnglerCommand(Supplier<Double> rotation, Pivot angler, TerminationCondition terminationCondition) {
+  public RunAmperPivotCommand(Supplier<Double> rotation, AmperPivot angler, TerminationCondition terminationCondition) {
     this.mode = AnglerModes.CUSTOM;
     this.angler = angler;
     this.rotation = rotation;
@@ -64,7 +64,7 @@ public class RunAnglerCommand extends Command {
       angler.runToMin();
     } else if (AnglerModes.STOW == mode) {
       isIntermediate = false;
-      angler.runToMax();
+      angler.runToMain();
     } else {
       angler.setRotation(this.rotation.get());
     }

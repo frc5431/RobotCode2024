@@ -9,7 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.GeneralArtificalIntelModelFizzBuzzEnterpriseRLMachineLearnedMoneyNFTCryptoCoinZooEggController;
+import frc.robot.WeightedAverageController;
 
 public class TitanFieldCentricFacingAngle implements SwerveRequest {
 
@@ -18,7 +18,7 @@ public class TitanFieldCentricFacingAngle implements SwerveRequest {
     public double targetHeading = 0;
     public PIDController pid;
     public Pigeon2 gyro;
-    public GeneralArtificalIntelModelFizzBuzzEnterpriseRLMachineLearnedMoneyNFTCryptoCoinZooEggController headingDampening;
+    public WeightedAverageController headingDampening;
     // the classic WPI_GAIMFBERLMLMNFTCCZZEController
 
     @Override
@@ -64,7 +64,7 @@ public class TitanFieldCentricFacingAngle implements SwerveRequest {
         return this;
     }
 
-    public TitanFieldCentricFacingAngle withDampening(GeneralArtificalIntelModelFizzBuzzEnterpriseRLMachineLearnedMoneyNFTCryptoCoinZooEggController dampener) {
+    public TitanFieldCentricFacingAngle withDampening(WeightedAverageController dampener) {
         this.headingDampening = dampener;
         return this;
     }
