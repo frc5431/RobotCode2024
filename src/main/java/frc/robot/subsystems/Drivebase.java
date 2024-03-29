@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -32,11 +33,14 @@ public class Drivebase extends SwerveDrivetrain implements Subsystem {
     private double m_lastSimTime;
     private final SwerveRequest.ApplyChassisSpeeds AutoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
+
     public Drivebase(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         if (Utils.isSimulation()) {
             startSimThread();
         }
+
+        m_pigeon2.getConfigurator().apply(new MountPoseConfigs().withMountPoseYaw(90));
 
         AutoBuilder.configureHolonomic(
                 ()-> this.getState().Pose, // Robot pose supplier
@@ -48,7 +52,7 @@ public class Drivebase extends SwerveDrivetrain implements Subsystem {
                         new PIDConstants(0.1, 0.0, 0.01), // Rotation PID constants
                         Constants.TunerConstatns.kSpeedAt12VoltsMps, // Max module speed m/s
                         0.5125, // Drive base radius in meters. Distance from robot center to furthest module.
-                        new ReplanningConfig(false, false) // Default path replanning config. See the API for the options here
+                        new ReplanningConfig(true, true) // Default path replanning config. See the API for the options here
                 ),
                 () -> onRedAlliance(),
                 this // Reference to this subsystem to set requirements

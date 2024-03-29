@@ -7,6 +7,8 @@ import com.revrobotics.CANSparkMax;
 import frc.robot.Constants.AnglerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TunerConstatns;
+import frc.robot.subsystems.Amper;
+import frc.robot.subsystems.AmperPivot;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LasaVision;
 import frc.robot.subsystems.Pivot;
@@ -18,12 +20,16 @@ import frc.robot.subsystems.Drivebase;
 public class Systems {
   public static Systems instance;
   private Intake intake;
+  private Amper amper;
+  private AmperPivot amperPivot;
   private Pivot pivot;
   private Shooter shooter;
   private Climber climber;
   private SimpleVision simpleVision;
 
   private AnglerConstants intakeAnglerConst;
+  private AnglerConstants amperPivotConst;
+
 
   private CANSparkFlex shooterMainTop; 
   private CANSparkFlex shooterMainBot; 
@@ -35,6 +41,8 @@ public class Systems {
   private CANSparkMax leftIntakeMotor;
   private CANSparkMax rightIntakeMotor;
   private CANSparkMax intakeAnglerMotor;
+  private CANSparkMax amperMotor;
+  private CANSparkMax amperPivotMotor;
 
   private MotorType brushless =  MotorType.kBrushless;
   public Drivebase pheonixdrivebase;
@@ -42,6 +50,7 @@ public class Systems {
   public Systems() {
 
     intakeAnglerConst = Constants.IntakeConstants.anglerConstants;
+    amperPivotConst = Constants.AmperConstants.anglerConstants;
 
     leftIntakeMotor = new CANSparkMax(Constants.IntakeConstants.leftIntakeId, brushless);
     rightIntakeMotor = new CANSparkMax(Constants.IntakeConstants.rightIntakeId, brushless);
@@ -54,7 +63,10 @@ public class Systems {
     
     climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
     climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
-  
+    amperMotor = new CANSparkMax(Constants.AmperConstants.amperId, brushless);
+    amperPivotMotor = new CANSparkMax(Constants.AmperConstants.amperPivotId, brushless);
+
+    amperMotor.setSmartCurrentLimit(30,25);
     leftIntakeMotor.setSmartCurrentLimit(30,25);
     rightIntakeMotor.setSmartCurrentLimit(30,25);
     rightIntakeMotor.burnFlash();
@@ -64,6 +76,8 @@ public class Systems {
     pheonixdrivebase = new Drivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
     shooter = new Shooter(shooterMainTop, shooterMainBot, shooterDistantTop, shooterDistantBot);
     intake = new Intake(leftIntakeMotor, rightIntakeMotor, IntakeConstants.manipulatorConstants);
+    amper = new Amper(amperMotor);
+    amperPivot = new AmperPivot(amperPivotMotor, amperPivotConst, "Amper");
     pivot = new Pivot(intakeAnglerMotor, intakeAnglerConst, "pivot");
     climber = new Climber(climberLeft, climberRight);
     simpleVision = new SimpleVision();
@@ -91,6 +105,14 @@ public class Systems {
 
   public Intake getIntake() {
     return intake;
+  }
+
+  public Amper getAmper() {
+    return amper;
+  }
+
+  public AmperPivot getAmperPivot() {
+    return amperPivot;
   }
 
   public Climber getClimber() {

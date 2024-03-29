@@ -35,6 +35,7 @@ import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 import frc.robot.swerve.TitanFieldCentricFacingAngle;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
+import frc.team5431.titan.core.misc.Logger;
 
 public class RobotContainer {
 
@@ -72,7 +73,8 @@ public class RobotContainer {
     autonMagic = new AutonMagic();
 
     // drivebase.seedFieldRelative();
-    facingRequest.withPID(new PIDController(2, 0, 0.012));
+    facingRequest.withPID(new PIDController(6, 0.01, 0.008));
+    facingRequest.withDampening(new GeneralArtificalIntelModelFizzBuzzEnterpriseRLMachineLearnedMoneyNFTCryptoCoinZooEggController(35));
     facingRequest.gyro = drivebase.getGyro();
     configureBindings();
     DataLogManager.start();
@@ -111,7 +113,11 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    SmartDashboard.putNumber("Target", facingRequest.targetHeading);
+    var angle = systems.getSimpleVision().getAngleToSpeaker();
+    if(angle.isPresent()) {
+      SmartDashboard.putNumber("Target", angle.get().getRadians());
+    }
+    
 
     if (shooter.mode == ShooterModes.NONE) {
       pivot.setpoint = pivot.setpoint;
@@ -188,13 +194,13 @@ public class RobotContainer {
           .withVelocityX(
               modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
                   * TunerConstatns.kSpeedAt12VoltsMps)
-          .withHeading(edu.wpi.first.math.util.Units.degreesToRadians(-141.12))
+          .withHeading(edu.wpi.first.math.util.Units.degreesToRadians(38))
           .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
     }).until(() -> Math.abs(driver.getRawAxis(4)) > 0.15));
 
     driver.b().onTrue(new InstantCommand(() -> {
       facingRequest.pid.reset();
-    })).toggleOnTrue(drivebase.applyRequest(() -> {
+    })).whileTrue(drivebase.applyRequest(() -> {
       double u = driver.getLeftX();
       double v = driver.getLeftY();
 
@@ -202,22 +208,22 @@ public class RobotContainer {
       double magnitude = Math.sqrt(u * u + v * v);
       double x2 = Math.signum(u) * Math.min(Math.abs(u * root2), magnitude);
       double y2 = Math.signum(v) * Math.min(Math.abs(v * root2), magnitude);
-      var angle = systems.getSimpleVision().getAngleTowardsStage();
+      var angle = systems.getSimpleVision().getAngleToSpeaker();
       if (angle.isPresent()) {
-        return driveFacing
-            .withTargetDirection(angle.get().plus(Rotation2d.fromDegrees(drivebase.getGyro().getAngle())))
+        return facingRequest
+            .withHeading(angle.get().plus(Rotation2d.fromDegrees(drivebase.getGyro().getAngle())).getRadians())
             .withVelocityX(
                 modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
                     * TunerConstatns.kSpeedAt12VoltsMps)
             .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
       }
 
-      return driveFacing
+      return facingRequest
           .withVelocityX(
               modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
                   * TunerConstatns.kSpeedAt12VoltsMps)
           .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
-    }).until(() -> Math.abs(driver.getRawAxis(4)) > 0.15));
+    }));
 
     driver.y().onTrue(new InstantCommand(() -> drivebase.resetGyro()));
     driver.leftTrigger()

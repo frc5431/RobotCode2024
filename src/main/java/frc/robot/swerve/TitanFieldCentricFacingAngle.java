@@ -8,24 +8,26 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.GeneralArtificalIntelModelFizzBuzzEnterpriseRLMachineLearnedMoneyNFTCryptoCoinZooEggController;
 
 public class TitanFieldCentricFacingAngle implements SwerveRequest {
 
     public double velocityX;
     public double velocityY;
     public double targetHeading = 0;
-    public PIDController pid;   
+    public PIDController pid;
     public Pigeon2 gyro;
+    public GeneralArtificalIntelModelFizzBuzzEnterpriseRLMachineLearnedMoneyNFTCryptoCoinZooEggController headingDampening;
+    // the classic WPI_GAIMFBERLMLMNFTCCZZEController
 
     @Override
     public StatusCode apply(SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
-        double rotationRate = pid.calculate(edu.wpi.first.math.util.Units.degreesToRadians(gyro.getYaw().getValueAsDouble()), targetHeading);
+        double dampenedValue = headingDampening.calculate(targetHeading);
+        double rotationRate = pid.calculate(edu.wpi.first.math.util.Units.degreesToRadians(gyro.getAngle() % 360), dampenedValue);
 
-        SmartDashboard.putNumber("gyroRads", edu.wpi.first.math.util.Units.degreesToRadians(gyro.getYaw().getValueAsDouble()));
+        SmartDashboard.putNumber("gyroRads", edu.wpi.first.math.util.Units.degreesToRadians(gyro.getAngle()));
+        SmartDashboard.putNumber("dampenedValue", dampenedValue);
 
         double toApplyOmega = rotationRate;
 
@@ -58,7 +60,12 @@ public class TitanFieldCentricFacingAngle implements SwerveRequest {
 
     public TitanFieldCentricFacingAngle withPID(PIDController pid) {
         this.pid = pid;
-        pid.enableContinuousInput(-180, 180);
+        this.pid.enableContinuousInput(0, 2 * Math.PI);
+        return this;
+    }
+
+    public TitanFieldCentricFacingAngle withDampening(GeneralArtificalIntelModelFizzBuzzEnterpriseRLMachineLearnedMoneyNFTCryptoCoinZooEggController dampener) {
+        this.headingDampening = dampener;
         return this;
     }
     

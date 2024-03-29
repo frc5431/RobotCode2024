@@ -97,6 +97,35 @@ public final class Constants {
         /* estimatedImpulseForceMetersPerSecond */ 1);
   }
 
+  public static class AmperConstants {
+
+    public static double intakePower = 0.5;
+    public static double outtakePower = -1;
+    public static int amperId = 23;
+    public static int amperPivotId = 24;
+    public static double radianTolerance = 0.03;
+
+    public enum IntakeModes {
+      INTAKE,
+      OUTAKE,
+      STOPPED
+    }
+
+    public static AnglerConstants anglerConstants = new AnglerConstants(
+        /* Min Angle */edu.wpi.first.units.Units.Degree.of(0),
+        /* Main Angle */edu.wpi.first.units.Units.Degree.of(20),
+        /* Length Meters */Units.inchesToMeters(8),
+        /* Weight Kilos */Units.lbsToKilograms(5), // temp
+        /* Parallel To Ground Angle */edu.wpi.first.units.Units.Degree.of(0),
+        /* PID */new MotionMagic(0.3, 0.0, 0.03, -1),
+        /* Stall Torque (Nm) */ neoStallTorque,
+        /* Enable FF */ true,
+        /* Gear Ratio */5,
+        0.8);
+
+  }
+
+
   public static class ClimberConstants {
 
     public static int leftClimberId = 21;
@@ -134,17 +163,15 @@ public final class Constants {
     public static Pair<Double, Double> distDangerRat = Pair.of(1., 0.8);
     public static Pair<Double, Double> stageRat = Pair.of(0.86, 0.82);
 
-    public static final double mainTopRpm = -5400;
-    public static final double mainStageRpm = -4900;
+    public static final double mainTopRpm = -5431;
+    public static final double mainStageRpm = -4700;
     public static final double mainAmpRpm = -300;
     public static final double distTopRpm = 3500;
     public static final double distDangerRpm = 3800;
 
-    public static double distantHeading = 326;
-
-    public static final double p = 1.75;
+    public static final double p = 3;
     public static final double i = 0.0;
-    public static final double d = 0.07;
+    public static final double d = 0.01;
 
     public enum ShooterModes {
       SpeakerShot(ShooterConstants.spkSpeed, mainRatio),
@@ -247,7 +274,7 @@ public final class Constants {
     public static final Resolution ARDUCAM_CAMERA_RESOLUTION = Resolution.RES_640_480;
 
     public static final Transform3d SHOOTER_CAMERA_POSE = new Transform3d(
-        new Translation3d(Units.inchesToMeters(-17), Units.inchesToMeters(-6), Units.inchesToMeters(24)),
+        new Translation3d(Units.inchesToMeters(-12), Units.inchesToMeters(-6), Units.inchesToMeters(24)),
         new Rotation3d(0, Units.degreesToRadians(-32.5), Units.degreesToRadians(180))); // 32.5
     public static final Rotation2d SHOOTER_CAMERA_FOV = Rotation2d.fromDegrees(76.2);
 
