@@ -25,8 +25,8 @@ public class SimpleVision extends SubsystemBase {
             Constants.VisionConstants.SHOOTER_CAMERA_POSE,
             Constants.VisionConstants.ARDUCAM_CAMERA_RESOLUTION,
             Constants.VisionConstants.SHOOTER_CAMERA_FOV);
-
   }
+
 
   public Optional<Rotation2d> getAngleToSpeaker() {
     Stream<TypedApriltag> targets = shooterCamera.getTargets();
@@ -44,7 +44,6 @@ public class SimpleVision extends SubsystemBase {
     var cameraToTarget = finalTarget.get().trackedTarget.get().getBestCameraToTarget().plus(new Transform3d(-1, 0, 0, new Rotation3d()));
 
     var robotToTarget = cameraToTarget.plus(shooterCamera.getTransform());
-
 
     var targetRads = Math.atan2(robotToTarget.getY(), robotToTarget.getX());
     

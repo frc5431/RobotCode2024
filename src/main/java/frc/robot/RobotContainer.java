@@ -63,6 +63,9 @@ public class RobotContainer {
 
   private SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+  
+  private SwerveRequest.RobotCentric driveRo = new SwerveRequest.RobotCentric()
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   public RobotContainer() {
     NamedCommands.registerCommand("AmpScore", new AmpScore(shooter, intake));
@@ -224,6 +227,25 @@ public class RobotContainer {
                   * TunerConstatns.kSpeedAt12VoltsMps)
           .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
     }));
+
+    driver.rightBumper().whileTrue(drivebase.applyRequest(() -> {
+      double u = driver.getLeftX();
+      double v = driver.getLeftY();
+
+      double root2 = Math.sqrt(2);
+      double magnitude = Math.sqrt(u * u + v * v);
+      double x2 = Math.signum(u) * Math.min(Math.abs(u * root2), magnitude);
+      double y2 = Math.signum(v) * Math.min(Math.abs(v * root2), magnitude);
+      return driveRo
+              .withVelocityX(
+                  modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
+                      * TunerConstatns.kSpeedAt12VoltsMps)
+              .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps)
+              .withRotationalRate(
+                  modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+    }));
+
+    
 
     driver.y().onTrue(new InstantCommand(() -> drivebase.resetGyro()));
     driver.leftTrigger()
