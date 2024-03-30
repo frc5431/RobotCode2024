@@ -64,6 +64,7 @@ public class Systems {
     climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
     amperMotor = new CANSparkMax(Constants.AmperConstants.amperId, brushless);
     amperPivotMotor = new CANSparkMax(Constants.AmperConstants.amperPivotId, brushless);
+    amperPivotMotor.setInverted(true);
 
     amperMotor.setSmartCurrentLimit(30,25);
     leftIntakeMotor.setSmartCurrentLimit(30,25);

@@ -68,7 +68,7 @@ public final class Constants {
     public static int leftIntakeId = 15;
     public static int rightIntakeId = 16;
     public static double radianTolerance = 0.03;
-    public static Measure<Angle> ampAngle = edu.wpi.first.units.Units.Degree.of(103);
+    public static Measure<Angle> ampAngle = edu.wpi.first.units.Units.Degree.of(155);
     public static Measure<Angle> distantStowAngle = edu.wpi.first.units.Units.Degree.of(193.40868161036659);
 
     public enum IntakeModes {
@@ -117,8 +117,8 @@ public final class Constants {
         /* Main Angle */edu.wpi.first.units.Units.Degree.of(20),
         /* Length Meters */Units.inchesToMeters(8),
         /* Weight Kilos */Units.lbsToKilograms(5), // temp
-        /* Parallel To Ground Angle */edu.wpi.first.units.Units.Degree.of(0),
-        /* PID */new MotionMagic(0.3, 0.0, 0.03, -1),
+        /* Parallel To Ground Angle */edu.wpi.first.units.Units.Radians.of(0.343),
+        /* PID */new MotionMagic(1.5, 0.0, 0.03, -1),
         /* Stall Torque (Nm) */ neoStallTorque,
         /* Enable FF */ true,
         /* Gear Ratio */5,

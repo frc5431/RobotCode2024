@@ -32,6 +32,7 @@ import frc.robot.commands.auton.DistantSpeakerScore;
 import frc.robot.commands.auton.IntakeNote;
 import frc.robot.commands.auton.SimpleSpeaker;
 import frc.robot.subsystems.Amper;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
@@ -48,7 +49,7 @@ public class RobotContainer {
 
   private final Pivot pivot = systems.getPivot();
   private final Pivot amperPivot = systems.getAmperPivot();
-  // private final Climber climber = systems.getClimber();
+  private final Climber climber = systems.getClimber();
 
   private final Intake intake = systems.getIntake();
   private final Amper amper = systems.getAmper();
@@ -67,7 +68,7 @@ public class RobotContainer {
 
   private SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-  
+
   private SwerveRequest.RobotCentric driveRo = new SwerveRequest.RobotCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
@@ -121,10 +122,9 @@ public class RobotContainer {
 
   public void periodic() {
     var angle = systems.getSimpleVision().getAngleToSpeaker();
-    if(angle.isPresent()) {
+    if (angle.isPresent()) {
       SmartDashboard.putNumber("Target", angle.get().getRadians());
     }
-    
 
     if (shooter.mode == ShooterModes.NONE) {
       pivot.setpoint = pivot.setpoint;
@@ -241,26 +241,19 @@ public class RobotContainer {
       double x2 = Math.signum(u) * Math.min(Math.abs(u * root2), magnitude);
       double y2 = Math.signum(v) * Math.min(Math.abs(v * root2), magnitude);
       return driveRo
-              .withVelocityX(
-                  modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
-                      * TunerConstatns.kSpeedAt12VoltsMps)
-              .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps)
-              .withRotationalRate(
-                  modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+          .withVelocityX(
+              modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
+                  * TunerConstatns.kSpeedAt12VoltsMps)
+          .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps)
+          .withRotationalRate(
+              modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
     }));
 
-    
-
     driver.y().onTrue(new InstantCommand(() -> drivebase.resetGyro()));
-    driver.leftTrigger()
-        .onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot).andThen(() -> intakeNote.cancel()));
-    // driver.leftBumper().onTrue(drivebase.);
-    // driver.a().onTrue(new RunClimberCommand(climber,
-    // RunClimberCommand.ClimberMode.EXTENDED));
-    // driver.rightTrigger().whileTrue(climber.increment(driver.getRightTriggerAxis()
-    // * 0.1));
-    // driver.leftBumper().onTrue(new RunClimberCommand(climber,
-    // RunClimberCommand.ClimberMode.RETRACTED));
+
+    driver.rightTrigger().whileTrue(climber.increment(0.4).repeatedly());
+
+    driver.leftTrigger().whileTrue(climber.increment(-0.4).repeatedly());
 
     // Shooter
     operator.rightTrigger().whileTrue(shooter.runShooterCommand(ShooterModes.SpeakerShot));
@@ -281,21 +274,22 @@ public class RobotContainer {
     operator.axisLessThan(1, -0.15)
         .whileTrue(new RunCommand(() -> pivot.increment(-operator.getLeftY() * 1), pivot).repeatedly());
 
-      operator.axisGreaterThan(4, 0.15)
-        .whileTrue(new RunCommand(() -> pivot.increment(-operator.getRightY() * 1), pivot).repeatedly());
+    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));
+    operator.rightBumper().onTrue(intakeNote);
+
+    // Amper
+    operator.axisGreaterThan(4, 0.15)
+        .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 1), pivot).repeatedly());
     operator.axisLessThan(4, -0.15)
-        .whileTrue(new RunCommand(() -> pivot.increment(-operator.getRightY() * 1), pivot).repeatedly());
+        .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 1), pivot).repeatedly());
 
     operator.back()
         .onTrue(new HandoffCommand(intake, pivot, amperPivot, amper));
     operator.start() // deploy
         .onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, amperPivot));
-    operator.povUp()
-        .onTrue(amper.runMode(AmperModes.OUTAKE));
-    operator.povUp()
-      .onTrue(amper.runMode(AmperModes.INTAKE));
-    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));
-    operator.rightBumper().onTrue(intakeNote);
+    operator.rightStick().whileTrue(amper.runMode(AmperModes.OUTAKE));
+    operator.povRight()
+        .whileTrue(amper.runMode(AmperModes.INTAKE));
 
   }
 
@@ -305,6 +299,8 @@ public class RobotContainer {
 
   public void onTeleop() {
     pivot.setpoint = Units.Radians.of(pivot.absoluteEncoder.getPosition());
+    amperPivot.setpoint = Units.Radians.of(amperPivot.absoluteEncoder.getPosition());
+
   }
 
 }

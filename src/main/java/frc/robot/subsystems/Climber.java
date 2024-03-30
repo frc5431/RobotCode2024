@@ -7,6 +7,8 @@ import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -68,7 +70,7 @@ public class Climber extends SubsystemBase {
   }
 
   public Command increment(double rate) {
-    return new StartEndCommand(() -> incrementPosition(rate), () -> {}, this);
+    return new InstantCommand(() -> incrementPosition(rate), this);
   }
 
 }

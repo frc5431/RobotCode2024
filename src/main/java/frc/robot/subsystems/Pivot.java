@@ -139,7 +139,8 @@ public class Pivot extends SubsystemBase {
 
     SmartDashboard.putNumber(getName() + " setpoint deg", setpoint.in(Units.Degrees));
     SmartDashboard.putNumber(getName() + " encoder deg", absoluteEncoder.getPosition() * 180/Math.PI);
-    SmartDashboard.putString("Pivot Mode", this.mode.toString());
+    SmartDashboard.putString(getName() + " Mode", this.mode.toString());
+    SmartDashboard.putNumber(getName() + " output", motor.getOutputCurrent() / 30);
 
     double anglerCosMultiplierNoCOMM = constants.weight * 9.81;
     double cosMult = anglerCosMultiplierNoCOMM * constants.lengthMeters;
