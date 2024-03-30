@@ -167,6 +167,42 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    // Control Schemes
+    var d_angleLock = driver.a();
+    var d_apriltagLock = driver.b();
+    var d_robotOriented = driver.rightBumper();
+    var d_resetGyro = driver.y();
+    // Climber
+    var d_incrementClimber = driver.rightTrigger();
+    var d_decrementClimber = driver.leftTrigger();
+
+    // Shooter
+    var o_speakerShot = operator.rightTrigger();
+    var o_reverseShooter = operator.b();
+    var o_distantShot = operator.a();
+    var o_stageShot = operator.y();
+    var o_evilModeDistantShot = operator.povDown();
+    // Pivot
+    var o_deployIntake = operator.povUp();
+    var o_pivotAutomatic = operator.rightBumper();
+    var o_incrementPivot = operator.axisGreaterThan(1, 0.15);
+    var o_decrementPivot = operator.axisGreaterThan(1, -0.15);
+    var o_stow = operator.leftBumper();
+    // Intake
+    var o_intake = operator.leftTrigger();
+    var o_outtake = operator.x();
+    // Amper
+    var o_incrementAmper = operator.axisGreaterThan(4, 0.15);
+    var o_decrementAmper = operator.axisLessThan(4, -0.15);
+    // AmperPivot
+    var o_handoff = operator.back();
+    var o_deploy = operator.start();
+    var o_outtakeAmper = operator.rightStick();
+    var o_amperIntake = operator.povRight();
+    
+
+
+
 
     drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
         drivebase.applyRequest(() -> {
@@ -187,7 +223,7 @@ public class RobotContainer {
                   modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
         }));
 
-    driver.a().onTrue(new InstantCommand(() -> {
+    d_angleLock.onTrue(new InstantCommand(() -> {
       facingRequest.pid.reset();
     })).toggleOnTrue(drivebase.applyRequest(() -> {
       double u = driver.getLeftX();
@@ -205,7 +241,7 @@ public class RobotContainer {
           .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
     }).until(() -> Math.abs(driver.getRawAxis(4)) > 0.15));
 
-    driver.b().onTrue(new InstantCommand(() -> {
+    d_apriltagLock.onTrue(new InstantCommand(() -> {
       facingRequest.pid.reset();
     })).whileTrue(drivebase.applyRequest(() -> {
       double u = driver.getLeftX();
@@ -232,7 +268,7 @@ public class RobotContainer {
           .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
     }));
 
-    driver.rightBumper().whileTrue(drivebase.applyRequest(() -> {
+    d_robotOriented.whileTrue(drivebase.applyRequest(() -> {
       double u = driver.getLeftX();
       double v = driver.getLeftY();
 
@@ -249,46 +285,45 @@ public class RobotContainer {
               modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
     }));
 
-    driver.y().onTrue(new InstantCommand(() -> drivebase.resetGyro()));
+    d_resetGyro.onTrue(new InstantCommand(() -> drivebase.resetGyro()));
 
-    driver.rightTrigger().whileTrue(climber.increment(0.4).repeatedly());
-
-    driver.leftTrigger().whileTrue(climber.increment(-0.4).repeatedly());
+    d_incrementClimber.whileTrue(climber.increment(0.4).repeatedly());
+    d_decrementClimber.whileTrue(climber.increment(-0.4).repeatedly());
 
     // Shooter
-    operator.rightTrigger().whileTrue(shooter.runShooterCommand(ShooterModes.SpeakerShot));
-    operator.b().whileTrue(shooter.runShooterCommand(ShooterModes.REVERSE));
-    operator.a().whileTrue(shooter.runShooterCommand(ShooterModes.SpeakerDistant));
-    operator.y().whileTrue(shooter.runShooterCommand(ShooterModes.StageShot));
+    o_speakerShot.whileTrue(shooter.runShooterCommand(ShooterModes.SpeakerShot));
+    o_reverseShooter.whileTrue(shooter.runShooterCommand(ShooterModes.REVERSE));
+    o_distantShot.whileTrue(shooter.runShooterCommand(ShooterModes.SpeakerDistant));
+    o_stageShot.whileTrue(shooter.runShooterCommand(ShooterModes.StageShot));
     // operator.start().whileTrue(shooter.runShooterCommand(ShooterModes.AmpShot));
-    operator.povUp().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
-    operator.povDown().whileTrue(shooter.runShooterCommand(ShooterModes.DangerDistant));
+    o_deployIntake.onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot));
+    o_evilModeDistantShot.whileTrue(shooter.runShooterCommand(ShooterModes.DangerDistant));
 
     // Intake
-    operator.leftTrigger().whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.INTAKE));
-    operator.x().whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE));
+    o_intake.whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.INTAKE));
+    o_outtake.whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE));
 
     // Intake Angler
-    operator.axisGreaterThan(1, 0.15)
+    o_incrementPivot
         .whileTrue(new RunCommand(() -> pivot.increment(-operator.getLeftY() * 1), pivot).repeatedly());
-    operator.axisLessThan(1, -0.15)
+    o_decrementPivot
         .whileTrue(new RunCommand(() -> pivot.increment(-operator.getLeftY() * 1), pivot).repeatedly());
 
-    operator.leftBumper().onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));
-    operator.rightBumper().onTrue(intakeNote);
+    o_stow.onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));
+    o_pivotAutomatic.onTrue(intakeNote);
 
     // Amper
-    operator.axisGreaterThan(4, 0.15)
+    o_incrementAmper
         .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 1), pivot).repeatedly());
-    operator.axisLessThan(4, -0.15)
+    o_decrementAmper
         .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 1), pivot).repeatedly());
 
-    operator.back()
+    o_handoff
         .onTrue(new HandoffCommand(intake, pivot, amperPivot, amper));
-    operator.start() // deploy
+    o_deploy // deploy
         .onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, amperPivot));
-    operator.rightStick().whileTrue(amper.runMode(AmperModes.OUTAKE));
-    operator.povRight()
+    o_outtakeAmper.whileTrue(amper.runMode(AmperModes.OUTAKE));
+    o_amperIntake
         .whileTrue(amper.runMode(AmperModes.INTAKE));
 
   }
