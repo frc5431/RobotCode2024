@@ -33,7 +33,7 @@ public class Pivot extends SubsystemBase {
     this.controller.setI(constants.pid.i());
     this.controller.setD(constants.pid.d());
 
-    controller.setOutputRange(-0.3, 0.8);
+    controller.setOutputRange(-0.3, constants.speedLimit);
     double convFact = 2 * Math.PI;
     this.setName(name);
     if(constants.enableWrapping) {
@@ -56,6 +56,10 @@ public class Pivot extends SubsystemBase {
  
   public Measure<Angle> getAngleToGround() {
     return setpoint.minus(constants.parallelToGroundAngle);
+  }
+
+  public AnglerConstants getAnglerConstants() {
+    return this.constants;
   }
 
   /**

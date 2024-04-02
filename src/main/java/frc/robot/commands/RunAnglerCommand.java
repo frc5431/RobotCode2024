@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Pivot;
@@ -59,7 +60,7 @@ public class RunAnglerCommand extends Command {
     if (AnglerModes.DEPLOY == mode) {
       if(angler.absoluteEncoder.getPosition() - Math.PI > 0) {
         isIntermediate = true;
-        angler.setpoint = Constants.IntakeConstants.ampAngle;
+        angler.setpoint = Constants.IntakeConstants.anglerConstants.mainAngle.plus(Units.Degree.of(20));
         return;
       }
       isIntermediate = false;

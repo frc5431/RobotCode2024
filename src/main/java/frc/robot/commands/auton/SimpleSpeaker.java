@@ -14,9 +14,13 @@ public class SimpleSpeaker extends SequentialCommandGroup {
 
     public SimpleSpeaker(Shooter shooter, Intake intake) {
         addCommands(
-            Commands.race(
-            new RunShooterCommand(shooter, ShooterModes.SpeakerShot).until(() -> intake.getBeamBreakStatus().get()),
-            new WaitUntilCommand(() -> shooter.isClose(150)).andThen(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE)))
+            Commands.parallel(
+            new RunShooterCommand(shooter, ShooterModes.SpeakerShot)
+            .until(() -> intake.getBeamBreakStatus().get()),
+            new WaitUntilCommand(() -> shooter.isClose(250))
+            .andThen(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE))
+            .until(() -> intake.getBeamBreakStatus().get()
+            ))
         );
     }
 }

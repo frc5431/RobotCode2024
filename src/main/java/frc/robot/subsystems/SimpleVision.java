@@ -24,12 +24,51 @@ public class SimpleVision extends SubsystemBase {
             Constants.VisionConstants.SHOOTER_CAMERA_FOV);
   }
 
+  
+//  public double getXToStage() {
+//     Stream<TypedApriltag> targets = shooterCamera.getTargets();
+
+//     targets = targets.filter(target -> target.isStage());
+
+//     Optional<TypedApriltag> finalTarget = targets.findFirst();
+
+//     if(finalTarget.isEmpty()) {
+//       // Logger.l("NO VALID TARGETS");
+//       return 0;
+//     }
+
+//     var cameraToTarget = finalTarget.get().trackedTarget.get().getBestCameraToTarget().plus(new Transform3d(-1, 0, 0, new Rotation3d()));
+
+//     var robotToTarget = cameraToTarget.plus(shooterCamera.getTransform());
+    
+//     return robotToTarget.getX();
+//   }
+  
+//   public double getYToStage() {
+//     Stream<TypedApriltag> targets = shooterCamera.getTargets();
+
+//     // targets = targets.sorted((a, b) -> (int) Math.round(a.trackedTarget.get().getPoseAmbiguity() * 1000) - (int) Math.round(b.trackedTarget.get().getPoseAmbiguity() * 1000));
+//     targets = targets.filter(target -> target.isStage());
+
+//     Optional<TypedApriltag> finalTarget = targets.findFirst();
+
+//     if(finalTarget.isEmpty()) {
+//       // Logger.l("NO VALID TARGETS");
+//       return 0;
+//     }
+
+//     var cameraToTarget = finalTarget.get().trackedTarget.get().getBestCameraToTarget().plus(new Transform3d(-1, 0, 0, new Rotation3d()));
+
+//     var robotToTarget = cameraToTarget.plus(shooterCamera.getTransform());
+    
+//     return robotToTarget.getY();
+//   }
 
   public Optional<Rotation2d> getAngleToSpeaker() {
     Stream<TypedApriltag> targets = shooterCamera.getTargets();
 
     // targets = targets.sorted((a, b) -> (int) Math.round(a.trackedTarget.get().getPoseAmbiguity() * 1000) - (int) Math.round(b.trackedTarget.get().getPoseAmbiguity() * 1000));
-    targets = targets.filter(target -> target.isSpeaker() && (target.id != 8 || target.id != 5));
+    targets = targets.filter(target -> target.isSpeaker() || target.isStage() && (target.id != 8 || target.id != 5));
 
     Optional<TypedApriltag> finalTarget = targets.findFirst();
 

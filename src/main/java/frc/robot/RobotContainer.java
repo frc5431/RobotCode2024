@@ -16,16 +16,22 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.AmperConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.IntakeModes;
 import frc.robot.Constants.ShooterConstants.ShooterModes;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.Constants.AmperConstants.AmperModes;
+import frc.robot.commands.BlinkinStrobeCommand;
 import frc.robot.commands.HandoffCommand;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
+import frc.robot.commands.RunAnglerCommand.AnglerModes;
 import frc.robot.commands.auton.AmpScore;
 import frc.robot.commands.auton.AutoIntakeNote;
 import frc.robot.commands.auton.DistantSpeakerScore;
@@ -39,6 +45,8 @@ import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 import frc.robot.swerve.TitanFieldCentricFacingAngle;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
+import frc.team5431.titan.core.leds.Blinkin;
+import frc.team5431.titan.core.leds.BlinkinPattern;
 
 public class RobotContainer {
 
@@ -54,8 +62,11 @@ public class RobotContainer {
   private final Intake intake = systems.getIntake();
   private final Amper amper = systems.getAmper();
   private final Shooter shooter = systems.getShooter();
+  private final Blinkin blinkin = systems.getBlinkin();
+
   private final AutonMagic autonMagic;
   private double vibrateTime = 0;
+  private boolean shooterSpeed;
   private boolean shouldBeVibrating = false;
   private boolean oldBeamBreakStatus = true;
   double unchangedBeamBreakTime = 0;
@@ -72,6 +83,46 @@ public class RobotContainer {
   private SwerveRequest.RobotCentric driveRo = new SwerveRequest.RobotCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
+
+
+  // Control Schemes
+  Trigger d_angleLock = driver.a();
+  Trigger d_apriltagLock = driver.b();
+  Trigger d_robotOriented = driver.rightBumper();
+  Trigger d_resetGyro = driver.y();
+  // Climber
+  Trigger d_incrementClimber = driver.rightTrigger();
+  Trigger d_decrementClimber = driver.leftTrigger();
+  Trigger d_stowIntake = driver.leftBumper();
+
+  //https://www.padcrafter.com/?templates=Controller+Scheme+1&leftTrigger=Intake&rightTrigger=Speaker+Shot&leftBumper=Stow+Intake&rightBumper=Pivot+Automatic&leftStick=Pivot+Manual+Control&rightStick=Amper+Manual+Control&rightStickClick=Outtake+Amper&dpadUp=Deploy+Intake&dpadRight=Amper+Intake&dpadDown=Max+Power+Distant+Shot&yButton=Stage+Shot&xButton=Outtake&bButton=Reverse+Shooter&aButton=Distant+Shot&startButton=Deploy+Amper&backButton=Handoff
+  // Shooter
+  Trigger o_speakerShot = operator.rightTrigger();
+  Trigger o_reverseShooter = operator.b();
+  Trigger o_distantShot = operator.a();
+  Trigger  o_stageShot = operator.y();
+  Trigger  o_evilModeDistantShot = operator.povDown();
+  // Pivot
+  Trigger  o_deployIntake = operator.povUp();
+  Trigger  o_pivotAutomatic = operator.rightBumper();
+  Trigger  o_incrementPivot = operator.axisGreaterThan(1, 0.15);
+  Trigger  o_decrementPivot = operator.axisGreaterThan(1, -0.15);
+  Trigger  o_stow = operator.leftBumper();
+  // Intake
+  Trigger  o_intake = operator.leftTrigger();
+  Trigger  o_outtake = operator.x();
+  // Amper
+  Trigger  o_incrementAmper = operator.axisGreaterThan(5, 0.15);
+  Trigger  o_decrementAmper = operator.axisLessThan(5, -0.15);
+  // AmperPivot
+  Trigger  o_handoff = operator.back(); // two boxes
+  Trigger  o_deployAmper = operator.start(); // menu
+  Trigger  o_outtakeAmper = operator.rightStick();
+  Trigger  o_amperIntake = operator.leftStick();
+  // Lights
+  Trigger o_strobeLights = operator.povLeft();
+
+
   public RobotContainer() {
     NamedCommands.registerCommand("AmpScore", new AmpScore(shooter, intake));
     NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(shooter, intake));
@@ -82,7 +133,7 @@ public class RobotContainer {
 
     // drivebase.seedFieldRelative();
     facingRequest.withPID(new PIDController(6, 0.01, 0.008));
-    facingRequest.withDampening(new WeightedAverageController(35));
+    facingRequest.withDampening(new WeightedAverageController(45));
     facingRequest.gyro = drivebase.getGyro();
     configureBindings();
     DataLogManager.start();
@@ -131,15 +182,19 @@ public class RobotContainer {
     } else if (shooter.mode.usesDistant) {
       var encoderPos = edu.wpi.first.math.util.Units.radiansToDegrees(pivot.absoluteEncoder.getPosition());
       if (encoderPos >= 200) {
-        pivot.setpoint = Constants.IntakeConstants.ampAngle;
+        pivot.setpoint = Constants.IntakeConstants.anglerConstants.mainAngle;
         return;
       }
       pivot.setpoint = IntakeConstants.distantStowAngle;
+      amperPivot.setpoint = AmperConstants.anglerConstants.minAngle;
       intakeNote.cancel();
     } else if (shooter.mode.usesMain) {
-      pivot.setpoint = IntakeConstants.anglerConstants.mainAngle;
+      pivot.setpoint = IntakeConstants.mainAngle;
+      amperPivot.setpoint = AmperConstants.anglerConstants.minAngle;
       intakeNote.cancel();
     }
+
+    SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
 
     boolean beamBreakStatus = intake.getBeamBreakStatus().get();
     unchangedBeamBreakTime += 0.02;
@@ -162,47 +217,38 @@ public class RobotContainer {
     }
 
     oldBeamBreakStatus = beamBreakStatus;
+    shooterSpeed = shooter.isClose(200);
+    operator.getHID().setRumble(RumbleType.kLeftRumble, (shooterSpeed) ? 0.5 : 0);
 
-    operator.getHID().setRumble(RumbleType.kLeftRumble, (shooter.isClose(200)) ? 0.5 : 0);
+
+
+    // if(shooterSpeed) {
+    //   blinkin.set(BlinkinPattern.RAINBOW_PARTY_PALETTE);
+    // } 
+
+  }
+  
+  private Command lockToAngleCommand(double redAngle, double blueAngle) {
+    return drivebase.applyRequest(() -> {
+      double u = driver.getLeftX();
+      double v = driver.getLeftY();
+
+      double root2 = Math.sqrt(2);
+      double magnitude = Math.sqrt(u * u + v * v);
+      double x2 = Math.signum(u) * Math.min(Math.abs(u * root2), magnitude);
+      double y2 = Math.signum(v) * Math.min(Math.abs(v * root2), magnitude);
+      return facingRequest
+          .withVelocityX(
+              modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
+                  * TunerConstatns.kSpeedAt12VoltsMps)
+          .withHeading(edu.wpi.first.math.util.Units.degreesToRadians((DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) ? blueAngle : redAngle))
+          .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
+    }).until(() -> Math.abs(driver.getRawAxis(4)) > 0.15);
   }
 
   private void configureBindings() {
-    // Control Schemes
-    var d_angleLock = driver.a();
-    var d_apriltagLock = driver.b();
-    var d_robotOriented = driver.rightBumper();
-    var d_resetGyro = driver.y();
-    // Climber
-    var d_incrementClimber = driver.rightTrigger();
-    var d_decrementClimber = driver.leftTrigger();
 
-    // Shooter
-    var o_speakerShot = operator.rightTrigger();
-    var o_reverseShooter = operator.b();
-    var o_distantShot = operator.a();
-    var o_stageShot = operator.y();
-    var o_evilModeDistantShot = operator.povDown();
-    // Pivot
-    var o_deployIntake = operator.povUp();
-    var o_pivotAutomatic = operator.rightBumper();
-    var o_incrementPivot = operator.axisGreaterThan(1, 0.15);
-    var o_decrementPivot = operator.axisGreaterThan(1, -0.15);
-    var o_stow = operator.leftBumper();
-    // Intake
-    var o_intake = operator.leftTrigger();
-    var o_outtake = operator.x();
-    // Amper
-    var o_incrementAmper = operator.axisGreaterThan(4, 0.15);
-    var o_decrementAmper = operator.axisLessThan(4, -0.15);
-    // AmperPivot
-    var o_handoff = operator.back();
-    var o_deploy = operator.start();
-    var o_outtakeAmper = operator.rightStick();
-    var o_amperIntake = operator.povRight();
-    
-
-
-
+    blinkin.setDefaultCommand(new InstantCommand(() -> blinkin.set(BlinkinPattern.CP1_2_TWINKLES), blinkin));
 
     drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
         drivebase.applyRequest(() -> {
@@ -225,21 +271,39 @@ public class RobotContainer {
 
     d_angleLock.onTrue(new InstantCommand(() -> {
       facingRequest.pid.reset();
-    })).toggleOnTrue(drivebase.applyRequest(() -> {
-      double u = driver.getLeftX();
-      double v = driver.getLeftY();
+    })).toggleOnTrue(lockToAngleCommand(38.88, 38.88));
 
-      double root2 = Math.sqrt(2);
-      double magnitude = Math.sqrt(u * u + v * v);
-      double x2 = Math.signum(u) * Math.min(Math.abs(u * root2), magnitude);
-      double y2 = Math.signum(v) * Math.min(Math.abs(v * root2), magnitude);
-      return facingRequest
-          .withVelocityX(
-              modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
-                  * TunerConstatns.kSpeedAt12VoltsMps)
-          .withHeading(edu.wpi.first.math.util.Units.degreesToRadians(38))
-          .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
-    }).until(() -> Math.abs(driver.getRawAxis(4)) > 0.15));
+    driver.povUp().onTrue(new InstantCommand(() -> {
+      facingRequest.pid.reset();
+    })).toggleOnTrue(lockToAngleCommand(180, 180));
+
+    driver.povUpRight().onTrue(new InstantCommand(() -> {
+      facingRequest.pid.reset();
+    })).toggleOnTrue(lockToAngleCommand(225, 225));
+
+    driver.povRight().onTrue(new InstantCommand(() -> {
+      facingRequest.pid.reset();
+    })).toggleOnTrue(lockToAngleCommand(270, 270));
+
+    driver.povDownRight().onTrue(new InstantCommand(() -> {
+      facingRequest.pid.reset();
+    })).toggleOnTrue(lockToAngleCommand(315, 315));
+
+    driver.povDown().onTrue(new InstantCommand(() -> {
+      facingRequest.pid.reset();
+    })).toggleOnTrue(lockToAngleCommand(0, 0));
+
+    driver.povDownLeft().onTrue(new InstantCommand(() -> {
+      facingRequest.pid.reset();
+    })).toggleOnTrue(lockToAngleCommand(45, 45));
+
+    driver.povLeft().onTrue(new InstantCommand(() -> {
+      facingRequest.pid.reset();
+    })).toggleOnTrue(lockToAngleCommand(90, 90));
+
+    driver.povUpLeft().onTrue(new InstantCommand(() -> {
+      facingRequest.pid.reset();
+    })).toggleOnTrue(lockToAngleCommand(135, 135));
 
     d_apriltagLock.onTrue(new InstantCommand(() -> {
       facingRequest.pid.reset();
@@ -287,8 +351,11 @@ public class RobotContainer {
 
     d_resetGyro.onTrue(new InstantCommand(() -> drivebase.resetGyro()));
 
-    d_incrementClimber.whileTrue(climber.increment(0.4).repeatedly());
-    d_decrementClimber.whileTrue(climber.increment(-0.4).repeatedly());
+    d_incrementClimber.whileTrue(climber.increment(-0.4).repeatedly()).onTrue(new RunAnglerCommand(AnglerModes.DEPLOY, pivot).alongWith(new RunAnglerCommand(AnglerModes.STOW, amperPivot)));
+    d_decrementClimber.whileTrue(climber.increment(0.4).repeatedly());
+    d_stowIntake.onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot).alongWith(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, amperPivot)));
+
+    o_strobeLights.whileTrue(new BlinkinStrobeCommand(systems.getBlinkin(), BlinkinPattern.ORANGE));
 
     // Shooter
     o_speakerShot.whileTrue(shooter.runShooterCommand(ShooterModes.SpeakerShot));
@@ -309,7 +376,7 @@ public class RobotContainer {
     o_decrementPivot
         .whileTrue(new RunCommand(() -> pivot.increment(-operator.getLeftY() * 1), pivot).repeatedly());
 
-    o_stow.onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot));
+    o_stow.onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot).alongWith(new RunAnglerCommand(AnglerModes.DEPLOY, amperPivot)));
     o_pivotAutomatic.onTrue(intakeNote);
 
     // Amper
@@ -320,11 +387,11 @@ public class RobotContainer {
 
     o_handoff
         .onTrue(new HandoffCommand(intake, pivot, amperPivot, amper));
-    o_deploy // deploy
+    o_deployAmper // deploy
         .onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, amperPivot));
     o_outtakeAmper.whileTrue(amper.runMode(AmperModes.OUTAKE));
     o_amperIntake
-        .whileTrue(amper.runMode(AmperModes.INTAKE));
+        .whileTrue(amper.runMode(AmperModes.INTAKE).alongWith(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE)));
 
   }
 
@@ -335,7 +402,8 @@ public class RobotContainer {
   public void onTeleop() {
     pivot.setpoint = Units.Radians.of(pivot.absoluteEncoder.getPosition());
     amperPivot.setpoint = Units.Radians.of(amperPivot.absoluteEncoder.getPosition());
-
+    climber.relativeEncoder.setPosition(0);
+    climber.setpoint = 0;
   }
 
 }

@@ -14,6 +14,8 @@ import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SimpleVision;
+import frc.team5431.titan.core.leds.Blinkin;
+import frc.team5431.titan.core.leds.BlinkinPattern;
 import frc.robot.subsystems.Drivebase;
 
 public class Systems {
@@ -43,6 +45,8 @@ public class Systems {
   private CANSparkMax amperMotor;
   private CANSparkMax amperPivotMotor;
 
+  private Blinkin blinkin;
+
   private MotorType brushless =  MotorType.kBrushless;
   public Drivebase pheonixdrivebase;
 
@@ -63,6 +67,7 @@ public class Systems {
     climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
     climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
     amperMotor = new CANSparkMax(Constants.AmperConstants.amperId, brushless);
+    amperMotor.setInverted(true);
     amperPivotMotor = new CANSparkMax(Constants.AmperConstants.amperPivotId, brushless);
     amperPivotMotor.setInverted(true);
 
@@ -72,6 +77,9 @@ public class Systems {
     rightIntakeMotor.burnFlash();
     leftIntakeMotor.burnFlash();
     intakeAnglerMotor.burnFlash();
+
+    blinkin = new Blinkin(0);
+    blinkin.set(BlinkinPattern.RAINBOW_OCEAN_PALETTE);
     
     pheonixdrivebase = new Drivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
     shooter = new Shooter(shooterMainTop, shooterMainBot, shooterDistantTop, shooterDistantBot);
@@ -121,6 +129,10 @@ public class Systems {
 
   public Pivot getPivot() {
     return pivot;
+  }
+
+  public Blinkin getBlinkin() {
+    return blinkin;
   }
 
 }

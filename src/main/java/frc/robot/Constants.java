@@ -68,7 +68,7 @@ public final class Constants {
     public static int leftIntakeId = 15;
     public static int rightIntakeId = 16;
     public static double radianTolerance = 0.03;
-    public static Measure<Angle> ampAngle = edu.wpi.first.units.Units.Degree.of(155);
+    public static Measure<Angle> mainAngle = edu.wpi.first.units.Units.Degree.of(170.38844280852996);
     public static Measure<Angle> distantStowAngle = edu.wpi.first.units.Units.Degree.of(193.40868161036659);
 
     public enum IntakeModes {
@@ -76,14 +76,15 @@ public final class Constants {
       OUTAKE,
       STOPPED
     }
+    //170.38844280852996
 
     public static AnglerConstants anglerConstants = new AnglerConstants(
         /* Min Angle */edu.wpi.first.units.Units.Degree.of(0),
-        /* Main Angle */edu.wpi.first.units.Units.Degree.of(170.38844280852996),
+        /* Main Angle */edu.wpi.first.units.Units.Degree.of(152.75470825885563),
         /* Length Meters */Units.inchesToMeters(12),
         /* Weight Kilos */Units.lbsToKilograms(8), // temp
         /* Parallel To Ground Angle */edu.wpi.first.units.Units.Degree.of(0),
-        /* PID */new MotionMagic(0.3, 0.0, 0.03, -1),
+        /* PID */new MotionMagic(0.3, 0.0, 0.08, -1),
         /* Stall Torque (Nm) */ neoStallTorque,
         /* Enable FF */ true,
         /* Gear Ratio */20.625,
@@ -100,8 +101,8 @@ public final class Constants {
 
   public static class AmperConstants {
 
-    public static double intakePower = 0.5;
-    public static double outtakePower = -1;
+    public static double intakePower = -0.5;
+    public static double outtakePower = 0.5;
     public static int amperId = 23;
     public static int amperPivotId = 24;
     public static double radianTolerance = 0.03;
@@ -112,17 +113,17 @@ public final class Constants {
       STOPPED
     }
 
-    public static AnglerConstants anglerConstants = new AnglerConstants(
+     public static AnglerConstants anglerConstants = new AnglerConstants(
         /* Min Angle */edu.wpi.first.units.Units.Degree.of(0),
-        /* Main Angle */edu.wpi.first.units.Units.Degree.of(20),
+        /* Main Angle */edu.wpi.first.units.Units.Degree.of(149.11685081734402),
         /* Length Meters */Units.inchesToMeters(8),
-        /* Weight Kilos */Units.lbsToKilograms(5), // temp
-        /* Parallel To Ground Angle */edu.wpi.first.units.Units.Radians.of(0.343),
-        /* PID */new MotionMagic(1.5, 0.0, 0.03, -1),
+        /* Weight Kilos */Units.lbsToKilograms(4), // temp
+        /* Parallel To Ground Angle */edu.wpi.first.units.Units.Radians.of(0.491),
+        /* PID */new MotionMagic(0.3, 0.001, 0.3, -1),
         /* Stall Torque (Nm) */ neoStallTorque,
-        /* Enable FF */ true,
-        /* Gear Ratio */5,
-        0.8,
+        /* Enable FF */ false,
+        /* Gear Ratio */9,
+        0.5,
         false);
 
   }
@@ -163,9 +164,9 @@ public final class Constants {
     public static Pair<Double, Double> mainRatio = Pair.of(0.9, 0.5);
     public static Pair<Double, Double> distRat = Pair.of(0.67, .88);
     public static Pair<Double, Double> distDangerRat = Pair.of(1., 0.8);
-    public static Pair<Double, Double> stageRat = Pair.of(0.86, 0.82);
+    public static Pair<Double, Double> stageRat = Pair.of(0.86, 0.95);
 
-    public static final double mainTopRpm = -5431;
+    public static final double mainTopRpm = -5000;
     public static final double mainStageRpm = -4700;
     public static final double mainAmpRpm = -300;
     public static final double distTopRpm = 3500;

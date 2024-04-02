@@ -20,24 +20,6 @@
         {
           "type": "path",
           "data": {
-            "pathName": "spkCenterToAmpNote"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DistantSpeakerScore"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ampNoteDown"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "speakerCenter"
           }
         },
@@ -50,13 +32,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "centerNoteDown"
+            "pathName": "centToA"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "DistantSpeakerScore"
+            "name": "SpeakerScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "speakerMidtoSource"
           }
         }
       ]
