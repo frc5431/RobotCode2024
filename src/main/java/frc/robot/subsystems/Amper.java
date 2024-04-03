@@ -53,7 +53,7 @@ public class Amper extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Amper Rpm", this.upperRelativeEncoder.getVelocity());
     SmartDashboard.putString(getName() + " mode", this.mode.toString());
-    SmartDashboard.putBoolean("beambreak", beamBreak.get());
+    SmartDashboard.putBoolean("amper beambreak", beamBreak.get());
   }
 
   public double[] getRPM() {

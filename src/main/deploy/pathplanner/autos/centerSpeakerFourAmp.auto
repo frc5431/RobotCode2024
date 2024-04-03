@@ -46,6 +46,12 @@
           "data": {
             "pathName": "speakerMidtoSource"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DistantSpeakerScore"
+          }
         }
       ]
     }

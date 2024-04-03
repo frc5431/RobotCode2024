@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team5431.titan.core.leds.Blinkin;
 import frc.team5431.titan.core.leds.BlinkinPattern;
@@ -7,7 +8,7 @@ import frc.team5431.titan.core.leds.BlinkinPattern;
 public class BlinkinStrobeCommand extends Command {
     int curActionFrames = 0;
     boolean isOn = false;
-    final int frequency = 1;
+    final int frequency = 5;
 
     Blinkin blinkin;
     BlinkinPattern pattern;
@@ -28,6 +29,7 @@ public class BlinkinStrobeCommand extends Command {
     @Override
     public void execute() {
         curActionFrames++;
+        SmartDashboard.putNumber("strob", curActionFrames);
 
         if(curActionFrames > frequency) {
             curActionFrames = 0;

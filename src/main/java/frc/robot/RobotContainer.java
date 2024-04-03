@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AmperConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -32,6 +33,7 @@ import frc.robot.commands.HandoffCommand;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.commands.RunAnglerCommand.AnglerModes;
+import frc.robot.commands.RunAnglerCommand.TerminationCondition;
 import frc.robot.commands.auton.AmpScore;
 import frc.robot.commands.auton.AutoIntakeNote;
 import frc.robot.commands.auton.DistantSpeakerScore;
@@ -80,6 +82,7 @@ public class RobotContainer {
   private SwerveRequest.FieldCentric driveFC = new SwerveRequest.FieldCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
+
   private SwerveRequest.RobotCentric driveRo = new SwerveRequest.RobotCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
@@ -100,14 +103,15 @@ public class RobotContainer {
   Trigger o_speakerShot = operator.rightTrigger();
   Trigger o_reverseShooter = operator.b();
   Trigger o_distantShot = operator.a();
-  Trigger  o_stageShot = operator.y();
-  Trigger  o_evilModeDistantShot = operator.povDown();
+  Trigger o_stageShot = operator.y();
+  Trigger o_evilModeDistantShot = operator.povDown();
   // Pivot
   Trigger  o_deployIntake = operator.povUp();
   Trigger  o_pivotAutomatic = operator.rightBumper();
   Trigger  o_incrementPivot = operator.axisGreaterThan(1, 0.15);
   Trigger  o_decrementPivot = operator.axisGreaterThan(1, -0.15);
   Trigger  o_stow = operator.leftBumper();
+  Trigger  o_downPivots = operator.povRight();
   // Intake
   Trigger  o_intake = operator.leftTrigger();
   Trigger  o_outtake = operator.x();
@@ -125,6 +129,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     NamedCommands.registerCommand("AmpScore", new AmpScore(shooter, intake));
+    NamedCommands.registerCommand("ShooterRev", new StartEndCommand(() -> shooter.runPair(ShooterModes.SpeakerDistant.speed, shooter.distantTopController, shooter.distantBottomController), () -> {}).withTimeout(2.5));
     NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(shooter, intake));
     NamedCommands.registerCommand("DistantSpeakerScore", new DistantSpeakerScore(shooter, intake));
     NamedCommands.registerCommand("GrabNote", new AutoIntakeNote(intake, pivot));
@@ -350,8 +355,8 @@ public class RobotContainer {
     }));
 
     d_resetGyro.onTrue(new InstantCommand(() -> drivebase.resetGyro()));
-
-    d_incrementClimber.whileTrue(climber.increment(-0.4).repeatedly()).onTrue(new RunAnglerCommand(AnglerModes.DEPLOY, pivot).alongWith(new RunAnglerCommand(AnglerModes.STOW, amperPivot)));
+    
+    d_incrementClimber.whileTrue(climber.increment(-0.4).repeatedly());
     d_decrementClimber.whileTrue(climber.increment(0.4).repeatedly());
     d_stowIntake.onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot).alongWith(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, amperPivot)));
 
@@ -377,7 +382,10 @@ public class RobotContainer {
         .whileTrue(new RunCommand(() -> pivot.increment(-operator.getLeftY() * 1), pivot).repeatedly());
 
     o_stow.onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot).alongWith(new RunAnglerCommand(AnglerModes.DEPLOY, amperPivot)));
+    o_downPivots.onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot).alongWith(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, amperPivot, TerminationCondition.SETPOINT_REACHED)).andThen(new InstantCommand(() -> amperPivot.setpoint = Units.Degree.of(232))));
     o_pivotAutomatic.onTrue(intakeNote);
+    driver.x().onTrue(intakeNote);
+    driver.rightStick().whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.INTAKE));
 
     // Amper
     o_incrementAmper

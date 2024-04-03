@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.4968563517373954,
-        "y": 4.132494190914308
+        "x": 2.6968834980323986,
+        "y": 4.338087917881997
       },
       "prevControl": {
-        "x": 2.4902929909271267,
-        "y": 4.132494190914308
+        "x": 2.69032013722213,
+        "y": 4.338087917881997
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,6 +47,23 @@
           ]
         }
       }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShooterRev"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -57,7 +74,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": -150.0,
     "rotateFast": false
   },
   "reversed": false,

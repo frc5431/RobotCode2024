@@ -29,8 +29,8 @@ public class Shooter extends SubsystemBase {
 
     private final SparkPIDController mainTopController;
     private final SparkPIDController mainBottomController;
-    private final SparkPIDController distantTopController;
-    private final SparkPIDController distantBottomController;
+    public final SparkPIDController distantTopController;
+    public final SparkPIDController distantBottomController;
     private final ControlType controlType = ControlType.kDutyCycle;
 
     private double iZone = 0.1;
@@ -97,7 +97,7 @@ public class Shooter extends SubsystemBase {
         this.mode = ShooterModes.NONE;
     }
 
-    public void RunPair(double percentage, SparkPIDController top, SparkPIDController bot,
+    public void runPair(double percentage, SparkPIDController top, SparkPIDController bot,
             SparkPIDController dtop, SparkPIDController dbot) {
         top.setReference(percentage * ratio.getFirst(), controlType);
         bot.setReference(percentage * ratio.getSecond(), controlType);
@@ -105,15 +105,15 @@ public class Shooter extends SubsystemBase {
         dbot.setReference(-percentage * ratio.getSecond(), controlType);
     }
 
-    public void RunPair(double percentage, SparkPIDController top, SparkPIDController bot) {
+    public void runPair(double percentage, SparkPIDController top, SparkPIDController bot) {
         top.setReference(percentage * ratio.getFirst(), controlType);
         bot.setReference(percentage * ratio.getSecond(), controlType);
     }
 
     public void stopNeutral() {
         mode = ShooterModes.NONE;
-        RunPair(0, distantTopController, distantBottomController);
-        RunPair(0, mainTopController, mainBottomController);
+        runPair(0, distantTopController, distantBottomController);
+        runPair(0, mainTopController, mainBottomController);
     }
 
     public ShooterModes getMode() {
@@ -139,17 +139,17 @@ public class Shooter extends SubsystemBase {
         }
 
         if (mode.usesMain && mode.usesDistant) {
-            RunPair(mode.speed, mainTopController, mainBottomController, distantTopController, distantBottomController);
+            runPair(mode.speed, mainTopController, mainBottomController, distantTopController, distantBottomController);
         } else if (mode.usesMain) {
-            RunPair(mode.speed, mainTopController, mainBottomController);
+            runPair(mode.speed, mainTopController, mainBottomController);
         } else if (mode.usesDistant) {
-            RunPair(-mode.speed, distantTopController, distantBottomController);
+            runPair(-mode.speed, distantTopController, distantBottomController);
         }
     }
 
     public Command runReverse() {
         return new StartEndCommand(
-                () -> RunPair(ShooterConstants.inSpeed, mainTopController, mainBottomController, distantTopController,
+                () -> runPair(ShooterConstants.inSpeed, mainTopController, mainBottomController, distantTopController,
                         distantTopController),
                 () -> stopNeutral(), this);
     }

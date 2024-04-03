@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.0,
-        "y": 5.57
+        "x": 2.9011432430447806,
+        "y": 5.544193078907484
       },
       "prevControl": {
-        "x": 2.9934366391897314,
-        "y": 5.57
+        "x": 2.894579882234512,
+        "y": 5.544193078907484
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,6 +42,23 @@
               "type": "named",
               "data": {
                 "name": "GrabNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.2,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShooterRev"
               }
             }
           ]
