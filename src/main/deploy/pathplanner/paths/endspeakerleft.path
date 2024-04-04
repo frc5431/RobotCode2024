@@ -3,13 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.79,
-        "y": 4.41
+        "x": 7.910370323110315,
+        "y": 2.4024836675265764
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.7650000000000001,
-        "y": 4.453301270189222
+        "x": 7.8853703231103145,
+        "y": 2.445784937715798
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.068341785972672,
+        "y": 1.6827112327210416
+      },
+      "prevControl": {
+        "x": 5.323080219620155,
+        "y": 1.4492715241354632
+      },
+      "nextControl": {
+        "x": 3.2386548221056426,
+        "y": 1.8370715980916519
       },
       "isLocked": false,
       "linkedName": null
@@ -29,41 +45,35 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
-  "eventMarkers": [
+  "constraintZones": [
     {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.05,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "GrabNote"
-              }
-            }
-          ]
-        }
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.55,
+      "maxWaypointRelativePos": 1.95,
+      "constraints": {
+        "maxVelocity": 1.75,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
       }
     }
   ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 1.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -60.0,
+    "rotation": 120.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": -60.0,
+    "rotation": 180.0,
     "velocity": 0.0
   },
   "useDefaultConstraints": false

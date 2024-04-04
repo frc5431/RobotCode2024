@@ -31,7 +31,6 @@ public class Systems {
   private AnglerConstants intakeAnglerConst;
   private AnglerConstants amperPivotConst;
 
-
   private CANSparkFlex shooterMainTop; 
   private CANSparkFlex shooterMainBot; 
   private CANSparkFlex shooterDistantTop;

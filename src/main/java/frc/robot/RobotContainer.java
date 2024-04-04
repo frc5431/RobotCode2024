@@ -129,7 +129,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     NamedCommands.registerCommand("AmpScore", new AmpScore(shooter, intake));
-    NamedCommands.registerCommand("ShooterRev", new StartEndCommand(() -> shooter.runPair(ShooterModes.SpeakerDistant.speed, shooter.distantTopController, shooter.distantBottomController), () -> {}).withTimeout(2.5));
+    NamedCommands.registerCommand("ShooterRev", new StartEndCommand(() -> shooter.runPair(ShooterModes.SpeakerDistant.speed, shooter.distantTopController, shooter.distantBottomController), () -> {}).withTimeout(3));
     NamedCommands.registerCommand("SpeakerScore", new SimpleSpeaker(shooter, intake));
     NamedCommands.registerCommand("DistantSpeakerScore", new DistantSpeakerScore(shooter, intake));
     NamedCommands.registerCommand("GrabNote", new AutoIntakeNote(intake, pivot));
@@ -222,14 +222,12 @@ public class RobotContainer {
     }
 
     oldBeamBreakStatus = beamBreakStatus;
-    shooterSpeed = shooter.isClose(200);
+    shooterSpeed = shooter.isClose(100);
+    SmartDashboard.putBoolean("Shooter at Speed", shooterSpeed);
     operator.getHID().setRumble(RumbleType.kLeftRumble, (shooterSpeed) ? 0.5 : 0);
-
-
-
-    // if(shooterSpeed) {
-    //   blinkin.set(BlinkinPattern.RAINBOW_PARTY_PALETTE);
-    // } 
+    if(shooterSpeed) {
+      blinkin.set(BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
+    } 
 
   }
   
@@ -244,7 +242,7 @@ public class RobotContainer {
       double y2 = Math.signum(v) * Math.min(Math.abs(v * root2), magnitude);
       return facingRequest
           .withVelocityX(
-              modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
+              modifyAxis(y2)
                   * TunerConstatns.kSpeedAt12VoltsMps)
           .withHeading(edu.wpi.first.math.util.Units.degreesToRadians((DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) ? blueAngle : redAngle))
           .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
@@ -257,13 +255,14 @@ public class RobotContainer {
 
     drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
         drivebase.applyRequest(() -> {
-          double u = driver.getLeftX();
-          double v = driver.getLeftY();
+         double u = driver.getLeftX();
+      double v = driver.getLeftY();
 
-          double root2 = Math.sqrt(2);
-          double magnitude = Math.sqrt(u * u + v * v);
-          double x2 = Math.signum(u) * Math.min(Math.abs(u * root2), magnitude);
-          double y2 = Math.signum(v) * Math.min(Math.abs(v * root2), magnitude);
+      double root2 = Math.sqrt(2);
+      double magnitude = Math.sqrt(u * u + v * v);
+      double x2 = Math.signum(u) * Math.min(Math.abs(u * root2), magnitude);
+      double y2 = Math.signum(v) * Math.min(Math.abs(v * root2), magnitude);
+
 
           return driveFC
               .withVelocityX(
@@ -276,7 +275,7 @@ public class RobotContainer {
 
     d_angleLock.onTrue(new InstantCommand(() -> {
       facingRequest.pid.reset();
-    })).toggleOnTrue(lockToAngleCommand(38.88, 38.88));
+    })).toggleOnTrue(lockToAngleCommand(27.80, 27.80));
 
     driver.povUp().onTrue(new InstantCommand(() -> {
       facingRequest.pid.reset();
@@ -397,7 +396,7 @@ public class RobotContainer {
         .onTrue(new HandoffCommand(intake, pivot, amperPivot, amper));
     o_deployAmper // deploy
         .onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, amperPivot));
-    o_outtakeAmper.whileTrue(amper.runMode(AmperModes.OUTAKE));
+    o_outtakeAmper.whileTrue(amper.runMode(AmperModes.OUTAKE).alongWith(RunManipulatorCommand.withMode(intake, IntakeModes.INTAKE)));
     o_amperIntake
         .whileTrue(amper.runMode(AmperModes.INTAKE).alongWith(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE)));
 

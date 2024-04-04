@@ -6,6 +6,7 @@
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Gyro": "Gyro",
+      "/SmartDashboard/Scheduler": "Scheduler",
       "/SmartDashboard/VisionSystemSim-LasaVision/Sim Field": "Field2d"
     }
   },

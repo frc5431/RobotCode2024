@@ -17,7 +17,7 @@ public class SimpleSpeaker extends SequentialCommandGroup {
             Commands.parallel(
             new RunShooterCommand(shooter, ShooterModes.SpeakerShot)
             .until(() -> intake.getBeamBreakStatus().get()),
-            new WaitUntilCommand(() -> shooter.isClose(250))
+            new WaitUntilCommand(() -> shooter.isClose(150)).withTimeout(3)
             .andThen(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE))
             .until(() -> intake.getBeamBreakStatus().get()
             ))

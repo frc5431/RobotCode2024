@@ -75,6 +75,7 @@ public class Drivebase extends SwerveDrivetrain implements Subsystem {
     }
 
     public static boolean onRedAlliance() {
+        SmartDashboard.putBoolean("red?", DriverStation.getAlliance().get() == Alliance.Red);
         return DriverStation.getAlliance().get() == Alliance.Red;
     }
 

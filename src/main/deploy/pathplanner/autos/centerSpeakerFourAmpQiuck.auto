@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3087611360407905,
+      "x": 1.31,
       "y": 5.57
     },
     "rotation": 180.0
@@ -32,7 +32,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "setPositionSafe"
+            "pathName": "centToAquck"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SpeakerScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "speakerQuickSource"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DistantSpeakerScore"
           }
         }
       ]
