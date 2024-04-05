@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
     
-  private CANSparkFlex left;
   private CANSparkFlex right;
   public RelativeEncoder relativeEncoder;
   public SparkPIDController controller;
@@ -26,20 +25,17 @@ public class Climber extends SubsystemBase {
     STOPPED
   }
 
-  public Climber (CANSparkFlex left, CANSparkFlex right) {
-    this.left = left;
-    this.right = right;
-    this.controller = right.getPIDController(); 
+  public Climber (CANSparkFlex climbMotor) {
+    this.right = climbMotor;
+    this.controller = climbMotor.getPIDController(); 
     this.controller.setP(0.5);
     this.controller.setI(0);
     this.controller.setD(0.1);
     this.controller.setOutputRange(-1, 1);
-    left.follow(right, true);
-    this.left.burnFlash();
-    this.right.burnFlash();
-    this.relativeEncoder = right.getEncoder();
+    this.relativeEncoder = climbMotor.getEncoder();
     controller.setFeedbackDevice(relativeEncoder);
     this.mode = ClimberModes.STOPPED;
+    this.right.burnFlash();
   }
 
   public void setPosition(double angle) {

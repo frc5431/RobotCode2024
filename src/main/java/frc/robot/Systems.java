@@ -25,7 +25,9 @@ public class Systems {
   private Pivot amperPivot;
   private Pivot pivot;
   private Shooter shooter;
-  private Climber climber;
+  // private Climber rightClimber;
+  // private Climber leftClimber;
+
   private SimpleVision simpleVision;
 
   private AnglerConstants intakeAnglerConst;
@@ -35,8 +37,8 @@ public class Systems {
   private CANSparkFlex shooterMainBot; 
   private CANSparkFlex shooterDistantTop;
   private CANSparkFlex shooterDistantBot;
-  private CANSparkFlex climberLeft;
-  private CANSparkFlex climberRight;
+  // private CANSparkFlex climberLeft;
+  // private CANSparkFlex climberRight;
 
   private CANSparkMax leftIntakeMotor;
   private CANSparkMax rightIntakeMotor;
@@ -63,8 +65,8 @@ public class Systems {
     shooterDistantTop = new CANSparkFlex(Constants.ShooterConstants.distantTopId, brushless);
     shooterDistantBot = new CANSparkFlex(Constants.ShooterConstants.distantBotId, brushless);
     
-    climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
-    climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
+    // climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
+    // climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
     amperMotor = new CANSparkMax(Constants.AmperConstants.amperId, brushless);
     amperMotor.setInverted(true);
     amperPivotMotor = new CANSparkMax(Constants.AmperConstants.amperPivotId, brushless);
@@ -78,7 +80,6 @@ public class Systems {
     intakeAnglerMotor.burnFlash();
 
     blinkin = new Blinkin(0);
-    blinkin.set(BlinkinPattern.RAINBOW_OCEAN_PALETTE);
     
     pheonixdrivebase = new Drivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
     shooter = new Shooter(shooterMainTop, shooterMainBot, shooterDistantTop, shooterDistantBot);
@@ -86,7 +87,9 @@ public class Systems {
     amper = new Amper(amperMotor);
     amperPivot = new Pivot(amperPivotMotor, amperPivotConst, "amper");
     pivot = new Pivot(intakeAnglerMotor, intakeAnglerConst, "pivot");
-    climber = new Climber(climberLeft, climberRight);
+    // rightClimber = new Climber(climberRight);
+    // leftClimber = new Climber(climberLeft);
+
     simpleVision = new SimpleVision();
     instance = this;
 
@@ -122,9 +125,13 @@ public class Systems {
     return amperPivot;
   }
 
-  public Climber getClimber() {
-    return climber;
-  }
+  // public Climber getLeftClimber() {
+  //   return leftClimber;
+  // }
+
+  // public Climber getRightClimber() {
+  //   return rightClimber;
+  // }
 
   public Pivot getPivot() {
     return pivot;

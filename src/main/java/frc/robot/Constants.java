@@ -101,8 +101,8 @@ public final class Constants {
 
   public static class AmperConstants {
 
-    public static double intakePower = -0.5;
-    public static double outtakePower = 0.5;
+    public static double intakePower = -0.3;
+    public static double outtakePower = 0.3;
     public static int amperId = 23;
     public static int amperPivotId = 24;
     public static double radianTolerance = 0.03;
