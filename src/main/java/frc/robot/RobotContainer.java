@@ -59,8 +59,8 @@ public class RobotContainer {
 
   private final Pivot pivot = systems.getPivot();
   private final Pivot amperPivot = systems.getAmperPivot();
-  private final Climber rightClimber = systems.getRightClimber();
-  private final Climber leftClimber = systems.getLeftClimber();
+  // private final Climber rightClimber = systems.getRightClimber();
+  // private final Climber leftClimber = systems.getLeftClimber();
 
 
   private final Intake intake = systems.getIntake();
@@ -125,7 +125,7 @@ public class RobotContainer {
   Trigger  o_incrementAmper = operator.axisGreaterThan(5, 0.15);
   Trigger  o_decrementAmper = operator.axisLessThan(5, -0.15);
   // AmperPivot
-  Trigger  o_handoff = operator.back(); // two boxes
+  Trigger  o_timedOutake = operator.start();
   Trigger  o_deployAmper = operator.start(); // menu
   Trigger  o_outtakeAmper = operator.rightStick();
   Trigger  o_amperIntake = operator.leftStick();
@@ -361,11 +361,11 @@ public class RobotContainer {
 
     d_resetGyro.onTrue(new InstantCommand(() -> drivebase.resetGyro()));
     
-    d_incrementClimber.whileTrue(rightClimber.increment(-2).repeatedly().alongWith(leftClimber.increment(-2).repeatedly()));
-    d_decrementClimber.whileTrue(rightClimber.increment(2).repeatedly().alongWith(leftClimber.increment(2).repeatedly()));
+    // d_incrementClimber.whileTrue(rightClimber.increment(-2).repeatedly().alongWith(leftClimber.increment(-2).repeatedly()));
+    // d_decrementClimber.whileTrue(rightClimber.increment(2).repeatedly().alongWith(leftClimber.increment(2).repeatedly()));
     
-    d_rightClimber.whileTrue(rightClimber.increment(0.8).repeatedly());
-    d_leftClimber.whileTrue(leftClimber.increment(0.8).repeatedly());
+    // d_rightClimber.whileTrue(rightClimber.increment(0.8).repeatedly());
+    // d_leftClimber.whileTrue(leftClimber.increment(0.8).repeatedly());
 
     d_stowIntake.onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot).alongWith(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, amperPivot)));
 
@@ -400,8 +400,7 @@ public class RobotContainer {
     o_decrementAmper
         .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 1), pivot).repeatedly());
 
-    o_handoff
-        .onTrue(new HandoffCommand(intake, pivot, amperPivot, amper));
+    o_timedOutake.onTrue(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE).withTimeout(1));
     o_deployAmper // deploy
         .onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, amperPivot));
     o_outtakeAmper.whileTrue(amper.runMode(AmperModes.OUTAKE).alongWith(RunManipulatorCommand.withMode(intake, IntakeModes.INTAKE)));
@@ -415,8 +414,10 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
+    amper.motor.getPIDController().setOutputRange(-1, 1);
+    amper.motor.burnFlash();
     pivot.setpoint = Units.Radians.of(pivot.absoluteEncoder.getPosition());
-    amperPivot.setpoint = Units.Radians.of(amperPivot.absoluteEncoder.getPosition());
+    amperPivot.setpoint = (Constants.AmperConstants.anglerConstants.minAngle);
     // rightClimber.relativeEncoder.setPosition(0);
     // leftClimber.relativeEncoder.setPosition(0);
     // rightClimber.setpoint = 0;

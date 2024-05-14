@@ -80,7 +80,7 @@ public final class Constants {
 
     public static AnglerConstants anglerConstants = new AnglerConstants(
         /* Min Angle */edu.wpi.first.units.Units.Degree.of(0),
-        /* Main Angle */edu.wpi.first.units.Units.Degree.of(152.75470825885563),
+        /* Main Angle */edu.wpi.first.units.Units.Degree.of(155.75470825885563),
         /* Length Meters */Units.inchesToMeters(12),
         /* Weight Kilos */Units.lbsToKilograms(8), // temp
         /* Parallel To Ground Angle */edu.wpi.first.units.Units.Degree.of(0),
@@ -114,8 +114,8 @@ public final class Constants {
     }
 
      public static AnglerConstants anglerConstants = new AnglerConstants(
-        /* Min Angle */edu.wpi.first.units.Units.Degree.of(0),
-        /* Main Angle */edu.wpi.first.units.Units.Degree.of(149.11685081734402),
+        /* Min Angle */edu.wpi.first.units.Units.Degree.of(4.23),
+        /* Main Angle */edu.wpi.first.units.Units.Degree.of(171),
         /* Length Meters */Units.inchesToMeters(8),
         /* Weight Kilos */Units.lbsToKilograms(4), // temp
         /* Parallel To Ground Angle */edu.wpi.first.units.Units.Radians.of(0.491),
@@ -169,7 +169,7 @@ public final class Constants {
     public static final double mainTopRpm = -5000;
     public static final double mainStageRpm = -4700;
     public static final double mainAmpRpm = -300;
-    public static final double distTopRpm = 3500;
+    public static final double distTopRpm = 3600;
     public static final double distDangerRpm = 3800;
 
     public static final double p = 3;
@@ -240,6 +240,7 @@ public final class Constants {
         double weight,
         Measure<Angle> parallelToGroundAngle,
         MotionMagic pid,
+
         double stallTorque,
         boolean enableFF,
         double gearRatio,
