@@ -60,7 +60,7 @@ public class RunAnglerCommand extends Command {
     if (AnglerModes.DEPLOY == mode) {
       if(angler.absoluteEncoder.getPosition() - Math.PI > 0) {
         isIntermediate = true;
-        angler.setpoint = Constants.IntakeConstants.anglerConstants.mainAngle.plus(Units.Degree.of(20));
+        angler.setpoint = Constants.IntakeConstants.anglerConstants.minAngle.plus(Units.Degree.of(20));
         return;
       }
       isIntermediate = false;

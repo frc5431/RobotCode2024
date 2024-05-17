@@ -14,6 +14,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -46,6 +47,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 import frc.robot.swerve.TitanFieldCentricFacingAngle;
+import frc.team5431.titan.core.joysticks.CommandJoystick;
+import frc.team5431.titan.core.joysticks.CommandLogitechExtreme3D;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
 import frc.team5431.titan.core.leds.Blinkin;
 import frc.team5431.titan.core.leds.BlinkinPattern;
@@ -53,7 +56,8 @@ import frc.team5431.titan.core.leds.BlinkinPattern;
 public class RobotContainer {
 
   public static final CommandXboxController driver = new CommandXboxController(0);
-  public static final CommandXboxController operator = new CommandXboxController(1);
+  public static final CommandXboxController operator = new CommandXboxController(1); 
+  public static final CommandLogitechExtreme3D stemGal = new CommandLogitechExtreme3D(0);
   private final Systems systems = new Systems();
   private final Drivebase drivebase = systems.getDrivebase();
 
@@ -67,7 +71,7 @@ public class RobotContainer {
   private final Amper amper = systems.getAmper();
   private final Shooter shooter = systems.getShooter();
   private final Blinkin blinkin = systems.getBlinkin();
-
+  public SendableChooser<Boolean> isGals;
   private final AutonMagic autonMagic;
   private double vibrateTime = 0;
   private boolean shooterSpeed;
@@ -142,14 +146,14 @@ public class RobotContainer {
 
     autonMagic = new AutonMagic();
 
-    // drivebase.seedFieldRelative();
+
+    // drivebase.seedField Relative();
     facingRequest.withPID(new PIDController(6, 0.01, 0.008));
     facingRequest.withDampening(new WeightedAverageController(45));
     facingRequest.gyro = drivebase.getGyro();
     configureBindings();
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
-
   }
 
   private static double deadband(double value, double deadband) {
@@ -257,7 +261,57 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    blinkin.setDefaultCommand(new InstantCommand(() -> blinkin.set(BlinkinPattern.CP1_2_TWINKLES), blinkin));
+     if(Constants.isGals){
+       drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
+        drivebase.applyRequest(() -> {
+         double u = stemGal.getX();
+      double v = stemGal.getY();
+
+      double root2 = Math.sqrt(2);
+      double magnitude = Math.sqrt(u * u + v * v);
+      double x2 = Math.signum(u) * Math.min(Math.abs(u * root2), magnitude);
+      double y2 = Math.signum(v) * Math.min(Math.abs(v * root2), magnitude);
+
+
+          return driveFC
+              .withVelocityX(modifyAxis(y2)* TunerConstatns.kSpeedAt12VoltsMps)
+              .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps)
+              .withRotationalRate(
+                  modifyAxis(stemGal.getTwist()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+        }));
+
+    o_strobeLights = stemGal.three();
+
+    // Shooter
+    o_speakerShot = stemGal.trigger();
+
+    o_reverseShooter = stemGal.ten();
+
+    //o_deployIntake = stemGal.two();
+    o_evilModeDistantShot = stemGal.seven();
+    o_distantShot = stemGal.eight(); 
+
+    o_outtake = stemGal.povUp();
+    o_intake = stemGal.five();
+
+    d_resetGyro = stemGal.eleven();
+    o_downPivots = stemGal.twelve();
+
+    o_pivotAutomatic = stemGal.two();
+
+    // Amper
+    o_incrementAmper
+        .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 1), pivot).repeatedly());
+    o_decrementAmper
+        .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 1), pivot).repeatedly());
+
+   
+    o_deployAmper = stemGal.four();
+    o_outtakeAmper = stemGal.povDown();
+    o_amperIntake = stemGal.six();
+
+
+    } else {
 
     drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
         drivebase.applyRequest(() -> {
@@ -358,7 +412,18 @@ public class RobotContainer {
           .withRotationalRate(
               modifyAxis(driver.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
     }));
+    // Amper
+    o_incrementAmper
+        .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 1), pivot).repeatedly());
+    o_decrementAmper
+        .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 1), pivot).repeatedly());
 
+    }
+ 
+
+    blinkin.setDefaultCommand(new InstantCommand(() -> blinkin.set(BlinkinPattern.CP1_2_TWINKLES), blinkin));
+
+    
     d_resetGyro.onTrue(new InstantCommand(() -> drivebase.resetGyro()));
     
     // d_incrementClimber.whileTrue(rightClimber.increment(-2).repeatedly().alongWith(leftClimber.increment(-2).repeatedly()));
@@ -370,7 +435,6 @@ public class RobotContainer {
     d_stowIntake.onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot).alongWith(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, amperPivot)));
 
     o_strobeLights.whileTrue(new BlinkinStrobeCommand(systems.getBlinkin(), BlinkinPattern.ORANGE));
-
     // Shooter
     o_speakerShot.whileTrue(shooter.runShooterCommand(ShooterModes.SpeakerShot));
     o_reverseShooter.whileTrue(shooter.runShooterCommand(ShooterModes.REVERSE));
@@ -394,20 +458,15 @@ public class RobotContainer {
     o_downPivots.onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot).alongWith(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, amperPivot, TerminationCondition.SETPOINT_REACHED)).andThen(new InstantCommand(() -> amperPivot.setpoint = Units.Degree.of(232))));
     o_pivotAutomatic.onTrue(intakeNote);
 
-    // Amper
-    o_incrementAmper
-        .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 1), pivot).repeatedly());
-    o_decrementAmper
-        .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 1), pivot).repeatedly());
-
     o_timedOutake.onTrue(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE).withTimeout(1));
     o_deployAmper // deploy
         .onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, amperPivot));
     o_outtakeAmper.whileTrue(amper.runMode(AmperModes.OUTAKE).alongWith(RunManipulatorCommand.withMode(intake, IntakeModes.INTAKE)));
     o_amperIntake
         .whileTrue(amper.runMode(AmperModes.INTAKE).alongWith(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE)));
+    
 
-  }
+    }
 
   public Command getAutonomousCommand() {
     return autonMagic.procureAuton();

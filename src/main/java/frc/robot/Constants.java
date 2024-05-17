@@ -25,7 +25,7 @@ import frc.robot.subsystems.Intake.MotorRatio;
 import frc.team5431.titan.core.robot.MotionMagic;
 
 public final class Constants {
-  public static final boolean useXboxController = true;
+  public static final boolean isGals = true;
   public static double vortexStallTorque = 3.6;
   public static double neoStallTorque = 2.6;
   public static double neo550StallTorque = 0.97;
