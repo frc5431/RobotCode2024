@@ -57,7 +57,7 @@ public class RobotContainer {
 
   public static final CommandXboxController driver = new CommandXboxController(0);
   public static final CommandXboxController operator = new CommandXboxController(1); 
-  public static final CommandLogitechExtreme3D stemGal = new CommandLogitechExtreme3D(0);
+  public static final CommandXboxController stemGal = new CommandXboxController(0);
   private final Systems systems = new Systems();
   private final Drivebase drivebase = systems.getDrivebase();
 
@@ -264,8 +264,8 @@ public class RobotContainer {
      if(Constants.isGals){
        drivebase.setDefaultCommand( // Drivetrain will execute this command periodically
         drivebase.applyRequest(() -> {
-         double u = stemGal.getX();
-      double v = stemGal.getY();
+         double u = stemGal.getLeftX();
+      double v = stemGal.getLeftY();
 
       double root2 = Math.sqrt(2);
       double magnitude = Math.sqrt(u * u + v * v);
@@ -277,27 +277,27 @@ public class RobotContainer {
               .withVelocityX(modifyAxis(y2)* TunerConstatns.kSpeedAt12VoltsMps)
               .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps)
               .withRotationalRate(
-                  modifyAxis(stemGal.getTwist()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+                  modifyAxis(stemGal.getRightX()) * TunerConstatns.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
         }));
 
-    o_strobeLights = stemGal.three();
+    o_strobeLights = stemGal.povDown();
 
     // Shooter
-    o_speakerShot = stemGal.trigger();
+    o_speakerShot = stemGal.rightTrigger();
 
-    o_reverseShooter = stemGal.ten();
+    o_reverseShooter = stemGal.b();
 
     //o_deployIntake = stemGal.two();
-    o_evilModeDistantShot = stemGal.seven();
-    o_distantShot = stemGal.eight(); 
+    o_evilModeDistantShot = stemGal.a();
+    o_distantShot = stemGal.x(); 
 
     o_outtake = stemGal.povUp();
-    o_intake = stemGal.five();
+    o_intake = stemGal.leftTrigger();
 
-    d_resetGyro = stemGal.eleven();
-    o_downPivots = stemGal.twelve();
+    d_resetGyro = stemGal.y();
+    o_downPivots = stemGal.povRight();
 
-    o_pivotAutomatic = stemGal.two();
+    o_pivotAutomatic = stemGal.rightBumper();
 
     // Amper
     o_incrementAmper
@@ -306,9 +306,9 @@ public class RobotContainer {
         .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 1), pivot).repeatedly());
 
    
-    o_deployAmper = stemGal.four();
+    o_deployAmper = stemGal.povUp();
     o_outtakeAmper = stemGal.povDown();
-    o_amperIntake = stemGal.six();
+    o_amperIntake = stemGal.leftTrigger();
 
 
     } else {
