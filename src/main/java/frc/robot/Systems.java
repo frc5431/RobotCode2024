@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.Optional;
+
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -109,20 +111,20 @@ public class Systems {
     return LasaVision.getInstance();
   }
 
-  public Shooter getShooter() {
-    return shooter;
+  public Optional<Shooter> getShooter() {
+    return Optional.of(shooter);
   }
 
-  public Intake getIntake() {
-    return intake;
+  public Optional<Intake> getIntake() {
+    return Optional.of(intake);
   }
 
-  public Amper getAmper() {
-    return amper;
+  public Optional<Amper> getAmper() {
+    return Optional.of(amper);
   }
 
-  public Pivot getAmperPivot() {
-    return amperPivot;
+  public Optional<Pivot> getAmperPivot() {
+    return Optional.of(amperPivot);
   }
 
   public Climber getLeftClimber() {
@@ -133,8 +135,8 @@ public class Systems {
     return rightClimber;
   }
 
-  public Pivot getPivot() {
-    return pivot;
+  public Optional<Pivot> getPivot() {
+    return Optional.of(pivot);
   }
 
   public Blinkin getBlinkin() {
