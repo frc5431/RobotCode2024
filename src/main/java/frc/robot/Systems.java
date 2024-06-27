@@ -127,12 +127,12 @@ public class Systems {
     return Optional.of(amperPivot);
   }
 
-  public Climber getLeftClimber() {
-    return leftClimber;
+  public Optional<Climber> getLeftClimber() {
+    return Optional.of(leftClimber);
   }
 
-  public Climber getRightClimber() {
-    return rightClimber;
+  public Optional<Climber> getRightClimber() {
+    return Optional.of(rightClimber);
   }
 
   public Optional<Pivot> getPivot() {
