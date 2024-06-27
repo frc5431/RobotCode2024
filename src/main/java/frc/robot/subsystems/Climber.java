@@ -28,7 +28,7 @@ public class Climber extends SubsystemBase {
   public Climber (CANSparkFlex climbMotor) {
     this.right = climbMotor;
     this.controller = climbMotor.getPIDController(); 
-    this.controller.setP(0.5);
+    this.controller.setP(0.3);
     this.controller.setI(0);
     this.controller.setD(0.1);
     this.controller.setOutputRange(-1, 1);

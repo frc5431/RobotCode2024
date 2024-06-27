@@ -25,8 +25,8 @@ public class Systems {
   private Pivot amperPivot;
   private Pivot pivot;
   private Shooter shooter;
-  // private Climber rightClimber;
-  // private Climber leftClimber;
+  private Climber rightClimber;
+  private Climber leftClimber;
 
   private SimpleVision simpleVision;
 
@@ -37,8 +37,8 @@ public class Systems {
   private CANSparkFlex shooterMainBot; 
   private CANSparkFlex shooterDistantTop;
   private CANSparkFlex shooterDistantBot;
-  // private CANSparkFlex climberLeft;
-  // private CANSparkFlex climberRight;
+  private CANSparkFlex climberLeft;
+  private CANSparkFlex climberRight;
 
   private CANSparkMax leftIntakeMotor;
   private CANSparkMax rightIntakeMotor;
@@ -65,8 +65,8 @@ public class Systems {
     shooterDistantTop = new CANSparkFlex(Constants.ShooterConstants.distantTopId, brushless);
     shooterDistantBot = new CANSparkFlex(Constants.ShooterConstants.distantBotId, brushless);
     
-    // climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
-    // climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
+    climberLeft = new CANSparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
+    climberRight = new CANSparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
     amperMotor = new CANSparkMax(Constants.AmperConstants.amperId, brushless);
     amperMotor.setInverted(true);
     amperPivotMotor = new CANSparkMax(Constants.AmperConstants.amperPivotId, brushless);
@@ -87,8 +87,8 @@ public class Systems {
     amper = new Amper(amperMotor);
     amperPivot = new Pivot(amperPivotMotor, amperPivotConst, "amper");
     pivot = new Pivot(intakeAnglerMotor, intakeAnglerConst, "pivot");
-    // rightClimber = new Climber(climberRight);
-    // leftClimber = new Climber(climberLeft);
+    rightClimber = new Climber(climberRight);
+    leftClimber = new Climber(climberLeft);
 
     simpleVision = new SimpleVision();
     instance = this;
@@ -125,13 +125,13 @@ public class Systems {
     return amperPivot;
   }
 
-  // public Climber getLeftClimber() {
-  //   return leftClimber;
-  // }
+  public Climber getLeftClimber() {
+    return leftClimber;
+  }
 
-  // public Climber getRightClimber() {
-  //   return rightClimber;
-  // }
+  public Climber getRightClimber() {
+    return rightClimber;
+  }
 
   public Pivot getPivot() {
     return pivot;

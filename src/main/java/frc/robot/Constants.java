@@ -101,7 +101,7 @@ public final class Constants {
 
   public static class AmperConstants {
 
-    public static double intakePower = -0.3;
+    public static double intakePower = -0.5;
     public static double outtakePower = 0.3;
     public static int amperId = 23;
     public static int amperPivotId = 24;
@@ -119,7 +119,7 @@ public final class Constants {
         /* Length Meters */Units.inchesToMeters(8),
         /* Weight Kilos */Units.lbsToKilograms(4), // temp
         /* Parallel To Ground Angle */edu.wpi.first.units.Units.Radians.of(0.491),
-        /* PID */new MotionMagic(0.3, 0.001, 0.3, -1),
+        /* PID */new MotionMagic(0.5, 0.001, 0.3, -1),
         /* Stall Torque (Nm) */ neoStallTorque,
         /* Enable FF */ false,
         /* Gear Ratio */9,
@@ -149,7 +149,7 @@ public final class Constants {
     public static int distantBotId = 17;
 
     public static double spkSpeed = -1.;
-    public static double spkDist = -1.;
+    public static double spkDist = -0.91;
     public static double dangerDist = -.65;
     
     public static double ampSpeed = -0.4;
@@ -162,11 +162,11 @@ public final class Constants {
     //public static Pair<Double, Double> spkRatio = Pair.of(0.9, 1.);
     public static Pair<Double, Double> ampRatio = Pair.of(0.17, 0.51);
     public static Pair<Double, Double> mainRatio = Pair.of(0.9, 0.5);
-    public static Pair<Double, Double> distRat = Pair.of(.5, .85);
+    public static Pair<Double, Double> distRat = Pair.of(.67, .88);
     public static Pair<Double, Double> distDangerRat = Pair.of(1., 0.8);
     public static Pair<Double, Double> stageRat = Pair.of(0.86, 0.95);
 
-    public static final double mainTopRpm = -5600;
+    public static final double mainTopRpm = -5000;
     public static final double mainStageRpm = -4700;
     public static final double mainAmpRpm = -300;
     public static final double distTopRpm = 3600;

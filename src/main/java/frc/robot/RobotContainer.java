@@ -63,8 +63,8 @@ public class RobotContainer {
 
   private final Pivot pivot = systems.getPivot();
   private final Pivot amperPivot = systems.getAmperPivot();
-  // private final Climber rightClimber = systems.getRightClimber();
-  // private final Climber leftClimber = systems.getLeftClimber();
+  private final Climber rightClimber = systems.getRightClimber();
+  private final Climber leftClimber = systems.getLeftClimber();
 
 
   private final Intake intake = systems.getIntake();
@@ -100,8 +100,9 @@ public class RobotContainer {
   Trigger d_robotOriented = driver.rightBumper();
   Trigger d_resetGyro = driver.y();
   // Climber
-  Trigger d_incrementClimber = driver.rightTrigger();
-  Trigger d_decrementClimber = driver.leftTrigger();
+  Trigger d_incrementClimber = driver.a();
+  Trigger d_decrementRightClimber = driver.rightTrigger();
+  Trigger d_decrementLeftClimber = driver.leftTrigger();
 
   Trigger d_rightClimber = driver.rightStick();
   Trigger d_leftClimber = driver.leftStick();
@@ -130,7 +131,7 @@ public class RobotContainer {
   Trigger  o_decrementAmper = operator.axisLessThan(5, -0.15);
   // AmperPivot
   Trigger  o_timedOutake = operator.start();
-  Trigger  o_deployAmper = operator.start(); // menu
+  Trigger  o_deployAmper = operator.back(); // menu
   Trigger  o_outtakeAmper = operator.rightStick();
   Trigger  o_amperIntake = operator.leftStick();
   // Lights
@@ -423,12 +424,12 @@ public class RobotContainer {
 
     blinkin.setDefaultCommand(new InstantCommand(() -> blinkin.set(BlinkinPattern.CP1_2_TWINKLES), blinkin));
 
-    
     d_resetGyro.onTrue(new InstantCommand(() -> drivebase.resetGyro()));
     
-    // d_incrementClimber.whileTrue(rightClimber.increment(-2).repeatedly().alongWith(leftClimber.increment(-2).repeatedly()));
-    // d_decrementClimber.whileTrue(rightClimber.increment(2).repeatedly().alongWith(leftClimber.increment(2).repeatedly()));
-    
+    d_incrementClimber.whileTrue(rightClimber.increment(-2).repeatedly().alongWith(leftClimber.increment(-2).repeatedly()));
+    d_decrementRightClimber.whileTrue(rightClimber.increment(2).repeatedly());
+    d_decrementLeftClimber.whileTrue(leftClimber.increment(2).repeatedly());
+
     // d_rightClimber.whileTrue(rightClimber.increment(0.8).repeatedly());
     // d_leftClimber.whileTrue(leftClimber.increment(0.8).repeatedly());
 
@@ -445,7 +446,7 @@ public class RobotContainer {
     o_evilModeDistantShot.whileTrue(shooter.runShooterCommand(ShooterModes.DangerDistant));
 
     // Intake
-    o_intake.whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.INTAKE));
+    o_intake.whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.INTAKE).alongWith(amper.runPower(-0.3f)));
     o_outtake.whileTrue(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE).alongWith(amper.runPower(-1)));
 
     // Intake Angler
@@ -477,10 +478,10 @@ public class RobotContainer {
     amper.motor.burnFlash();
     pivot.setpoint = Units.Radians.of(pivot.absoluteEncoder.getPosition());
     amperPivot.setpoint = (Constants.AmperConstants.anglerConstants.minAngle);
-    // rightClimber.relativeEncoder.setPosition(0);
-    // leftClimber.relativeEncoder.setPosition(0);
-    // rightClimber.setpoint = 0;
-    // leftClimber.setpoint = 0;
+    rightClimber.relativeEncoder.setPosition(0);
+    leftClimber.relativeEncoder.setPosition(0);
+    //rightClimber.setpoint = 0;
+    //leftClimber.setpoint = 0;
   }
 
 }
