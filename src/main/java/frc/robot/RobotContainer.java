@@ -48,6 +48,9 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.swerve.TitanFieldCentricFacingAngle;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
 import frc.team5431.titan.core.leds.Blinkin;
+import frc.team5431.titan.core.leds.BlinkinPattern;
+
+import static edu.wpi.first.units.Units.Radians;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -472,9 +475,9 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
-    amper.motor.getPIDController().setOutputRange(-1, 1);
-    amper.motor.burnFlash();
-    pivot.setpoint = Units.Radians.of(pivot.absoluteEncoder.getPosition());
+    amper.motor.getClosedLoopController().setOutputRange(-1, 1);
+    amper.motor.configure();
+    pivot.setpoint = Radians.of(pivot.absoluteEncoder.getPosition());
     amperPivot.setpoint = (Constants.AmperConstants.anglerConstants.minAngle);
     rightClimber.relativeEncoder.setPosition(0);
     leftClimber.relativeEncoder.setPosition(0);

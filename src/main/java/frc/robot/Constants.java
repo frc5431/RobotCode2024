@@ -3,24 +3,19 @@ package frc.robot;
 import java.util.List;
 import java.util.Optional;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
 import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.Measure;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.MotorRatio;
 import frc.team5431.titan.core.robot.MotionMagic;
-import frc.team5431.titan.swerve.SwerveModuleConstants;
 
 public final class Constants {
   public static final boolean isGals = false;
@@ -323,9 +318,11 @@ public final class Constants {
 
     // Theoretical free speed (m/s) at 12v applied output;
     // This needs to be tuned to your individual robot
-    public static final double kSpeedAt12VoltsMps = (5800 / 60.0) *
-        SdsModuleConfigurations.MK4_L2.getDriveReduction() *
-        SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+
+    // TODO sds vendor dep kinda not alive will check back later
+    // public static final double kSpeedAt12VoltsMps = (5800 / 60.0) *
+    //     SdsModuleConfigurations.MK4_L2.getDriveReduction() *
+    //     SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
 
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.5842;
 
@@ -356,7 +353,8 @@ public final class Constants {
     private static final double kSteerFrictionVoltage = 0.25;
     private static final double kDriveFrictionVoltage = 0.25;
 
-    public static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
+    // TODO Docs being unhlepful/hard to read: https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/mechanisms/swerve/swerve-builder-api.html
+    public static final SwerveModuleConstants<Pigeon2Configuration, Pigeon2Configuration, CANcoderConfiguration> DrivetrainConstants = new SwerveModuleConstants()
         .withPigeon2Id(kPigeonId)
         .withCANbusName(kCANbusName);
 
@@ -426,7 +424,7 @@ public final class Constants {
 
     private static final double kBackRightXPosInches = -10.25;
     private static final double kBackRightYPosInches = -11.75;
-
+    // TODO same as above todo, will research
         public static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
             kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, kFrontLeftEncoderOffset, Units.inchesToMeters(kFrontLeftXPosInches), Units.inchesToMeters(kFrontLeftYPosInches), kInvertLeftSide);
     public static final SwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(

@@ -10,7 +10,6 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.Pair;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -21,15 +20,15 @@ import frc.team5431.titan.core.misc.Calc;
 
 public class Shooter extends SubsystemBase {
 
-    private final SparkFlex mainTop;
-    private final SparkFlex mainBot;
-    private final SparkFlex distantTop;
-    private final SparkFlex distantBot;
+    // private final SparkFlex mainTop;
+    // private final SparkFlex mainBot;
+    // private final SparkFlex distantTop;
+    // private final SparkFlex distantBot;
 
-    private final SparkFlexConfig mainTopConfig;
-    private final SparkFlexConfig mainBotConfig;
-    private final SparkFlexConfig distantTopConfig;
-    private final SparkFlexConfig distantBotConfig;
+    private SparkFlexConfig mainTopConfig;
+    private SparkFlexConfig mainBotConfig;
+    private SparkFlexConfig distantTopConfig;
+    private SparkFlexConfig distantBotConfig;
     
     private final RelativeEncoder mainTopRel;
     private final RelativeEncoder mainBotRel;
@@ -51,10 +50,10 @@ public class Shooter extends SubsystemBase {
     public Pair<Double, Double> ratio;
 
     public Shooter(SparkFlex mainTop, SparkFlex mainBot, SparkFlex distantTop, SparkFlex distantBot) {
-        this.mainTop = mainTop;
-        this.mainBot = mainBot;
-        this.distantTop = distantTop;
-        this.distantBot = distantBot;
+        // this.mainTop = mainTop;
+        // this.mainBot = mainBot;
+        // this.distantTop = distantTop;
+        // this.distantBot = distantBot;
 
         this.mainTopRel = mainTop.getEncoder();
         this.mainBotRel = mainBot.getEncoder();
@@ -67,25 +66,31 @@ public class Shooter extends SubsystemBase {
         this.distantTopController = distantTop.getClosedLoopController();
         this.distantBottomController = distantBot.getClosedLoopController();
 
+        // May refactor config after I learn more 
         mainTopConfig.closedLoop
             .p(pid[0])
             .i(pid[1])
-            .d(pid[2]);
+            .d(pid[2])
+            .iZone(iZone);
         
         distantTopConfig.closedLoop
             .p(pid[0])
             .i(pid[1])
-            .d(pid[2]);
+            .d(pid[2])
+            .iZone(iZone);
         
         mainBotConfig.closedLoop
             .p(pid[0])
             .i(pid[1])
-            .d(pid[2]);
+            .d(pid[2])
+            .iZone(iZone);
 
         distantBotConfig.closedLoop
             .p(pid[0])
             .i(pid[1])
-            .d(pid[2]);
+            .d(pid[2])
+            .iZone(iZone);
+
         mainTopConfig.idleMode(IdleMode.kCoast);
         mainBotConfig.idleMode(IdleMode.kCoast);
         distantTopConfig.idleMode(IdleMode.kCoast);

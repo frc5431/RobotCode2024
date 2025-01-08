@@ -2,8 +2,9 @@ package frc.robot.swerve;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveControlParameters;
+import com.ctre.phoenix6.swerve.SwerveModule;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -21,8 +22,10 @@ public class TitanFieldCentricFacingAngle implements SwerveRequest {
     public WeightedAverageController headingDampening;
     // the classic WPI_GAIMFBERLMLMNFTCCZZEController
 
+    // I need to learn what this code this, getting warning: SwerveModule is a raw type. References to generic type SwerveModule<DriveMotorT,SteerMotorT,EncoderT> should be parameterizedJava(16777788)
+
     @Override
-    public StatusCode apply(SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
+    public StatusCode apply(SwerveControlParameters parameters, SwerveModule... modulesToApply) {
         double dampenedValue = headingDampening.calculate(targetHeading);
         double rotationRate = pid.calculate(edu.wpi.first.math.util.Units.degreesToRadians(gyro.getAngle() % 360), dampenedValue);
 
@@ -37,7 +40,8 @@ public class TitanFieldCentricFacingAngle implements SwerveRequest {
         var states = parameters.kinematics.toSwerveModuleStates(speeds, new Translation2d());
 
         for (int i = 0; i < modulesToApply.length; ++i) {
-            modulesToApply[i].apply(states[i], SwerveModule.DriveRequestType.OpenLoopVoltage, SwerveModule.SteerRequestType.MotionMagic);
+            // TODO 
+            // modulesToApply[i].apply(states[i], SwerveModule.DriveRequestType.OpenLoopVoltage, SwerveModule.SteerRequestType.MotionMagicExpo);
         }
 
         return StatusCode.OK;
