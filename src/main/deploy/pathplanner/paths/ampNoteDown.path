@@ -1,0 +1,86 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.31,
+        "y": 5.57
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.3569846310392961,
+        "y": 5.587101007166283
+      },
+      "isLocked": false,
+      "linkedName": "center-speaker"
+    },
+    {
+      "anchor": {
+        "x": 2.89,
+        "y": 6.847564785176964
+      },
+      "prevControl": {
+        "x": 2.94060711071252,
+        "y": 7.176049907084538
+      },
+      "nextControl": {
+        "x": 2.8330566613739863,
+        "y": 6.4779519132497985
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.89,
+        "y": 5.904079296310251
+      },
+      "prevControl": {
+        "x": 2.8834366391897315,
+        "y": 5.904079296310251
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.7,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "GrabNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 1.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -84.70999999999998,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 0.4558543139046061,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

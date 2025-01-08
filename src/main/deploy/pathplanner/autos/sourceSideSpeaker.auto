@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.798251473046156,
+      "y": 4.448081982583718
+    },
+    "rotation": -60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "SpeakerScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "speakerSourceSide"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GrabNote"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

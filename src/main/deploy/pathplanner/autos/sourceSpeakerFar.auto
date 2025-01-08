@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.79,
+      "y": 4.41
+    },
+    "rotation": 118.70786387697312
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "SpeakerScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "speakerSourceTravel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "endspeakerleft"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SpeakerScore"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
