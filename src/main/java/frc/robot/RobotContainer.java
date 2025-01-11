@@ -189,10 +189,10 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    var angle = systems.getSimpleVision().getAngleToSpeaker();
-    if (angle.isPresent()) {
-      SmartDashboard.putNumber("Target", angle.get().getRadians());
-    }
+    // var angle = systems.getSimpleVision().getAngleToSpeaker();
+    // if (angle.isPresent()) {
+    //   SmartDashboard.putNumber("Target", angle.get().getRadians());
+    // }
 
     if (shooter.mode == ShooterModes.NONE) {
       pivot.setpoint = pivot.setpoint;
