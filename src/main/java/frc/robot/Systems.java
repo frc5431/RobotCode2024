@@ -2,19 +2,17 @@ package frc.robot;
 
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 
 import frc.robot.Constants.AnglerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.subsystems.Amper;
 import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.LasaVision;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.SimpleVision;
 import frc.team5431.titan.core.leds.Blinkin;
-import frc.team5431.titan.core.leds.BlinkinPattern;
 import frc.robot.subsystems.Drivebase;
 
 public class Systems {
@@ -27,8 +25,6 @@ public class Systems {
   private Climber rightClimber;
   private Climber leftClimber;
 
-  private SimpleVision simpleVision;
-
   private AnglerConstants intakeAnglerConst;
   private AnglerConstants amperPivotConst;
 
@@ -39,11 +35,11 @@ public class Systems {
   private SparkFlex climberLeft;
   private SparkFlex climberRight;
 
-  private SparkFlex leftIntakeMotor;
-  private SparkFlex rightIntakeMotor;
-  private SparkFlex intakeAnglerMotor;
-  private SparkFlex amperMotor;
-  private SparkFlex amperPivotMotor;
+  private SparkMax leftIntakeMotor;
+  private SparkMax rightIntakeMotor;
+  private SparkMax intakeAnglerMotor;
+  private SparkMax amperMotor;
+  private SparkMax amperPivotMotor;
 
   private Blinkin blinkin;
 
@@ -55,9 +51,9 @@ public class Systems {
     intakeAnglerConst = Constants.IntakeConstants.anglerConstants;
     amperPivotConst = Constants.AmperConstants.anglerConstants;
 
-    leftIntakeMotor = new SparkFlex(Constants.IntakeConstants.leftIntakeId, brushless);
-    rightIntakeMotor = new SparkFlex(Constants.IntakeConstants.rightIntakeId, brushless);
-    intakeAnglerMotor = new SparkFlex(Constants.IntakeConstants.anglerId, brushless);
+    leftIntakeMotor = new SparkMax(Constants.IntakeConstants.leftIntakeId, brushless);
+    rightIntakeMotor = new SparkMax(Constants.IntakeConstants.rightIntakeId, brushless);
+    intakeAnglerMotor = new SparkMax(Constants.IntakeConstants.anglerId, brushless);
    
     shooterMainTop = new SparkFlex(Constants.ShooterConstants.mainTopId, brushless);
     shooterMainBot = new SparkFlex(Constants.ShooterConstants.mainBotId, brushless);
@@ -66,18 +62,8 @@ public class Systems {
     
     climberLeft = new SparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
     climberRight = new SparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
-    amperMotor = new SparkFlex(Constants.AmperConstants.amperId, brushless);
-    amperMotor.setInverted(true);
-    amperPivotMotor = new SparkFlex(Constants.AmperConstants.amperPivotId, brushless);
-    amperPivotMotor.setInverted(true);
-
-    amperMotor.setSmartCurrentLimit(30,25);
-    leftIntakeMotor.setSmartCurrentLimit(30,25);
-    rightIntakeMotor.setSmartCurrentLimit(30,25);
-    rightIntakeMotor.burnFlash();
-    leftIntakeMotor.burnFlash();
-    intakeAnglerMotor.burnFlash();
-
+    amperMotor = new SparkMax(Constants.AmperConstants.amperId, brushless);
+    amperPivotMotor = new SparkMax(Constants.AmperConstants.amperPivotId, brushless);
     blinkin = new Blinkin(0);
     
     pheonixdrivebase = new Drivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
@@ -89,23 +75,12 @@ public class Systems {
     rightClimber = new Climber(climberRight);
     leftClimber = new Climber(climberLeft);
 
-    simpleVision = new SimpleVision();
     instance = this;
-
-    // LasaVision.getInstance().setPoseSupplier(() -> pheonixdrivebase.getPose());
 
   }
 
   public Drivebase getDrivebase() {
     return pheonixdrivebase;
-  }
-
-  public SimpleVision getSimpleVision() {
-    return simpleVision;
-  }
-
-  public LasaVision getVision() {
-    return LasaVision.getInstance();
   }
 
   public Shooter getShooter() {

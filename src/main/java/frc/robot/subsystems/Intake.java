@@ -38,9 +38,11 @@ public class Intake extends SubsystemBase {
     this.constants = constants;
     this.beamBreak = new DigitalInput(9);
 
+    upperConfig.smartCurrentLimit(30, 25);
+    lowerConfig.smartCurrentLimit(30, 25);
     upperConfig.inverted(constants.isInverted);
     lowerConfig.inverted(constants.isInverted);
-    upper.configure(upperConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    upper.configure(upperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     this.upperRelativeEncoder = upper.getEncoder();
     this.lowerRelativeEncoder = lower.getEncoder();

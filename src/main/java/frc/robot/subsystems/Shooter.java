@@ -101,10 +101,10 @@ public class Shooter extends SubsystemBase {
         // distantTopController.setFeedbackDevice(distantTopRel);
         // distantBottomController.setFeedbackDevice(distantBotRel);
 
-        mainTop.configure(mainTopConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        mainBot.configure(mainBotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        distantTop.configure(distantTopConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        distantBot.configure(distantBotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        mainTop.configure(mainTopConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        mainBot.configure(mainBotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        distantTop.configure(distantTopConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        distantBot.configure(distantBotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         this.mode = ShooterModes.NONE;
     }
 

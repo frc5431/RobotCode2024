@@ -57,7 +57,7 @@ public class Pivot extends SubsystemBase {
     absoluteEncoderConfig.velocityConversionFactor(convFact);
     this.controller = motor.getClosedLoopController();
 
-    motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     this.constants = constants;
     this.setpoint = Radian.of(absoluteEncoder.getPosition());
 

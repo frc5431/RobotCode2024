@@ -40,7 +40,7 @@ public class Climber extends SubsystemBase {
     this.relativeEncoder = climbMotor.getEncoder();
     this.controller = right.getClosedLoopController();
     this.mode = ClimberModes.STOPPED;
-    right.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    right.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public void setPosition(double angle) {

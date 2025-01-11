@@ -7,9 +7,8 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -18,7 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -29,7 +27,6 @@ import frc.robot.Constants.ShooterConstants.ShooterModes;
 import frc.robot.Constants.TunerConstatns;
 import frc.robot.Constants.AmperConstants.AmperModes;
 import frc.robot.commands.BlinkinStrobeCommand;
-import frc.robot.commands.HandoffCommand;
 import frc.robot.commands.RunAnglerCommand;
 import frc.robot.commands.RunManipulatorCommand;
 import frc.robot.commands.RunAnglerCommand.AnglerModes;
@@ -50,9 +47,9 @@ import frc.team5431.titan.core.joysticks.CommandXboxController;
 import frc.team5431.titan.core.leds.Blinkin;
 import frc.team5431.titan.core.leds.BlinkinPattern;
 
+import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Radians;
 
-import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 public class RobotContainer {
 
@@ -150,9 +147,9 @@ public class RobotContainer {
 
 
     // drivebase.seedField Relative();
-    facingRequest.withPID(new PIDController(6, 0.01, 0.008));
-    facingRequest.withDampening(new WeightedAverageController(45));
-    facingRequest.gyro = drivebase.getGyro();
+    // facingRequest.withPID(new PIDController(6, 0.01, 0.008));
+    // facingRequest.withDampening(new WeightedAverageController(45));
+    // facingRequest.gyro = drivebase.getGyro();
     configureBindings();
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
@@ -371,33 +368,6 @@ public class RobotContainer {
       facingRequest.pid.reset();
     })).toggleOnTrue(lockToAngleCommand(135, 135));
 
-    d_apriltagLock.onTrue(new InstantCommand(() -> {
-      facingRequest.pid.reset();
-    })).whileTrue(drivebase.applyRequest(() -> {
-      double u = driver.getLeftX();
-      double v = driver.getLeftY();
-
-      double root2 = Math.sqrt(2);
-      double magnitude = Math.sqrt(u * u + v * v);
-      double x2 = Math.signum(u) * Math.min(Math.abs(u * root2), magnitude);
-      double y2 = Math.signum(v) * Math.min(Math.abs(v * root2), magnitude);
-      var angle = systems.getSimpleVision().getAngleToSpeaker();
-      if (angle.isPresent()) {
-        return facingRequest
-            .withHeading(angle.get().plus(Rotation2d.fromDegrees(drivebase.getGyro().getAngle())).getRadians())
-            .withVelocityX(
-                modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
-                    * TunerConstatns.kSpeedAt12VoltsMps)
-            .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
-      }
-
-      return facingRequest
-          .withVelocityX(
-              modifyAxis(y2 + (driver.povUp().getAsBoolean() ? 0.1 : 0))
-                  * TunerConstatns.kSpeedAt12VoltsMps)
-          .withVelocityY(modifyAxis(x2) * TunerConstatns.kSpeedAt12VoltsMps);
-    }));
-
     d_robotOriented.whileTrue(drivebase.applyRequest(() -> {
       double u = driver.getLeftX();
       double v = driver.getLeftY();
@@ -457,7 +427,7 @@ public class RobotContainer {
         .whileTrue(new RunCommand(() -> pivot.increment(-operator.getLeftY() * 1), pivot).repeatedly());
 
     o_stow.onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, pivot).alongWith(new RunAnglerCommand(AnglerModes.DEPLOY, amperPivot)));
-    o_downPivots.onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot).alongWith(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, amperPivot, TerminationCondition.SETPOINT_REACHED)).andThen(new InstantCommand(() -> amperPivot.setpoint = Units.Degree.of(232))));
+    o_downPivots.onTrue(new RunAnglerCommand(RunAnglerCommand.AnglerModes.DEPLOY, pivot).alongWith(new RunAnglerCommand(RunAnglerCommand.AnglerModes.STOW, amperPivot, TerminationCondition.SETPOINT_REACHED)).andThen(new InstantCommand(() -> amperPivot.setpoint =  Angle.ofRelativeUnits(232, Degree))));
     o_pivotAutomatic.onTrue(intakeNote);
 
     o_timedOutake.onTrue(RunManipulatorCommand.withMode(intake, IntakeModes.OUTAKE).withTimeout(1));
@@ -475,14 +445,10 @@ public class RobotContainer {
   }
 
   public void onTeleop() {
-    amper.motor.getClosedLoopController().setOutputRange(-1, 1);
-    amper.motor.configure();
     pivot.setpoint = Radians.of(pivot.absoluteEncoder.getPosition());
     amperPivot.setpoint = (Constants.AmperConstants.anglerConstants.minAngle);
     rightClimber.relativeEncoder.setPosition(0);
     leftClimber.relativeEncoder.setPosition(0);
-    //rightClimber.setpoint = 0;
-    //leftClimber.setpoint = 0;
   }
 
 }

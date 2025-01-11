@@ -137,6 +137,10 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
         configureAutoBuilder();
     }
 
+    public void resetGyro() {
+        this.getPigeon2().setYaw(0);
+    }
+
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>

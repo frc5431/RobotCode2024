@@ -27,9 +27,9 @@ public class TitanFieldCentricFacingAngle implements SwerveRequest {
     @Override
     public StatusCode apply(SwerveControlParameters parameters, SwerveModule... modulesToApply) {
         double dampenedValue = headingDampening.calculate(targetHeading);
-        double rotationRate = pid.calculate(edu.wpi.first.math.util.Units.degreesToRadians(gyro.getAngle() % 360), dampenedValue);
+        double rotationRate = pid.calculate(edu.wpi.first.math.util.Units.degreesToRadians(gyro.getYaw().getValueAsDouble() % 360), dampenedValue);
 
-        SmartDashboard.putNumber("gyroRads", edu.wpi.first.math.util.Units.degreesToRadians(gyro.getAngle()));
+        SmartDashboard.putNumber("gyroRads", edu.wpi.first.math.util.Units.degreesToRadians(gyro.getYaw().getValueAsDouble()));
         SmartDashboard.putNumber("dampenedValue", dampenedValue);
 
         double toApplyOmega = rotationRate;

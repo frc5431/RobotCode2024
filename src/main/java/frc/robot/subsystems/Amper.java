@@ -32,12 +32,13 @@ public class Amper extends SubsystemBase {
     this.mode = AmperModes.STOPPED;
     this.beamBreak = new DigitalInput(8);
 
-    motorConfig.inverted(false);
+    motorConfig.inverted(true);
+    motorConfig.smartCurrentLimit(30,25);
     motorConfig.idleMode(IdleMode.kBrake);
 
     this.upperRelativeEncoder = motor.getEncoder();
 
-    motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
   }
 
