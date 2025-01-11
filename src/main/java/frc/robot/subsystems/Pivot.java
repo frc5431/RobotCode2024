@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radian;
+import static edu.wpi.first.units.Units.Radians;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -114,7 +115,7 @@ public class Pivot extends SubsystemBase {
    * @return if current angle is within setpoint tolerance
    */
   public boolean isFinished() {
-    return setpoint.isNear(edu.wpi.first.units.Units.Radians.of(absoluteEncoder.getPosition()), Constants.IntakeConstants.radianTolerance);
+    return setpoint.isNear(Radians.of(absoluteEncoder.getPosition()), Constants.IntakeConstants.radianTolerance);
   }
 
   /*
