@@ -6,7 +6,6 @@ import com.revrobotics.spark.SparkMax;
 
 import frc.robot.Constants.AnglerConstants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.TunerConstatns;
 import frc.robot.subsystems.Amper;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Pivot;
@@ -44,7 +43,8 @@ public class Systems {
   private Blinkin blinkin;
 
   private MotorType brushless =  MotorType.kBrushless;
-  public Drivebase pheonixdrivebase;
+  public final Drivebase drivetrain = TunerConstants.createDrivetrain();
+
 
   public Systems() {
 
@@ -60,27 +60,23 @@ public class Systems {
     shooterDistantTop = new SparkFlex(Constants.ShooterConstants.distantTopId, brushless);
     shooterDistantBot = new SparkFlex(Constants.ShooterConstants.distantBotId, brushless);
     
-    climberLeft = new SparkFlex(Constants.ClimberConstants.leftClimberId, brushless);
-    climberRight = new SparkFlex(Constants.ClimberConstants.rightClimberId, brushless);
     amperMotor = new SparkMax(Constants.AmperConstants.amperId, brushless);
     amperPivotMotor = new SparkMax(Constants.AmperConstants.amperPivotId, brushless);
     blinkin = new Blinkin(0);
     
-    pheonixdrivebase = new Drivebase(TunerConstatns.DrivetrainConstants, TunerConstatns.FrontLeft, TunerConstatns.FrontRight, TunerConstatns.BackLeft, TunerConstatns.BackRight);
     shooter = new Shooter(shooterMainTop, shooterMainBot, shooterDistantTop, shooterDistantBot);
     intake = new Intake(leftIntakeMotor, rightIntakeMotor, IntakeConstants.manipulatorConstants);
     amper = new Amper(amperMotor);
     amperPivot = new Pivot(amperPivotMotor, amperPivotConst, "amper");
     pivot = new Pivot(intakeAnglerMotor, intakeAnglerConst, "pivot");
-    rightClimber = new Climber(climberRight);
-    leftClimber = new Climber(climberLeft);
+
 
     instance = this;
 
   }
 
   public Drivebase getDrivebase() {
-    return pheonixdrivebase;
+    return drivetrain;
   }
 
   public Shooter getShooter() {

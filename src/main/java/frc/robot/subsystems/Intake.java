@@ -17,9 +17,9 @@ import frc.robot.Constants.ManipulatorConstants;
 public class Intake extends SubsystemBase {
 
   public SparkMax upper;
-  public SparkMaxConfig upperConfig;
+  public SparkMaxConfig upperConfig = new SparkMaxConfig();
   public SparkMax lower;
-  public SparkMaxConfig lowerConfig;
+  public SparkMaxConfig lowerConfig  = new SparkMaxConfig();
   private DigitalInput beamBreak;
 
   protected boolean containedGamePiece;

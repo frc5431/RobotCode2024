@@ -26,10 +26,9 @@ import frc.robot.commands.RunAnglerCommand.AnglerModes;
 public class Pivot extends SubsystemBase {
 
   public SparkMax motor;
-  public SparkMaxConfig motorConfig;
+  public SparkMaxConfig motorConfig = new SparkMaxConfig();
   public SparkClosedLoopController controller;
   public AbsoluteEncoder absoluteEncoder;
-  public AbsoluteEncoderConfig absoluteEncoderConfig;
   public Angle setpoint;
   public AnglerModes mode;
   public double massKg;
@@ -53,8 +52,8 @@ public class Pivot extends SubsystemBase {
       // controller.setPositionPIDWrappingMaxInput(convFact);
     }
 
-    absoluteEncoderConfig.positionConversionFactor(convFact);
-    absoluteEncoderConfig.velocityConversionFactor(convFact);
+    motorConfig.absoluteEncoder.positionConversionFactor(convFact);
+    motorConfig.absoluteEncoder.velocityConversionFactor(convFact);
     this.controller = motor.getClosedLoopController();
 
     motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

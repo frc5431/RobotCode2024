@@ -1,5 +1,5 @@
 {
-  "version": 1.0,
+  "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3569846310392948,
-        "y": 5.587101007166283
+        "x": 1.5449231551964775,
+        "y": 5.655505035831417
       },
       "isLocked": false,
       "linkedName": "center-speaker"
@@ -20,7 +20,7 @@
         "y": 6.750016462995888
       },
       "prevControl": {
-        "x": 2.6666508745070914,
+        "x": 2.42321423531736,
         "y": 6.750016462995888
       },
       "nextControl": null,
@@ -31,15 +31,16 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": -139.82338496544435,
-      "rotateFast": false
+      "rotationDegrees": -139.82338496544435
     }
   ],
   "constraintZones": [],
+  "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "grabNote",
       "waypointRelativePos": 0.3,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "parallel",
         "data": {
@@ -59,18 +60,19 @@
     "maxVelocity": 3.0,
     "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -137.53880223443105,
-    "rotateFast": false
+    "rotation": -137.53880223443105
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": {
-    "rotation": -179.2683788094821,
-    "velocity": 0
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
   },
   "useDefaultConstraints": false
 }

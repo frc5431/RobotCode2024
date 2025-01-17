@@ -27,7 +27,9 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants.TunerConstatns.TunerSwerveDrivetrain;
+import frc.robot.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.TunerConstants;
+
 
 
 /**
@@ -69,6 +71,8 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
             this
         )
     );
+
+    
 
     /* SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
     private final SysIdRoutine m_sysIdRoutineSteer = new SysIdRoutine(
@@ -201,7 +205,7 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
 
     private void configureAutoBuilder() {
         try {
-            var config = RobotConfig.fromGUISettings();
+            
             AutoBuilder.configure(
                 () -> getState().Pose,   // Supplier of current robot pose
                 this::resetPose,         // Consumer for seeding pose against auto
@@ -218,7 +222,7 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
                     // PID constants for rotation
                     new PIDConstants(7, 0, 0)
                 ),
-                config,
+                TunerConstants.robotConfig,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this // Subsystem for requirements
@@ -227,6 +231,7 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
     }
+
 
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.

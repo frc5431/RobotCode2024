@@ -16,9 +16,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
     
-  private SparkFlex right;
-  private SparkFlexConfig rightConfig;
-  public RelativeEncoder relativeEncoder;
+  public SparkFlex climbMotor;
+  private SparkFlexConfig rightConfig = new SparkFlexConfig();
   public SparkClosedLoopController controller;
   public double setpoint;
   public double downForce = 0.1;
@@ -31,16 +30,15 @@ public class Climber extends SubsystemBase {
   }
 
   public Climber (SparkFlex climbMotor) {
-    this.right = climbMotor;
+    this.climbMotor = climbMotor;
     rightConfig.closedLoop
       .p(0.3)
       .i(0)
       .d(.1)
       .outputRange(-1, 1);
-    this.relativeEncoder = climbMotor.getEncoder();
-    this.controller = right.getClosedLoopController();
+    this.controller = climbMotor.getClosedLoopController();
     this.mode = ClimberModes.STOPPED;
-    right.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    climbMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public void setPosition(double angle) {
@@ -57,7 +55,7 @@ public class Climber extends SubsystemBase {
 
   @Override public void periodic() {
     SmartDashboard.putNumber("Climber Setpoint", setpoint);
-    SmartDashboard.putNumber("Climber Encoder", relativeEncoder.getPosition());
+    SmartDashboard.putNumber("Climber Encoder", climbMotor.getEncoder().getPosition());
     SmartDashboard.putString("Climber Mode", mode.toString());
     controller.setReference(
       setpoint,

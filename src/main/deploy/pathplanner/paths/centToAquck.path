@@ -1,5 +1,5 @@
 {
-  "version": 1.0,
+  "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
@@ -20,12 +20,12 @@
         "y": 7.051824530189345
       },
       "prevControl": {
-        "x": 3.0373164063863674,
-        "y": 6.935104675896556
+        "x": 3.0992543637473147,
+        "y": 6.86753599513916
       },
       "nextControl": {
-        "x": 2.828289947223603,
-        "y": 7.1631335404377525
+        "x": 2.76139204948864,
+        "y": 7.23611306523953
       },
       "isLocked": false,
       "linkedName": null
@@ -47,13 +47,11 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.35,
-      "rotationDegrees": 90.0,
-      "rotateFast": false
+      "rotationDegrees": 90.0
     },
     {
       "waypointRelativePos": 0.8,
-      "rotationDegrees": 84.63024845902983,
-      "rotateFast": false
+      "rotationDegrees": 84.63024845902983
     }
   ],
   "constraintZones": [
@@ -65,14 +63,18 @@
         "maxVelocity": 1.0,
         "maxAcceleration": 1.0,
         "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
       }
     }
   ],
+  "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "New Event Marker",
       "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "sequential",
         "data": {
@@ -92,18 +94,19 @@
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -61.99082329198617,
-    "rotateFast": true
+    "rotation": -61.99082329198616
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": {
-    "rotation": 180.0,
-    "velocity": 0
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
   },
   "useDefaultConstraints": false
 }

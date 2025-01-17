@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.RelativeEncoder;
 
@@ -20,15 +21,10 @@ import frc.team5431.titan.core.misc.Calc;
 
 public class Shooter extends SubsystemBase {
 
-    // private final SparkFlex mainTop;
-    // private final SparkFlex mainBot;
-    // private final SparkFlex distantTop;
-    // private final SparkFlex distantBot;
-
-    private SparkFlexConfig mainTopConfig;
-    private SparkFlexConfig mainBotConfig;
-    private SparkFlexConfig distantTopConfig;
-    private SparkFlexConfig distantBotConfig;
+    private SparkFlexConfig mainTopConfig = new SparkFlexConfig();
+    private SparkFlexConfig mainBotConfig = new SparkFlexConfig();
+    private SparkFlexConfig distantTopConfig = new SparkFlexConfig();
+    private SparkFlexConfig distantBotConfig = new SparkFlexConfig();
     
     private final RelativeEncoder mainTopRel;
     private final RelativeEncoder mainBotRel;
@@ -50,10 +46,6 @@ public class Shooter extends SubsystemBase {
     public Pair<Double, Double> ratio;
 
     public Shooter(SparkFlex mainTop, SparkFlex mainBot, SparkFlex distantTop, SparkFlex distantBot) {
-        // this.mainTop = mainTop;
-        // this.mainBot = mainBot;
-        // this.distantTop = distantTop;
-        // this.distantBot = distantBot;
 
         this.mainTopRel = mainTop.getEncoder();
         this.mainBotRel = mainBot.getEncoder();
@@ -66,40 +58,25 @@ public class Shooter extends SubsystemBase {
         this.distantTopController = distantTop.getClosedLoopController();
         this.distantBottomController = distantBot.getClosedLoopController();
 
-        // May refactor config after I learn more 
-        mainTopConfig.closedLoop
-            .p(pid[0])
-            .i(pid[1])
-            .d(pid[2])
-            .iZone(iZone);
-        
-        distantTopConfig.closedLoop
-            .p(pid[0])
-            .i(pid[1])
-            .d(pid[2])
-            .iZone(iZone);
-        
-        mainBotConfig.closedLoop
-            .p(pid[0])
-            .i(pid[1])
-            .d(pid[2])
-            .iZone(iZone);
 
-        distantBotConfig.closedLoop
-            .p(pid[0])
-            .i(pid[1])
-            .d(pid[2])
-            .iZone(iZone);
+        mainTopConfig.closedLoop.pid(pid[0], pid[1], pid[2]);
+        
+        distantTopConfig.closedLoop.pid(pid[0], pid[1], pid[2]);
+        
+        mainBotConfig.closedLoop.pid(pid[0], pid[1], pid[2]);
+
+        distantBotConfig.closedLoop.pid(pid[0], pid[1], pid[2]);
+
 
         mainTopConfig.idleMode(IdleMode.kCoast);
         mainBotConfig.idleMode(IdleMode.kCoast);
         distantTopConfig.idleMode(IdleMode.kCoast);
         distantBotConfig.idleMode(IdleMode.kCoast);
 
-        // mainTopController.setFeedbackDevice(mainTopRel);
-        // mainBottomController.setFeedbackDevice(mainBotRel);
-        // distantTopController.setFeedbackDevice(distantTopRel);
-        // distantBottomController.setFeedbackDevice(distantBotRel);
+        mainTopConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        mainBotConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        distantTopConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        distantBotConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
         mainTop.configure(mainTopConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         mainBot.configure(mainBotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

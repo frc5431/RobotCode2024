@@ -4,8 +4,10 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,8 +19,8 @@ import frc.robot.Constants.AmperConstants.AmperModes;
 
 public class Amper extends SubsystemBase {
 
-  public SparkBase motor;
-  public SparkBaseConfig motorConfig;
+  public SparkMax motor;
+  public SparkMaxConfig motorConfig = new SparkMaxConfig();
   private DigitalInput beamBreak;
 
   protected boolean containedGamePiece;
@@ -27,7 +29,7 @@ public class Amper extends SubsystemBase {
 
   private AmperModes mode;
 
-  public Amper(SparkBase motor) {
+  public Amper(SparkMax motor) {
     this.motor = motor;
     this.mode = AmperModes.STOPPED;
     this.beamBreak = new DigitalInput(8);
