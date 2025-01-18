@@ -38,8 +38,6 @@ public class Shooter extends SubsystemBase {
 
     private final ControlType controlType = ControlType.kDutyCycle;
 
-    private double iZone = 0.1;
-
     private final double[] pid = new double[] { ShooterConstants.p, ShooterConstants.i, ShooterConstants.d };
 
     public ShooterModes mode;

@@ -1,47 +1,11 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Rotation;
-import static edu.wpi.first.units.Units.Rotations;
 import java.util.List;
 import java.util.Optional;
 
-import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-import com.ctre.phoenix6.swerve.SwerveDrivetrain;
-import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
-import com.pathplanner.lib.config.ModuleConfig;
-import com.pathplanner.lib.config.RobotConfig;
-import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
-
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.Mass;
-import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.MotorRatio;
 import frc.team5431.titan.core.robot.MotionMagic;
@@ -101,12 +65,12 @@ public final class Constants {
     //170.38844280852996
 
     public static AnglerConstants anglerConstants = new AnglerConstants(
-        /* Min Angle */edu.wpi.first.units.Units.Degree.of(0),
+        /* Min Angle */edu.wpi.first.units.Units.Degree.of(5),
         /* Main Angle */edu.wpi.first.units.Units.Degree.of(155.75470825885563),
         /* Length Kilos */Units.Meters.convertFrom(12, Units.Inches),
         /* Length Meters */Units.Kilograms.convertFrom(8, Units.Pounds),
-        /* Parallel To Ground Angle */edu.wpi.first.units.Units.Degree.of(0),
-        /* PID */new MotionMagic(0.3, 0.0, 0.08, -1),
+        /* Parallel To Ground Angle */edu.wpi.first.units.Units.Rotation.of(0.174),
+        /* PID */new MotionMagic(0.8, 0.0, 0.4, -1),
         /* Stall Torque (Nm) */ neoStallTorque,
         /* Enable FF */ true,
         /* Gear Ratio */20.625,
@@ -136,12 +100,12 @@ public final class Constants {
     }
 
      public static AnglerConstants anglerConstants = new AnglerConstants(
-        /* Min Angle */edu.wpi.first.units.Units.Degree.of(4.23),
+        /* Min Angle */edu.wpi.first.units.Units.Degree.of(5),
         /* Main Angle */edu.wpi.first.units.Units.Degree.of(171),
         /* Length Kilos */Units.Meters.convertFrom(8, Units.Inches),
         /* Length Meters */Units.Kilograms.convertFrom(4, Units.Pounds),
-        /* Parallel To Ground Angle */edu.wpi.first.units.Units.Radians.of(0.491),
-        /* PID */new MotionMagic(0.5, 0.001, 0.3, -1),
+        /* Parallel To Ground Angle */edu.wpi.first.units.Units.Rotation.of(0.174),
+        /* PID */new MotionMagic(0.5, 0.04, 0.3, -1),
         /* Stall Torque (Nm) */ neoStallTorque,
         /* Enable FF */ false,
         /* Gear Ratio */9,

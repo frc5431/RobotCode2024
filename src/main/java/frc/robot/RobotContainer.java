@@ -8,6 +8,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -159,7 +160,7 @@ private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); //
     if (shooter.mode == ShooterModes.NONE) {
       pivot.setpoint = pivot.setpoint;
     } else if (shooter.mode.usesDistant) {
-      var encoderPos = edu.wpi.first.math.util.Units.radiansToDegrees(pivot.absoluteEncoder.getPosition());
+      var encoderPos = Units.Rotations.of(pivot.absoluteEncoder.getPosition()).in(Units.Degrees);
       if (encoderPos >= 200) {
         pivot.setpoint = Constants.IntakeConstants.anglerConstants.mainAngle;
         return;
@@ -205,6 +206,13 @@ private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); //
 
   }
 
+  public double deadzone(double input) {
+    if(Math.abs(input) < 0.15) {
+      return 0;
+    }
+    return input;
+  }
+
   private void configureBindings() {
 
     driver.setDeadzone(0.15);
@@ -212,17 +220,17 @@ private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); //
     drivebase.setDefaultCommand(
       // Drivetrain will execute this command periodically
       drivebase.applyRequest(() ->
-          drive.withVelocityX(-driver.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-              .withVelocityY(-driver.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-              .withRotationalRate(-driver.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+          drive.withVelocityX(deadzone(-driver.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
+              .withVelocityY(deadzone(-driver.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
+              .withRotationalRate(deadzone(-driver.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
       )
   );
 
     // Amper
     o_incrementAmper
-        .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 1), pivot).repeatedly());
+        .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 0.1), pivot).repeatedly());
     o_decrementAmper
-        .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 1), pivot).repeatedly());
+        .whileTrue(new RunCommand(() -> amperPivot.increment(operator.getRightY() * 0.1), pivot).repeatedly());
 
     blinkin.setDefaultCommand(new InstantCommand(() -> blinkin.set(BlinkinPattern.CP1_2_TWINKLES), blinkin));
 
@@ -275,8 +283,8 @@ private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); //
   }
 
   public void onTeleop() {
-    pivot.setpoint = Radians.of(pivot.absoluteEncoder.getPosition());
-    amperPivot.setpoint = (Constants.AmperConstants.anglerConstants.minAngle);
+    //pivot.setpoint = pivot.absoluteEncoder.getPosition();
+    //amperPivot.setpoint = (Constants.AmperConstants.anglerConstants.minAngle);
   }
 
 }

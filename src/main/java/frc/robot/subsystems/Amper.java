@@ -1,14 +1,14 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,6 +37,8 @@ public class Amper extends SubsystemBase {
     motorConfig.inverted(true);
     motorConfig.smartCurrentLimit(30,25);
     motorConfig.idleMode(IdleMode.kBrake);
+    motorConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+    motorConfig.closedLoop.positionWrappingInputRange(-0.1, 0.5);
 
     this.upperRelativeEncoder = motor.getEncoder();
 
@@ -61,6 +63,8 @@ public class Amper extends SubsystemBase {
     SmartDashboard.putNumber("Amper Rpm", this.upperRelativeEncoder.getVelocity());
     SmartDashboard.putString(getName() + " mode", this.mode.toString());
     SmartDashboard.putBoolean("amper beambreak", beamBreak.get());
+
+    
   }
 
   public double[] getRPM() {
@@ -83,7 +87,7 @@ public class Amper extends SubsystemBase {
   }
 
   public void runWithPower(double power) {
-    motor.set(power);
+    motor.set(0);
   }
 
   public Command runPower(double power) {

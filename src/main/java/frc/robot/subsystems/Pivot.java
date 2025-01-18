@@ -1,8 +1,9 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Radian;
 import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Rotation;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -12,9 +13,11 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,26 +42,23 @@ public class Pivot extends SubsystemBase {
     this.motor = motor;
     this.controller = motor.getClosedLoopController();
     this.absoluteEncoder = motor.getAbsoluteEncoder();
-    motorConfig.closedLoop
-    .p(constants.pid.p())
-    .i(constants.pid.i())
-    .d(constants.pid.d())
-    .outputRange(-.3, constants.speedLimit);
-    double convFact = 2 * Math.PI;
+   
+    motorConfig.closedLoop.pid(constants.pid.p(), constants.pid.i(), constants.pid.d());
+    motorConfig.closedLoop.outputRange(-0.5,0.5);
+    motorConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+    motorConfig.inverted(false);
+    motorConfig.absoluteEncoder.inverted(false);
+    motorConfig.closedLoop.positionWrappingEnabled(true);
+    motorConfig.absoluteEncoder.zeroCentered(false);
+    motorConfig.closedLoop.positionWrappingInputRange(0.0, 0.6);
+    motorConfig.absoluteEncoder.positionConversionFactor(1);
     this.setName(name);
-    if(constants.enableWrapping) {
-      // controller.setPositionPIDWrappingEnabled(true);
-      // controller.setPositionPIDWrappingMinInput(0);
-      // controller.setPositionPIDWrappingMaxInput(convFact);
-    }
+    motorConfig.idleMode(IdleMode.kBrake);
 
-    motorConfig.absoluteEncoder.positionConversionFactor(convFact);
-    motorConfig.absoluteEncoder.velocityConversionFactor(convFact);
-    this.controller = motor.getClosedLoopController();
 
     motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     this.constants = constants;
-    this.setpoint = Radian.of(absoluteEncoder.getPosition());
+    this.setpoint = constants.mainAngle;
 
     this.mode = AnglerModes.CUSTOM;
     // calvin commit of the year
@@ -76,7 +76,7 @@ public class Pivot extends SubsystemBase {
    * @param measure of angle in degrees
    */
   public void setRotation(double measure) {
-    setpoint = edu.wpi.first.units.Units.Degree.of(measure);
+    setpoint = Units.Rotation.of(measure);
   }
 
   public void setRotation(Angle measure) {
@@ -102,10 +102,10 @@ public class Pivot extends SubsystemBase {
   }
 
   /**
-   * @param rate, in degrees
+   * @param rate, in rotation
    */
   public void increment(double rate) {
-    setpoint = setpoint.plus(edu.wpi.first.units.Units.Degree.of(rate));
+    setpoint = setpoint.plus(edu.wpi.first.units.Units.Rotation.of(rate));
     mode = AnglerModes.CUSTOM;
   }
 
@@ -114,60 +114,29 @@ public class Pivot extends SubsystemBase {
    * @return if current angle is within setpoint tolerance
    */
   public boolean isFinished() {
-    return setpoint.isNear(Radians.of(absoluteEncoder.getPosition()), Constants.IntakeConstants.radianTolerance);
+    return setpoint.isNear(Rotation.of(absoluteEncoder.getPosition()), Constants.IntakeConstants.radianTolerance);
   }
-
-  /*
-  record Angle(Rotation2d angle, Translation2d error) {
-    double getSimpleError() {
-      return Math.sqrt(error.getX() * error.getX() + error.getY() * error.getY());
-    }
-  }
-
-  public static Optional<Double> calculateLaunchAngle(double velocity, double distanceX, double heightY) {
-    // Iteratively searching for a launch angle that allows hitting the target
-    Optional<Angle> bestAngle = Optional.empty();
-    for (int angleInDegrees = 0; angleInDegrees <= 90; angleInDegrees += 1) {
-      final double gravitationalConstant = 9.81;
-      double angleInRadians = Units.degreesToRadians(angleInDegrees);
-      Translation2d velocityVector = new Translation2d(velocity * Math.cos(angleInRadians),
-          velocity * Math.sin(angleInRadians));
-
-      double timeOfFlight = velocityVector.getY() / 9.81;
-      double calculatedDistanceX = velocityVector.getX() * timeOfFlight;
-      double calculatedHeightY = velocityVector.getY() / 2 * gravitationalConstant;
-
-      Angle angle = new Angle(Rotation2d.fromRadians(angleInRadians),
-          new Translation2d(Math.abs(calculatedDistanceX - distanceX), Math.abs(calculatedHeightY - heightY)));
-      if (bestAngle.isEmpty()
-          || bestAngle.get().getSimpleError() < angle.getSimpleError() && angle.getSimpleError() < 1) {
-        bestAngle = Optional.of(angle);
-      }
-    }
-
-    return Optional.empty(); // No suitable angle found
-  }
-  */
 
   @Override
   public void periodic() {
 
-    SmartDashboard.putNumber(getName() + " setpoint deg", setpoint.in(Degrees));
-    SmartDashboard.putNumber(getName() + " encoder deg", absoluteEncoder.getPosition() * 180/Math.PI);
+    SmartDashboard.putNumber(getName() + " setpoint deg", setpoint.in(Degree));
+    SmartDashboard.putNumber(getName() + " encoder deg", Degrees.convertFrom(absoluteEncoder.getPosition(), Rotation));
     SmartDashboard.putString(getName() + " Mode", this.mode.toString());
-    SmartDashboard.putNumber(getName() + " output", motor.getOutputCurrent() / 30);
+    SmartDashboard.putNumber(getName() + " output", motor.getAppliedOutput());
 
     double anglerCosMultiplierNoCOMM = constants.weight * 9.81;
     double cosMult = anglerCosMultiplierNoCOMM * constants.lengthMeters;
-    double arbFF = cosMult * Math.cos(getAngleToGround().in(Degrees)) / (constants.stalltorque * constants.gearRatio);
-    arbFF *= 0.3;
+    double arbFF = cosMult * Math.cos(getAngleToGround().in(Rotation)) / (constants.stalltorque * constants.gearRatio);
     SmartDashboard.putNumber("Pivot arbFF", arbFF);
 
     controller.setReference(
-        setpoint.in(Radian), 
+        setpoint.in(Rotation), 
         SparkBase.ControlType.kPosition,
-        ClosedLoopSlot.kSlot0,
+        ClosedLoopSlot.kSlot0
+        ,
         constants.enableFF ? arbFF : 0,
-        ArbFFUnits.kPercentOut);
+        ArbFFUnits.kPercentOut
+        );
   }
 }
