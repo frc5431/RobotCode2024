@@ -16,10 +16,14 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -53,6 +57,13 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+
+    SwerveModuleState[] states = this.getState().ModuleStates;
+    StructArrayPublisher<SwerveModuleState> publisher = 
+    NetworkTableInstance.getDefault().
+    getStructArrayTopic("Swerve Module States", SwerveModuleState.struct).publish();
+
+
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -136,6 +147,9 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
+
+        
+
         configureAutoBuilder();
     }
 
@@ -165,6 +179,14 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        SmartDashboard.putNumber("Gyro", this.getPigeon2().getYaw().getValueAsDouble());
+        SmartDashboard.putNumber("Drivebase Rot3d", this.getRotation3d().getAngle());
+        SwerveModuleState[] states = this.getState().ModuleStates;
+        StructArrayPublisher<SwerveModuleState> publisher = 
+        NetworkTableInstance.getDefault().
+        getStructArrayTopic("Swerve Module States", SwerveModuleState.struct).publish();
+
+        
         configureAutoBuilder();
     }
 
@@ -274,6 +296,13 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
          * Otherwise, only check and apply the operator perspective if the DS is disabled.
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
+        SmartDashboard.putNumber("Gyro", this.getPigeon2().getYaw().getValueAsDouble());
+        SmartDashboard.putNumber("Drivebase Rot3d", this.getRotation3d().getAngle());
+
+        publisher.set(states);
+        //SmartDashboard.putData("Chassis Speed", this.getKinematics().toChassisSpeeds(states).omegaRadiansPerSecond);
+
+
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
                 setOperatorPerspectiveForward(

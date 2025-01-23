@@ -160,8 +160,8 @@ private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); //
     if (shooter.mode == ShooterModes.NONE) {
       pivot.setpoint = pivot.setpoint;
     } else if (shooter.mode.usesDistant) {
-      var encoderPos = Units.Rotations.of(pivot.absoluteEncoder.getPosition()).in(Units.Degrees);
-      if (encoderPos >= 200) {
+      var encoderPos = Units.Rotations.of(pivot.absoluteEncoder.getPosition()).in(Units.Degree);
+      if (encoderPos >= 110) {
         pivot.setpoint = Constants.IntakeConstants.anglerConstants.mainAngle;
         return;
       }
@@ -283,6 +283,7 @@ private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); //
   }
 
   public void onTeleop() {
+    drivebase.resetGyro();
     //pivot.setpoint = pivot.absoluteEncoder.getPosition();
     //amperPivot.setpoint = (Constants.AmperConstants.anglerConstants.minAngle);
   }

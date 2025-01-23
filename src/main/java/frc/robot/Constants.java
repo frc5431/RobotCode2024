@@ -53,24 +53,23 @@ public final class Constants {
     public static int anglerId = 14;
     public static int leftIntakeId = 15;
     public static int rightIntakeId = 16;
-    public static double radianTolerance = 0.03;
-    public static Angle mainAngle = edu.wpi.first.units.Units.Degree.of(170.38844280852996);
-    public static Angle distantStowAngle = edu.wpi.first.units.Units.Degree.of(193.40868161036659);
-
+    public static double rotationTolerance = 0.003;
+    public static Angle mainAngle = edu.wpi.first.units.Units.Degree.of(173);
+    public static Angle distantStowAngle = edu.wpi.first.units.Units.Degree.of(200);
+    //55
     public enum IntakeModes {
       INTAKE,
       OUTAKE,
       STOPPED
     }
-    //170.38844280852996
 
     public static AnglerConstants anglerConstants = new AnglerConstants(
-        /* Min Angle */edu.wpi.first.units.Units.Degree.of(5),
-        /* Main Angle */edu.wpi.first.units.Units.Degree.of(155.75470825885563),
+        /* Min Angle */edu.wpi.first.units.Units.Degree.of(315),
+        /* Main Angle */edu.wpi.first.units.Units.Degree.of(150),
         /* Length Kilos */Units.Meters.convertFrom(12, Units.Inches),
         /* Length Meters */Units.Kilograms.convertFrom(8, Units.Pounds),
-        /* Parallel To Ground Angle */edu.wpi.first.units.Units.Rotation.of(0.174),
-        /* PID */new MotionMagic(0.8, 0.0, 0.4, -1),
+        /* Parallel To Ground Angle */edu.wpi.first.units.Units.Rotation.of(0.824),
+        /* PID */new MotionMagic(0.8, 0.0, 0.45, -1),
         /* Stall Torque (Nm) */ neoStallTorque,
         /* Enable FF */ true,
         /* Gear Ratio */20.625,

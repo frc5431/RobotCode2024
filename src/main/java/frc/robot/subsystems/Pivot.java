@@ -15,6 +15,7 @@ import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.units.Units;
@@ -44,21 +45,23 @@ public class Pivot extends SubsystemBase {
     this.absoluteEncoder = motor.getAbsoluteEncoder();
    
     motorConfig.closedLoop.pid(constants.pid.p(), constants.pid.i(), constants.pid.d());
-    motorConfig.closedLoop.outputRange(-0.5,0.5);
+    motorConfig.closedLoop.outputRange(-0.3,0.3);
     motorConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
-    motorConfig.inverted(false);
-    motorConfig.absoluteEncoder.inverted(false);
-    motorConfig.closedLoop.positionWrappingEnabled(true);
-    motorConfig.absoluteEncoder.zeroCentered(false);
-    motorConfig.closedLoop.positionWrappingInputRange(0.0, 0.6);
+    //motorConfig.closedLoop.maxMotion.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);
+    motorConfig.inverted(true);
     motorConfig.absoluteEncoder.positionConversionFactor(1);
+    motorConfig.absoluteEncoder.inverted(true);
+    motorConfig.absoluteEncoder.zeroOffset(0.6);
+    motorConfig.absoluteEncoder.zeroCentered(false);
+    motorConfig.closedLoop.positionWrappingEnabled(false);
+   
     this.setName(name);
-    motorConfig.idleMode(IdleMode.kBrake);
-
-
-    motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    motorConfig.idleMode(IdleMode.kCoast);
     this.constants = constants;
     this.setpoint = constants.mainAngle;
+
+    motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  
 
     this.mode = AnglerModes.CUSTOM;
     // calvin commit of the year
@@ -114,7 +117,7 @@ public class Pivot extends SubsystemBase {
    * @return if current angle is within setpoint tolerance
    */
   public boolean isFinished() {
-    return setpoint.isNear(Rotation.of(absoluteEncoder.getPosition()), Constants.IntakeConstants.radianTolerance);
+    return setpoint.isNear(Rotation.of(absoluteEncoder.getPosition()), Constants.IntakeConstants.rotationTolerance);
   }
 
   @Override
