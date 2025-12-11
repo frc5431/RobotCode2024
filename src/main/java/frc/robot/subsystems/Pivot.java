@@ -130,7 +130,7 @@ public class Pivot extends SubsystemBase {
 
     double anglerCosMultiplierNoCOMM = constants.weight * 9.81;
     double cosMult = anglerCosMultiplierNoCOMM * constants.lengthMeters;
-    double arbFF = cosMult * Math.cos(getAngleToGround().in(Rotation)) / (constants.stalltorque * constants.gearRatio);
+    double arbFF = cosMult * Math.cos(getAngleToGround().in(Degree)) / (constants.stalltorque * constants.gearRatio);
     SmartDashboard.putNumber("Pivot arbFF", arbFF);
 
     controller.setReference(
@@ -139,7 +139,7 @@ public class Pivot extends SubsystemBase {
         ClosedLoopSlot.kSlot0
         ,
         constants.enableFF ? arbFF : 0,
-        ArbFFUnits.kPercentOut
+        ArbFFUnits.kVoltage
         );
   }
 }

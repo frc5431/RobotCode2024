@@ -69,12 +69,12 @@ public final class Constants {
         /* Length Kilos */Units.Meters.convertFrom(12, Units.Inches),
         /* Length Meters */Units.Kilograms.convertFrom(8, Units.Pounds),
         /* Parallel To Ground Angle */edu.wpi.first.units.Units.Rotation.of(0.824),
-        /* PID */new MotionMagic(0.8, 0.0, 0.45, -1),
+        /* PID */new MotionMagic(2, 0.0, 0.45, -1),
         /* Stall Torque (Nm) */ neoStallTorque,
         /* Enable FF */ true,
         /* Gear Ratio */20.625,
         0.8,
-        true);
+        false);
 
     public static ManipulatorConstants manipulatorConstants = new ManipulatorConstants(
         /* Is Inverted */ true,

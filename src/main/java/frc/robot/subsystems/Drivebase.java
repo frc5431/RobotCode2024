@@ -15,12 +15,15 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -63,7 +66,11 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
     NetworkTableInstance.getDefault().
     getStructArrayTopic("Swerve Module States", SwerveModuleState.struct).publish();
 
+    StructPublisher<Pose2d> posePublisher =
+    NetworkTableInstance.getDefault().getStructTopic("Robot Pose", Pose2d.struct).publish();
 
+    StructPublisher<ChassisSpeeds> speedsPublisher =
+    NetworkTableInstance.getDefault().getStructTopic("Chassis Speed", ChassisSpeeds.struct).publish();
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -252,7 +259,6 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
         }
     }
 
-
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *
@@ -262,8 +268,6 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
     }
-
-    
     
     /**
      * Runs the SysId Quasistatic test in the given direction for the routine
@@ -300,6 +304,8 @@ public class Drivebase extends TunerSwerveDrivetrain implements Subsystem {
         SmartDashboard.putNumber("Drivebase Rot3d", this.getRotation3d().getAngle());
 
         publisher.set(states);
+        posePublisher.set(getState().Pose);
+        speedsPublisher.set(getKinematics().toChassisSpeeds(states));
         //SmartDashboard.putData("Chassis Speed", this.getKinematics().toChassisSpeeds(states).omegaRadiansPerSecond);
 
 

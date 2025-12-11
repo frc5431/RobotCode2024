@@ -43,19 +43,26 @@ import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 //import frc.robot.swerve.TitanFieldCentricFacingAngle;
 import frc.team5431.titan.core.joysticks.CommandXboxController;
+
+
 import frc.team5431.titan.core.leds.Blinkin;
 import frc.team5431.titan.core.leds.BlinkinPattern;
 
-import static edu.wpi.first.units.Units.Degree;
-import static edu.wpi.first.units.Units.Radians;
+import edu.wpi.first.wpilibj.Joystick;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 
 public class RobotContainer {
 
+  // Xbox controllers
   public static final CommandXboxController driver = new CommandXboxController(0);
   public static final CommandXboxController operator = new CommandXboxController(1);
   public static final CommandXboxController stemGal = new CommandXboxController(0);
+
+  // Flight controllers
+  public static final Joystick driverAndOperatorFlight = new Joystick(0);
+  public static final Joystick stemGalFlight = new Joystick(0);
+
   private final Systems systems = new Systems();
   private final Drivebase drivebase = systems.getDrivebase();
 
@@ -93,9 +100,12 @@ private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); //
 
   // Control Schemes
   Trigger d_angleLock = driver.a();
+
   Trigger d_apriltagLock = driver.b();
   Trigger d_robotOriented = driver.rightBumper();
-  Trigger d_resetGyro = driver.y();
+  Trigger d_resetGyro = new Trigger(() -> driverAndOperatorFlight.getRawButton(8));
+
+  
   // Climber
   Trigger d_incrementClimber = driver.a();
   Trigger d_decrementRightClimber = driver.rightTrigger();
@@ -109,20 +119,20 @@ private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); //
   // https://www.padcrafter.com/?templates=Controller+Scheme+1&leftTrigger=Intake&rightTrigger=Speaker+Shot&leftBumper=Stow+Intake&rightBumper=Pivot+Automatic&leftStick=Pivot+Manual+Control&rightStick=Amper+Manual+Control&rightStickClick=Outtake+Amper&dpadUp=Deploy+Intake&dpadRight=Amper+Intake&dpadDown=Max+Power+Distant+Shot&yButton=Stage+Shot&xButton=Outtake&bButton=Reverse+Shooter&aButton=Distant+Shot&startButton=Deploy+Amper&backButton=Handoff
   // Shooter
   Trigger o_speakerShot = operator.rightTrigger();
-  Trigger o_reverseShooter = operator.b();
-  Trigger o_distantShot = operator.a();
-  Trigger o_stageShot = operator.y();
-  Trigger o_evilModeDistantShot = operator.povDown();
+  Trigger o_reverseShooter = new Trigger(() -> driverAndOperatorFlight.getRawButton(3));
+  Trigger o_distantShot = new Trigger(() -> driverAndOperatorFlight.getRawButton(4));
+  Trigger o_stageShot = new Trigger(() -> driverAndOperatorFlight.getRawButton(5));
+  Trigger o_evilModeDistantShot = new Trigger(() -> driverAndOperatorFlight.getRawButton(6));
   // Pivot
-  Trigger o_deployIntake = operator.povUp();
-  Trigger o_pivotAutomatic = operator.rightBumper();
+  Trigger o_deployIntake = new Trigger(() -> driverAndOperatorFlight.getRawButton(12));
+  Trigger o_pivotAutomatic = new Trigger(() -> driverAndOperatorFlight.getRawButton(12));
   Trigger o_incrementPivot = operator.axisGreaterThan(1, 0.15);
   Trigger o_decrementPivot = operator.axisGreaterThan(1, -0.15);
-  Trigger o_stow = operator.leftBumper();
-  Trigger o_downPivots = operator.povRight();
+  Trigger o_stow = new Trigger(() -> driverAndOperatorFlight.getRawButton(7));
+  Trigger o_downPivots = new Trigger(() -> driverAndOperatorFlight.getRawButton(12));
   // Intake
-  Trigger o_intake = operator.leftTrigger();
-  Trigger o_outtake = operator.x();
+  Trigger o_intake = new Trigger(() -> driverAndOperatorFlight.getRawButton(1));
+  Trigger o_outtake = new Trigger(() -> driverAndOperatorFlight.getRawButton(2));
   // Amper
   Trigger o_incrementAmper = operator.axisGreaterThan(5, 0.15);
   Trigger o_decrementAmper = operator.axisLessThan(5, -0.15);
@@ -219,10 +229,14 @@ private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); //
 
     drivebase.setDefaultCommand(
       // Drivetrain will execute this command periodically
-      drivebase.applyRequest(() ->
-          drive.withVelocityX(deadzone(-driver.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
-              .withVelocityY(deadzone(-driver.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
-              .withRotationalRate(deadzone(-driver.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+      // drivebase.applyRequest(() ->
+          // drive.withVelocityX(deadzone(-driver.getLeftY()) * MaxSpeed) // Drive forward with negative Y (forward)
+          //     .withVelocityY(deadzone(-driver.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
+          //     .withRotationalRate(deadzone(-driver.getRightX()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+        drivebase.applyRequest(() ->
+        drive.withVelocityX(deadzone(-driverAndOperatorFlight.getY()) * MaxSpeed) // Drive forward with negative Y (forward)
+            .withVelocityY(deadzone(-driverAndOperatorFlight.getX()) * MaxSpeed) // Drive left with negative X (left)
+            .withRotationalRate(deadzone(-driverAndOperatorFlight.getZ()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
       )
   );
 
